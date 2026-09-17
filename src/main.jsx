@@ -3,6 +3,7 @@ import { BrowserRouter } from "react-router-dom";
 import { StrictMode } from 'react'
 import React from 'react';
 import './index.css'; 
+import './app.css';
 import "../src/assets/i18n/i18n.js";
 import App from './App.jsx'
 

@@ -5,6 +5,7 @@ import AuthService from "../services/AuthService";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
 import { BookOpen, Mail, Lock, Eye, EyeOff, Globe, HelpCircle, ArrowRight } from "lucide-react";
+import Footer from "../components/Footer";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -30,8 +31,9 @@ const Login = () => {
 
   return (
     
-    <div className="flex min-h-screen items-center justify-center bg-[#f2ece1] p-4">
-      <div className="flex w-full max-w-4xl overflow-hidden rounded-2xl bg-white shadow-xl">
+<div className="flex min-h-screen items-center justify-center bg-(--bg) p-4">
+
+      <div className="flex w-full max-w-4xl overflow-hidden rounded-2xl bg-(--surface) shadow-xl">
 
         <div className="relative hidden w-1/2 flex-col justify-between bg-gradient-to-br from-[#0f3d2e] to-[#123a2c] p-10 text-white md:flex">
           <div>
@@ -41,6 +43,7 @@ const Login = () => {
             </div>
             <p className="mt-1 text-sm text-gray-300">{t("login.tagline", "Scholarship Management")}</p>
           </div>
+          
 
           <div className="border-l-2 border-amber-400 pl-4">
             <p className="text-lg leading-snug text-gray-100">
@@ -58,22 +61,22 @@ const Login = () => {
         </div>
 
         <div className="flex w-full flex-col justify-center px-8 py-10 sm:px-12 md:w-1/2">
-          <h1 className="text-2xl font-semibold text-gray-800">{t("login.title", "Bienvenue")}</h1>
-          <p className="mt-1 text-sm text-gray-500">
+          <h1 className="text-2xl font-semibold text-(--text)">{t("login.title", "Bienvenue")}</h1>
+          <p className="mt-1 text-sm text-(--text-muted)">
             {t("login.subtitle", "Veuillez vous connecter à votre compte.")}
           </p>
 
           <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-4">
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">
+              <label className="mb-1 block text-sm font-medium text-(--text)">
                 {t("login.username", "User Name")}
               </label>
-              <div className="flex items-center rounded-lg border border-gray-300 px-3 focus-within:border-[#0f3d2e] focus-within:ring-1 focus-within:ring-[#0f3d2e]">
-                <Mail className="h-4 w-4 text-gray-400" />
+              <div className="flex items-center rounded-lg border border-(--border) px-3 focus-within:border-(--brand) focus-within:ring-1 focus-within:ring-(--brand)">
+                <Mail className="h-4 w-4 text-(--text-muted)" />
                 <input
                   type="text"
                   placeholder="ahmed129"
-                  className="w-full border-none bg-transparent p-2.5 text-sm text-gray-700 placeholder-gray-400 outline-none focus:ring-0"
+                  className="w-full border-none bg-transparent p-2.5 text-sm text-(--text) placeholder-(--text-muted) outline-none focus:ring-0"
                   {...register("username")}
                 />
               </div>
@@ -81,12 +84,12 @@ const Login = () => {
 
             <div>
              
-              <div className="flex items-center rounded-lg border border-gray-300 px-3 focus-within:border-[#0f3d2e] focus-within:ring-1 focus-within:ring-[#0f3d2e]">
-                <Lock className="h-4 w-4 text-gray-400" />
+              <div className="flex items-center rounded-lg border border-(--border) px-3 focus-within:border-(--brand) focus-within:ring-1 focus-within:ring-(--brand)">
+                <Lock className="h-4 w-4 text-(--text-muted)" />
                 <input
                   type={showPassword ? "text" : "password"}
                   placeholder="••••••••"
-                  className="w-full border-none bg-transparent p-2.5 text-sm text-gray-700 placeholder-gray-400 outline-none focus:ring-0"
+                  className="w-full border-none bg-transparent p-2.5 text-sm text-(--text) placeholder-(--text-muted) outline-none focus:ring-0"
                   {...register("password")}
                 />
                 <button
@@ -109,18 +112,17 @@ const Login = () => {
             </button>
           </form>
 
-          <p className="mt-6 text-center text-sm text-gray-500">
+          <p className="mt-6 text-center text-sm text-(--text-muted)">
             {t("login.noAccount", "Vous n'avez pas de compte ?")}{" "}
-            <Link to="/register" className="font-medium text-[#0f3d2e] hover:underline">
+            <Link to="/register" className="font-medium text-(--brand) hover:underline">
               {t("login.contactAdmin", "register.title")}
             </Link>
           </p>
 
-          <p className="mt-8 text-center text-xs text-gray-400">
-            © 2026 Kottabi. {t("login.rightsReserved", "Tous droits réservés.")}
-          </p>
+            <Footer />
         </div>
       </div>
+   
     </div>
   );
 };

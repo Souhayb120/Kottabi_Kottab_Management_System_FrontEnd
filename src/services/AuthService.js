@@ -1,7 +1,5 @@
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import api from "../api/Api";
-const API_BASE_URL = "http://localhost:8080/api/auth";
+const API_BASE_URL = "http://localhost:8180/api/auth";
 
 class AuthService {
   register(user) {
@@ -14,6 +12,8 @@ class AuthService {
 
   logout() {
     localStorage.removeItem("token");
+    localStorage.removeItem("username");
+    localStorage.removeItem("role");
   }
 }
 
