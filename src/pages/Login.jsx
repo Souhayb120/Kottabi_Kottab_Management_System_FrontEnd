@@ -33,13 +33,14 @@ const Login = () => {
     
 <div className="flex min-h-screen items-center justify-center bg-(--bg) p-4">
 
-      <div className="flex w-full max-w-4xl overflow-hidden rounded-2xl bg-(--surface) shadow-xl">
+<div className="flex w-full max-w-4xl overflow-hidden rounded-2xl trad-card">
 
         <div className="relative hidden w-1/2 flex-col justify-between bg-gradient-to-br from-[#0f3d2e] to-[#123a2c] p-10 text-white md:flex">
           <div>
             <div className="flex items-center gap-2">
               <BookOpen className="h-6 w-6 text-amber-400" />
               <span className="text-xl font-semibold">Kottabi</span>
+              <span className="select-none text-sm text-[#d9b45f]">۞</span>
             </div>
             <p className="mt-1 text-sm text-gray-300">{t("login.tagline", "Scholarship Management")}</p>
           </div>
@@ -60,15 +61,18 @@ const Login = () => {
           </div>
         </div>
 
-        <div className="flex w-full flex-col justify-center px-8 py-10 sm:px-12 md:w-1/2">
-          <h1 className="text-2xl font-semibold text-(--text)">{t("login.title", "Bienvenue")}</h1>
+        <div className="flex w-full flex-col justify-center bg-[#fbfaf6] px-8 py-10 sm:px-12 md:w-1/2">
+          <div className="ornament-row mb-3">
+            <span className="select-none text-xs leading-none text-[#c79a3b]">۞</span>
+          </div>
+          <h1 className="font-serif text-2xl font-semibold text-(--text)">{t("login.title", "Bienvenue")}</h1>
           <p className="mt-1 text-sm text-(--text-muted)">
             {t("login.subtitle", "Veuillez vous connecter à votre compte.")}
           </p>
 
           <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-4">
             <div>
-              <label className="mb-1 block text-sm font-medium text-(--text)">
+              <label className="label-trad">
                 {t("login.username", "User Name")}
               </label>
               <div className="flex items-center rounded-lg border border-(--border) px-3 focus-within:border-(--brand) focus-within:ring-1 focus-within:ring-(--brand)">
@@ -83,7 +87,9 @@ const Login = () => {
             </div>
 
             <div>
-             
+              <label className="label-trad">
+                {t("login.password", "Mot de passe")}
+              </label>
               <div className="flex items-center rounded-lg border border-(--border) px-3 focus-within:border-(--brand) focus-within:ring-1 focus-within:ring-(--brand)">
                 <Lock className="h-4 w-4 text-(--text-muted)" />
                 <input
@@ -95,9 +101,10 @@ const Login = () => {
                 <button
                   type="button"
                   onClick={() => setShowPassword((prev) => !prev)}
-                  className="text-gray-400 hover:text-gray-600"
+                  className="text-(--text-muted) hover:text-(--text)"
+                  aria-label={showPassword ? t("login.hidePassword", "Masquer") : t("login.showPassword", "Afficher")}
                 >
-                  
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
             </div>
@@ -105,8 +112,9 @@ const Login = () => {
            
             <button
               type="submit"
-              className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#0f3d2e] p-2.5 text-sm font-medium text-white transition hover:bg-[#0c3325]"
+              className="btn-trad mt-2 flex w-full items-center justify-center gap-2"
             >
+              <span className="select-none text-[10px] leading-none text-[#d9b45f]">✦</span>
               {t("login.submit", "Se connecter")}
               <ArrowRight className="h-4 w-4" />
             </button>
@@ -115,7 +123,7 @@ const Login = () => {
           <p className="mt-6 text-center text-sm text-(--text-muted)">
             {t("login.noAccount", "Vous n'avez pas de compte ?")}{" "}
             <Link to="/register" className="font-medium text-(--brand) hover:underline">
-              {t("login.contactAdmin", "register.title")}
+              {t("register.title")}
             </Link>
           </p>
 

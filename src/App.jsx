@@ -7,6 +7,9 @@ import EleveDetails from "./pages/EleveDetails";
 import Enseignants from "./pages/Enseignants";
 import Presences from "./pages/Presence";
 import Progressions from "./pages/Progression";
+import Concours from "./pages/Concours";
+import Rapport from "./pages/Rapport";
+import Participations from "./pages/Participations";
 
 function App() {
   return (
@@ -19,6 +22,9 @@ function App() {
         <Route path="/eleve/details/:username" element={<EleveDetails />} />
         <Route path="/presence" element={<Presences />} />
         <Route path="/progress" element={<Progressions />} />
+        <Route path="/competitions" element={<Concours />} />
+        <Route path="/participation" element={<Participations />} />
+        <Route path="/reports" element={<Rapport />} />
         <Route path="/enseignant" element={<Enseignants />} />
       </Routes>
     </>

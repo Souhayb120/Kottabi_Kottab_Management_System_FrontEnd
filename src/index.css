@@ -135,7 +135,7 @@ body {
   color: whitesmoke;
   padding: 10px 30px;
   background: linear-gradient(180deg, #12493a 0%, #0f3d2e 100%);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(199, 154, 59, 0.45);
   box-shadow: 0 1px 8px rgba(11, 32, 24, 0.18);
 }
 
@@ -149,12 +149,169 @@ body {
   color: white;
   text-align: center;
   padding: 12px 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid rgba(199, 154, 59, 0.45);
 }
 
 .footer p {
   font-size: 13px;
   color: rgba(255, 255, 255, 0.7);
+}
+
+/* ── Traditional manuscript design language ─────────────────── */
+
+.ornament-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ornament-row::before,
+.ornament-row::after {
+  content: "";
+  height: 1px;
+  flex: 1;
+  background: rgba(199, 154, 59, 0.4);
+}
+
+.trad-card {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: 20px;
+  padding: 8px;
+  box-shadow: 0 1px 2px rgba(11, 32, 24, 0.06),
+    0 8px 24px -12px rgba(11, 32, 24, 0.18);
+}
+
+.trad-panel {
+  border: 1px solid rgba(199, 154, 59, 0.35);
+  background: #fbfaf6;
+  border-radius: 14px;
+}
+
+.label-trad {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #0f3d2e;
+  margin-bottom: 5px;
+}
+
+.input-trad {
+  width: 100%;
+  border: 1px solid rgba(15, 61, 46, 0.2);
+  background: #fff;
+  color: var(--text);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 12px;
+  box-shadow: inset 0 1px 2px rgba(11, 32, 24, 0.06);
+  transition: border-color 0.15s ease;
+}
+
+.input-trad:focus {
+  outline: none;
+  border-color: #0f3d2e;
+}
+
+.input-trad::placeholder {
+  color: var(--text-muted);
+}
+
+.btn-trad {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #0f3d2e;
+  color: #f3efe3;
+  border-radius: 8px;
+  padding: 7px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+
+.btn-trad:hover {
+  background: #12493a;
+  box-shadow: 0 4px 14px -4px rgba(15, 61, 46, 0.5);
+}
+
+.btn-trad:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-muted);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+
+.btn-ghost:hover {
+  border-color: rgba(15, 61, 46, 0.35);
+  color: #0f3d2e;
+}
+
+.btn-icon {
+  background: #0f3d2e;
+  color: #fff;
+  border-radius: 8px;
+  padding: 9px;
+  display: inline-flex;
+  transition: background 0.15s ease;
+}
+
+.btn-icon:hover {
+  background: #12493a;
+}
+
+.btn-xs {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 11px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+
+.btn-xs-green {
+  background: #0f3d2e;
+  color: #f3efe3;
+}
+
+.btn-xs-green:hover {
+  background: #12493a;
+}
+
+.btn-xs-gold {
+  background: #c79a3b;
+  color: #fff;
+}
+
+.btn-xs-gold:hover {
+  background: #d4ab54;
+}
+
+.btn-xs-danger {
+  background: #dc2626;
+  color: #fff;
+}
+
+.btn-xs-danger:hover {
+  background: #ef4444;
 }
 
 @keyframes landing-float {

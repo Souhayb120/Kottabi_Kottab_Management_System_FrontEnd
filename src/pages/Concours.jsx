@@ -14,43 +14,33 @@ import Box from "@mui/material/Box";
 import Fade from "@mui/material/Fade";
 import Backdrop from "@mui/material/Backdrop";
 import Typography from "@mui/material/Typography";
-import ProgressionForm from "../components/ProgressionForm";
+import ConcourForm from "../components/ConcourForm";
 import Sidebar from "../components/SideBar";
 import NavBar from "../components/NavBar";
 import Footer from "../components/Footer";
 
-const progressionSchema = yup.object({
-  sourat: yup.string().required("La sourate est obligatoire"),
-  versetDebut: yup
-    .number()
-    .typeError("Le verset de début est obligatoire")
-    .min(1, "Le verset de début est obligatoire"),
-  versetFin: yup
-    .number()
-    .typeError("Le verset de fin est obligatoire")
-    .min(1, "Le verset de fin est obligatoire"),
-  eleveId: yup
-    .number()
-    .typeError("L'élève est obligatoire")
-    .min(1, "L'élève est obligatoire"),
-  enseignantId: yup
-    .number()
-    .typeError("L'enseignant est obligatoire")
-    .min(1, "L'enseignant est obligatoire"),
+const concourSchema = yup.object({
+  nom: yup.string().required("Le nom est obligatoire"),
+  description: yup.string(),
+  dateCreation: yup.string().required("La date de création est obligatoire"),
+  niveauHifz: yup.string().required("Le niveau de mémorisation est obligatoire"),
 });
 
-const Progressions = () => {
-  const URL = "api/progressions";
+const niveauKeys = {
+  HIFZ_15_HIZB: "hifz15",
+  HIFZ_30_HIZB: "hifz30",
+  HIFZ_60_HIZB: "hifz60",
+};
+
+const Concours = () => {
+  const URL = "api/concour";
   const { t } = useTranslation();
-  const [progressions, setProgressions] = useState([]);
-  const [eleves, setEleves] = useState([]);
-  const [enseignants, setEnseignants] = useState([]);
+  const [concours, setConcours] = useState([]);
   const [open, setOpen] = useState(false);
-  const [selectedProgressionId, setSelectedProgressionId] = useState(null);
+  const [selectedConcourId, setSelectedConcourId] = useState(null);
   const [openModal, setOpenModal] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
-  const [editProgression, setEditProgression] = useState(null);
-  const [searchUsername, setSearchUsername] = useState("");
+  const [editConcour, setEditConcour] = useState(null);
 
   const {
     register,
@@ -58,7 +48,7 @@ const Progressions = () => {
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(progressionSchema),
+    resolver: yupResolver(concourSchema),
   });
 
   const style = {
@@ -74,24 +64,27 @@ const Progressions = () => {
     p: "22px",
   };
 
+  const niveauLabel = (niveau) =>
+    niveau ? t(`concours.${niveauKeys[niveau] || "hifz15"}`) : "—";
+
   //  Deleting Process
   const handleCloseDelete = () => {
     setOpen(false);
   };
 
   const openDeleteDialog = (id) => {
-    setSelectedProgressionId(id);
+    setSelectedConcourId(id);
     setOpen(true);
   };
 
-  const deleteProgression = async (id) => {
+  const deleteConcour = async (id) => {
     try {
       await api.delete(`${URL}/${id}`);
-      setProgressions(progressions.filter((progression) => progression.id !== id));
-      toast.success(t("progression.deleteSuccess"));
+      setConcours(concours.filter((concour) => concour.id !== id));
+      toast.success(t("concours.deleteSuccess"));
       setOpen(false);
     } catch (error) {
-      toast.error(t("progression.deleteError"));
+      toast.error(t("concours.deleteError"));
     }
   };
 
@@ -99,107 +92,64 @@ const Progressions = () => {
   const handleClose = () => setOpenModal(false);
 
   const handleOpen = () => {
-    reset();
+    reset({
+      nom: "",
+      description: "",
+      dateCreation: new Date().toISOString().slice(0, 10),
+      niveauHifz: "",
+    });
     setOpenModal(true);
   };
 
   const onSubmit = async (data) => {
     try {
-      const payload = {
-        sourat: data.sourat,
-        versetDebut: Number(data.versetDebut),
-        versetFin: Number(data.versetFin),
-        eleveId: Number(data.eleveId),
-        enseignantId: Number(data.enseignantId),
-      };
-      const response = await api.post(URL, payload);
-      setProgressions((prev) => [response.data, ...prev]);
+      const response = await api.post(URL, data);
+      setConcours((prev) => [response.data, ...prev]);
       handleClose();
-      toast.success(t("progression.createSuccess"));
+      toast.success(t("concours.createSuccess"));
     } catch (error) {
-      toast.error(t("progression.createError"));
+      toast.error(t("concours.createError"));
     }
   };
 
   //  Edit Process
-  const editThisProgression = (progression) => {
-    setEditProgression(progression);
+  const editThisConcour = (concour) => {
+    setEditConcour(concour);
     reset({
-      sourat: progression.sourat,
-      versetDebut: progression.versetDebut,
-      versetFin: progression.versetFin,
-      eleveId: progression.eleve?.id || "",
-      enseignantId: progression.enseignant?.id || "",
+      nom: concour.nom,
+      description: concour.description || "",
+      dateCreation: concour.dateCreation,
+      niveauHifz: concour.niveauHifz,
     });
     setOpenEditModal(true);
   };
 
   const onEdit = async (data) => {
     try {
-      const payload = {
-        sourat: data.sourat,
-        versetDebut: Number(data.versetDebut),
-        versetFin: Number(data.versetFin),
-        eleveId: Number(data.eleveId),
-        enseignantId: Number(data.enseignantId),
-      };
-      const response = await api.put(`${URL}/${editProgression.id}`, payload);
-      setProgressions((prev) =>
-        prev.map((progression) =>
-          progression.id === editProgression.id ? response.data : progression,
+      const response = await api.put(`${URL}/${editConcour.id}`, data);
+      setConcours((prev) =>
+        prev.map((concour) =>
+          concour.id === editConcour.id ? response.data : concour,
         ),
       );
-      toast.success(t("progression.updateSuccess"));
+      toast.success(t("concours.updateSuccess"));
       setOpenEditModal(false);
     } catch (error) {
-      toast.error(t("progression.updateError"));
-    }
-  };
-
-  //  Search Process
-  const onSearch = async () => {
-    if (searchUsername.trim() === "") {
-      const response = await api.get(`${URL}?size=1000`);
-      setProgressions(response.data.content);
-      return;
-    }
-
-    try {
-      const response = await api.get(`${URL}/eleve/${searchUsername}?size=100`);
-      setProgressions(response.data.content);
-    } catch (error) {
-      setProgressions([]);
-      toast.error(t("progression.notFound"));
+      toast.error(t("concours.updateError"));
     }
   };
 
   useEffect(() => {
-    const fetchProgressions = async () => {
-      const response = await api.get(`${URL}?size=1000`);
-      setProgressions(response.data.content);
-    };
-
-    const fetchEleves = async () => {
+    const fetchConcours = async () => {
       try {
-        const response = await api.get("api/eleve?size=1000");
-        setEleves(response.data.content);
+        const response = await api.get(`${URL}?size=1000`);
+        setConcours(response.data.content);
       } catch (error) {
-        toast.error(t("progression.loadElevesError"));
+        toast.error(t("concours.loadError"));
       }
     };
 
-    const fetchEnseignants = async () => {
-      try {
-        const response = await api.get("api/enseignant?size=1000");
-        setEnseignants(response.data.content);
-      } catch (error) {
-        toast.error(t("progression.loadEnseignantsError"));
-      }
-    };
-
-    fetchProgressions();
-    fetchEleves();
-    fetchEnseignants();
+    fetchConcours();
   }, []);
 
   return (
@@ -213,43 +163,18 @@ const Progressions = () => {
               <span className="select-none text-sm leading-none text-[#c79a3b]">۞</span>
             </div>
             <h2 className="mb-4 text-right font-serif text-lg font-semibold tracking-tight text-(--text)">
-              {t("progression.title")}
+              {t("concours.title")}
             </h2>
 
             <div className="flex justify-between items-center mb-4">
-              <div className="flex items-center gap-2">
-                <input
-                  type="text"
-                  placeholder={t("progression.searchPlaceholder")}
-                  value={searchUsername}
-                  onChange={(e) => setSearchUsername(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && onSearch()}
-                  className="input-trad w-56"
-                />
-                <button
-                  onClick={onSearch}
-                  className="btn-icon"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={2}
-                    stroke="currentColor"
-                    className="w-3 h-3"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
-                    />
-                  </svg>
-                </button>
-              </div>
+              <span className="flex items-center gap-2 text-xs text-(--text-muted)">
+                <span className="select-none text-[10px] text-[#c79a3b]">✦</span>
+                {concours.length} {t("concours.title")}
+              </span>
 
               <button onClick={handleOpen} className="btn-trad">
                 <span className="select-none text-[10px] leading-none text-[#d9b45f]">✦</span>
-                {t("progression.add")}
+                {t("concours.add")}
               </button>
             </div>
 
@@ -258,64 +183,57 @@ const Progressions = () => {
               <table className="w-full text-xs text-left text-(--text)">
                 <thead>
                   <tr className="bg-[#f5efdf]/70 text-[10px] uppercase tracking-[0.18em] text-[#0f3d2e] border-b border-[#c79a3b]/30">
-                    <th className="px-4 py-3 font-medium">{t("progression.id")}</th>
-                    <th className="px-4 py-3 font-medium">{t("progression.eleve")}</th>
-                    <th className="px-4 py-3 font-medium">{t("progression.sourate")}</th>
-                    <th className="px-4 py-3 font-medium">{t("progression.versets")}</th>
+                    <th className="px-4 py-3 font-medium">{t("concours.id")}</th>
+                    <th className="px-4 py-3 font-medium">{t("concours.nom")}</th>
+                    <th className="px-4 py-3 font-medium">{t("concours.dateCreation")}</th>
+                    <th className="px-4 py-3 font-medium">{t("concours.niveauHifz")}</th>
                     <th className="px-4 py-3 font-medium">
-                      {t("progression.enseignant")}
+                      {t("concours.participants")}
                     </th>
                     <th className="px-4 py-3 font-medium text-center">
-                      {t("progression.actions")}
+                      {t("concours.actions")}
                     </th>
                   </tr>
                 </thead>
 
                 <tbody>
-                  {progressions.map((progression) => (
+                  {concours.map((concour) => (
                     <tr
-                      key={progression.id}
+                      key={concour.id}
                       className="border-b border-[#0f3d2e]/10 last:border-0 hover:bg-[#f6f0e0]/40 transition-colors"
                     >
-                      <td className="px-4 py-3">{progression.id}</td>
-                      <td className="px-4 py-3">
-                        <span className="font-medium text-(--text)">
-                          {progression.eleve?.prenom} {progression.eleve?.nom}
-                        </span>
-                        <span className="ms-1 text-[11px] text-(--text-muted)">
-                          ({progression.eleve?.username})
-                        </span>
+                      <td className="px-4 py-3">{concour.id}</td>
+                      <td className="px-4 py-3 font-medium text-(--text)">
+                        {concour.nom}
                       </td>
+                      <td className="px-4 py-3">{concour.dateCreation}</td>
                       <td className="px-4 py-3">
-                        <span className="rounded-md bg-[#0f3d2e]/5 border border-[#0f3d2e]/15 px-2 py-0.5 text-[11px] font-medium text-[#0f3d2e]">
-                          {progression.sourat}
+                        <span className="rounded-md bg-[#c79a3b]/15 border border-[#c79a3b]/30 px-2 py-0.5 text-[11px] font-medium text-[#8a691d]">
+                          {niveauLabel(concour.niveauHifz)}
                         </span>
                       </td>
                       <td className="px-4 py-3">
-                        {progression.versetDebut} - {progression.versetFin}
-                      </td>
-                      <td className="px-4 py-3">
-                        {progression.enseignant?.prenom} {progression.enseignant?.nom}
+                        {concour.participationList?.length || 0}
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex justify-center gap-1.5">
                           <button
-                            onClick={() => editThisProgression(progression)}
+                            onClick={() => editThisConcour(concour)}
                             className="btn-xs btn-xs-gold"
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-3 h-3">
                               <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
                             </svg>
-                            {t("progression.edit")}
+                            {t("concours.edit")}
                           </button>
                           <button
-                            onClick={() => openDeleteDialog(progression.id)}
+                            onClick={() => openDeleteDialog(concour.id)}
                             className="btn-xs btn-xs-danger"
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-3 h-3">
                               <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
                             </svg>
-                            {t("progression.delete")}
+                            {t("concours.delete")}
                           </button>
                         </div>
                       </td>
@@ -338,7 +256,7 @@ const Progressions = () => {
         role="alertdialog"
       >
         <DialogTitle id="alert-dialog-title">
-          {t("progression.deleteConfirmTitle")}
+          {t("concours.deleteConfirmTitle")}
         </DialogTitle>
 
         <DialogActions>
@@ -346,7 +264,7 @@ const Progressions = () => {
             NO
           </Button>
 
-          <Button onClick={() => deleteProgression(selectedProgressionId)}>
+          <Button onClick={() => deleteConcour(selectedConcourId)}>
             YES
           </Button>
         </DialogActions>
@@ -374,21 +292,16 @@ const Progressions = () => {
               sx={{ fontSize: "0.9375rem", fontWeight: 600, color: "#0f3d2e", fontFamily: 'Georgia, "Amiri", serif' }}
             >
               <span style={{ color: "#c79a3b", marginInlineEnd: 6 }}>۞</span>
-              {t("progression.createTitle")}
+              {t("concours.createTitle")}
             </Typography>
             <form onSubmit={handleSubmit(onSubmit)}>
-              <ProgressionForm
-                register={register}
-                errors={errors}
-                eleves={eleves}
-                enseignants={enseignants}
-              />
+              <ConcourForm register={register} errors={errors} />
               <button
                 type="submit"
                 className="btn-trad mt-2 self-end"
               >
                 <span className="select-none text-[10px] leading-none text-[#d9b45f]">✦</span>
-                {t("progression.save")}
+                {t("concours.save")}
               </button>
             </form>
           </Box>
@@ -417,21 +330,16 @@ const Progressions = () => {
               sx={{ fontSize: "0.9375rem", fontWeight: 600, color: "#0f3d2e", fontFamily: 'Georgia, "Amiri", serif' }}
             >
               <span style={{ color: "#c79a3b", marginInlineEnd: 6 }}>۞</span>
-              {t("progression.editTitle")}
+              {t("concours.editTitle")}
             </Typography>
             <form onSubmit={handleSubmit(onEdit)}>
-              <ProgressionForm
-                register={register}
-                errors={errors}
-                eleves={eleves}
-                enseignants={enseignants}
-              />
+              <ConcourForm register={register} errors={errors} />
               <button
                 type="submit"
                 className="btn-trad mt-2 self-end"
               >
                 <span className="select-none text-[10px] leading-none text-[#d9b45f]">✦</span>
-                {t("progression.save")}
+                {t("concours.save")}
               </button>
             </form>
           </Box>
@@ -441,4 +349,4 @@ const Progressions = () => {
   );
 };
 
-export default Progressions;
+export default Concours;

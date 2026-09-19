@@ -26,10 +26,10 @@ const statutKeys = {
 };
 
 const statutColors = {
-  PRESENT: "bg-green-100 text-green-700",
-  RETARD: "bg-yellow-100 text-yellow-700",
-  ABSENT: "bg-red-100 text-red-700",
-  EXCUSE: "bg-gray-100 text-gray-600",
+  PRESENT: "bg-[#0f3d2e]/10 text-[#0f3d2e] border border-[#0f3d2e]/15",
+  RETARD: "bg-[#c79a3b]/15 text-[#8a691d] border border-[#c79a3b]/30",
+  ABSENT: "bg-red-50 text-red-600 border border-red-200",
+  EXCUSE: "bg-[#0f3d2e]/5 text-(--text-muted) border border-[#0f3d2e]/10",
 };
 
 const presenceSchema = yup.object({
@@ -78,10 +78,11 @@ const Presences = () => {
     left: "50%",
     transform: "translate(-50%, -50%)",
     width: 440,
-    bgcolor: "background.paper",
-    border: "2px solid #000",
-    boxShadow: 24,
-    p: 3,
+    bgcolor: "#fbfaf6",
+    border: "1px solid rgba(199, 154, 59, 0.4)",
+    boxShadow: "0 22px 60px -20px rgba(15, 61, 46, 0.45)",
+    borderRadius: "18px",
+    p: "22px",
   };
 
   const fetchPresences = async () => {
@@ -202,11 +203,14 @@ const Presences = () => {
         <div className="main">
           <NavBar />
           <div className="content">
-            <h2 className="text-base font-semibold text-gray-700 text-right mb-3">
+            <div className="ornament-row mb-1.5">
+              <span className="select-none text-sm leading-none text-[#c79a3b]">۞</span>
+            </div>
+            <h2 className="mb-4 text-right font-serif text-lg font-semibold tracking-tight text-(--text)">
               {t("presence.title")}
             </h2>
 
-            <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
+            <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
               <div className="flex flex-wrap items-center gap-2">
                 <div className="flex items-center gap-2">
                   <input
@@ -215,11 +219,11 @@ const Presences = () => {
                     value={searchUsername}
                     onChange={(e) => setSearchUsername(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && onSearch()}
-                    className="border border-gray-300 rounded-md py-0.5 px-2 text-xs focus:outline-none focus:border-slate-400"
+                    className="input-trad w-52"
                   />
                   <button
                     onClick={onSearch}
-                    className="rounded bg-slate-700 p-1.5 text-white hover:bg-slate-600"
+                    className="btn-icon"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -243,13 +247,13 @@ const Presences = () => {
                   value={dateFilter}
                   onChange={(e) => setDateFilter(e.target.value)}
                   title={t("presence.filterDate")}
-                  className="border border-gray-300 rounded-md py-0.5 px-2 text-xs focus:outline-none focus:border-slate-400"
+                  className="input-trad w-40"
                 />
 
                 <select
                   value={statutFilter}
                   onChange={(e) => setStatutFilter(e.target.value)}
-                  className="border border-gray-300 rounded-md py-0.5 px-2 text-xs focus:outline-none focus:border-slate-400"
+                  className="input-trad w-36"
                 >
                   <option value="ALL">{t("presence.filterAll")}</option>
                   <option value="PRESENT">{t("eleveDetails.present")}</option>
@@ -259,9 +263,10 @@ const Presences = () => {
                 </select>
               </div>
 
-              <Button size="small" onClick={handleOpen}>
+              <button onClick={handleOpen} className="btn-trad">
+                <span className="select-none text-[10px] leading-none text-[#d9b45f]">✦</span>
                 {t("presence.add")}
-              </Button>
+              </button>
             </div>
 
             <div className="mb-3 flex flex-wrap gap-2">
@@ -275,10 +280,11 @@ const Presences = () => {
               ))}
             </div>
 
-            <div className="mt-3 overflow-hidden rounded-xl bg-white ring-1 ring-gray-200">
-              <table className="w-full text-xs text-left text-gray-600">
+            <div className="trad-card p-2">
+              <div className="trad-panel overflow-x-auto">
+              <table className="w-full text-xs text-left text-(--text)">
                 <thead>
-                  <tr className="bg-gray-50 text-[11px] uppercase tracking-wider text-gray-400 border-b border-gray-200">
+                  <tr className="bg-[#f5efdf]/70 text-[10px] uppercase tracking-[0.18em] text-[#0f3d2e] border-b border-[#c79a3b]/30">
                     <th className="px-4 py-3 font-medium">{t("presence.id")}</th>
                     <th className="px-4 py-3 font-medium">{t("presence.eleve")}</th>
                     <th className="px-4 py-3 font-medium">{t("presence.date")}</th>
@@ -293,14 +299,14 @@ const Presences = () => {
                   {filtered.map((presence) => (
                     <tr
                       key={presence.id || `${presence.date}-${presence.eleve?.username}`}
-                      className="border-b border-gray-100 last:border-0 hover:bg-gray-50/70 transition-colors"
+                      className="border-b border-[#0f3d2e]/10 last:border-0 hover:bg-[#f6f0e0]/40 transition-colors"
                     >
                       <td className="px-4 py-3">{presence.id}</td>
                       <td className="px-4 py-3">
-                        <span className="font-medium text-gray-700">
+                        <span className="font-medium text-(--text)">
                           {presence.eleve?.prenom} {presence.eleve?.nom}
                         </span>
-                        <span className="ms-1 text-[11px] text-gray-400">
+                        <span className="ms-1 text-[11px] text-(--text-muted)">
                           ({presence.eleve?.username})
                         </span>
                       </td>
@@ -309,7 +315,7 @@ const Presences = () => {
                         <span
                           className={`rounded-md px-2 py-0.5 text-[11px] font-medium ${
                             statutColors[presence.statut] ||
-                            "bg-gray-100 text-gray-600"
+                            "bg-[#0f3d2e]/5 text-(--text-muted)"
                           }`}
                         >
                           {t(
@@ -323,7 +329,7 @@ const Presences = () => {
                         <div className="flex justify-center gap-1.5">
                           <button
                             onClick={() => editThisPresence(presence)}
-                            className="flex items-center gap-1 rounded-md bg-amber-500 px-2.5 py-1 text-[11px] font-medium text-white transition-colors hover:bg-amber-400"
+                            className="btn-xs btn-xs-gold"
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-3 h-3">
                               <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
@@ -332,7 +338,7 @@ const Presences = () => {
                           </button>
                           <button
                             onClick={() => openDeleteDialog(presence.id)}
-                            className="flex items-center gap-1 rounded-md bg-red-500 px-2.5 py-1 text-[11px] font-medium text-white transition-colors hover:bg-red-400"
+                            className="btn-xs btn-xs-danger"
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-3 h-3">
                               <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
@@ -345,14 +351,15 @@ const Presences = () => {
                   ))}
 
                   {filtered.length === 0 && (
-                    <tr className="border-b border-gray-100 last:border-0">
-                      <td colSpan={5} className="px-4 py-6 text-center text-gray-400">
+                    <tr className="border-b border-[#0f3d2e]/10 last:border-0">
+                      <td colSpan={5} className="px-4 py-6 text-center text-(--text-muted)">
                         {t("presence.noPresence")}
                       </td>
                     </tr>
                   )}
                 </tbody>
               </table>
+              </div>
             </div>
           </div>
           <Footer />
@@ -400,18 +407,19 @@ const Presences = () => {
               id="add-modal-title"
               variant="h6"
               component="h2"
-              sx={{ fontSize: "0.9375rem", fontWeight: 600, mb: 2 }}
+              sx={{ fontSize: "0.9375rem", fontWeight: 600, color: "#0f3d2e", fontFamily: 'Georgia, "Amiri", serif', mb: 2 }}
             >
+              <span style={{ color: "#c79a3b", marginInlineEnd: 6 }}>۞</span>
               {t("presence.createTitle")}
             </Typography>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
               <div>
-                <label className="mb-1 block text-xs text-gray-500">
+                <label className="label-trad">
                   {t("presence.selectEleve")}
                 </label>
                 <select
                   {...register("eleveId")}
-                  className="w-full rounded-md border border-gray-300 px-2 py-1.5 text-xs focus:outline-none focus:border-slate-400"
+                  className="input-trad"
                 >
                   <option value="">
                     {t("presence.selectElevePlaceholder")}
@@ -423,35 +431,35 @@ const Presences = () => {
                   ))}
                 </select>
                 {errors.eleveId && (
-                  <p className="mt-1 text-[11px] text-red-500">
+                  <p className="mt-1 text-[11px] text-red-600">
                     {errors.eleveId.message}
                   </p>
                 )}
               </div>
 
               <div>
-                <label className="mb-1 block text-xs text-gray-500">
+                <label className="label-trad">
                   {t("presence.dateLabel")}
                 </label>
                 <input
                   type="date"
                   {...register("date")}
-                  className="w-full rounded-md border border-gray-300 px-2 py-1.5 text-xs focus:outline-none focus:border-slate-400"
+                  className="input-trad"
                 />
                 {errors.date && (
-                  <p className="mt-1 text-[11px] text-red-500">
+                  <p className="mt-1 text-[11px] text-red-600">
                     {errors.date.message}
                   </p>
                 )}
               </div>
 
               <div>
-                <label className="mb-1 block text-xs text-gray-500">
+                <label className="label-trad">
                   {t("presence.statut")}
                 </label>
                 <select
                   {...register("statut")}
-                  className="w-full rounded-md border border-gray-300 px-2 py-1.5 text-xs focus:outline-none focus:border-slate-400"
+                  className="input-trad"
                 >
                   <option value="PRESENT">{t("eleveDetails.present")}</option>
                   <option value="RETARD">{t("eleveDetails.retard")}</option>
@@ -459,7 +467,7 @@ const Presences = () => {
                   <option value="EXCUSE">{t("eleveDetails.excuse")}</option>
                 </select>
                 {errors.statut && (
-                  <p className="mt-1 text-[11px] text-red-500">
+                  <p className="mt-1 text-[11px] text-red-600">
                     {errors.statut.message}
                   </p>
                 )}
@@ -467,8 +475,9 @@ const Presences = () => {
 
               <button
                 type="submit"
-                className="p-0.5 px-2 bg-green-600 rounded text-xs text-white flex self-end hover:bg-green-500"
+                className="btn-trad mt-2 self-end"
               >
+                <span className="select-none text-[10px] leading-none text-[#d9b45f]">✦</span>
                 {t("presence.save")}
               </button>
             </form>
@@ -495,28 +504,29 @@ const Presences = () => {
               id="edit-modal-title"
               variant="h6"
               component="h2"
-              sx={{ fontSize: "0.9375rem", fontWeight: 600, mb: 2 }}
+              sx={{ fontSize: "0.9375rem", fontWeight: 600, color: "#0f3d2e", fontFamily: 'Georgia, "Amiri", serif', mb: 2 }}
             >
+              <span style={{ color: "#c79a3b", marginInlineEnd: 6 }}>۞</span>
               {t("presence.editTitle")}
             </Typography>
             <form onSubmit={handleSubmit(onEdit)} className="space-y-3">
               {editPresence && (
-                <div className="text-xs text-gray-500">
-                  <div>
+                <div className="text-xs text-(--text-muted) rounded-lg border border-[#c79a3b]/25 bg-white/60 px-3 py-2.5">
+                  <div className="font-medium text-[#0f3d2e]">
                     {editPresence.eleve?.prenom} {editPresence.eleve?.nom} (
                     {editPresence.eleve?.username})
                   </div>
-                  <div className="mt-1 text-gray-400">{editPresence.date}</div>
+                  <div className="mt-1 text-(--text-muted)">{editPresence.date}</div>
                 </div>
               )}
 
               <div>
-                <label className="mb-1 block text-xs text-gray-500">
+                <label className="label-trad">
                   {t("presence.statut")}
                 </label>
                 <select
                   {...register("statut")}
-                  className="w-full rounded-md border border-gray-300 px-2 py-1.5 text-xs focus:outline-none focus:border-slate-400"
+                  className="input-trad"
                 >
                   <option value="PRESENT">{t("eleveDetails.present")}</option>
                   <option value="RETARD">{t("eleveDetails.retard")}</option>
@@ -527,8 +537,9 @@ const Presences = () => {
 
               <button
                 type="submit"
-                className="p-0.5 px-2 bg-green-600 rounded text-xs text-white flex self-end hover:bg-green-500"
+                className="btn-trad mt-2 self-end"
               >
+                <span className="select-none text-[10px] leading-none text-[#d9b45f]">✦</span>
                 {t("presence.save")}
               </button>
             </form>

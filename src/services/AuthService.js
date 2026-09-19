@@ -1,5 +1,5 @@
 import api from "../api/Api";
-const API_BASE_URL = "http://localhost:8280/api/auth";
+const API_BASE_URL = "http://localhost:8080/api/auth";
 
 class AuthService {
   register(user) {

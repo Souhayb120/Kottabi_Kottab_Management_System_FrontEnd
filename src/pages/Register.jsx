@@ -1,94 +1,152 @@
-
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-// import api from "../api/Api";
-// import AuthService from "../services/AuthService";
+import AuthService from "../services/AuthService";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
+import { BookOpen, Mail, Lock, Eye, EyeOff, Globe, HelpCircle, ArrowRight } from "lucide-react";
+import Footer from "../components/Footer";
 
 const Register = () => {
   const navigate = useNavigate();
-const { t } = useTranslation();
-  const { register, handleSubmit } = useForm();
+  const { t } = useTranslation();
+  const { register: fieldRegister, handleSubmit } = useForm();
+  const [showPassword, setShowPassword] = useState(false);
 
   const onSubmit = async (data) => {
     try {
       const response = await AuthService.register(data);
 
       if (response.data === "User registered successfully") {
-        toast.success("Register successfuly");
+        toast.success(t("register.success", "Inscription réussie"));
         navigate("/login");
       } else {
         alert(response.data);
       }
     } catch (error) {
-      alert("Registration failed");
+      alert(t("register.error", "Registration failed"));
     }
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100">
-      <div className="w-96 rounded-lg bg-white p-8 shadow-md">
-        <h1 className="mb-6 text-2xl font-bold text-gray-800 text-center">
-         {t("register.title")}
-        </h1>
+    <div className="flex min-h-screen items-center justify-center bg-(--bg) p-4">
+      <div className="flex w-full max-w-4xl overflow-hidden rounded-2xl trad-card">
 
-        <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+        <div className="relative hidden w-1/2 flex-col justify-between bg-gradient-to-br from-[#0f3d2e] to-[#123a2c] p-10 text-white md:flex">
           <div>
-            <label className="mb-1 block text-gray-700"><label>{t("register.firstName")}</label></label>
-            <input
-              type="text"
-              className="w-full rounded border border-gray-300 p-2"
-              {...register("userName")}
-            />
+            <div className="flex items-center gap-2">
+              <BookOpen className="h-6 w-6 text-amber-400" />
+              <span className="text-xl font-semibold">Kottabi</span>
+              <span className="select-none text-sm text-[#d9b45f]">۞</span>
+            </div>
+            <p className="mt-1 text-sm text-gray-300">{t("login.tagline", "Scholarship Management")}</p>
           </div>
 
-          <div>
-            <label className="mb-1 block text-gray-700"> {t("register.email")}</label>
-            <input
-              type="email"
-              className="w-full rounded border border-gray-300 p-2"
-              {...register("email")}
-            />
+          <div className="border-l-2 border-amber-400 pl-4">
+            <p className="text-lg leading-snug text-gray-100">
+              "{t("login.quote", "Seeking knowledge is an obligation upon every Muslim.")}"
+            </p>
+            <p className="mt-3 text-xs tracking-widest text-gray-400">
+              {t("login.quoteSource", "TRADITION OF LEARNING")}
+            </p>
           </div>
 
-          <div>
-            <label className="mb-1 block text-gray-700">Role</label>
-            <input
-              type="text"
-              className="w-full rounded border border-gray-300 p-2"
-              {...register("role")}
-            />
+          <div className="flex items-center gap-4 text-gray-300">
+            <Globe className="h-5 w-5 cursor-pointer hover:text-white" />
+            <HelpCircle className="h-5 w-5 cursor-pointer hover:text-white" />
           </div>
+        </div>
 
-          <div>
-            <label className="mb-1 block text-gray-700"> {t("register.password")}</label>
-            <input
-              type="password"
-              className="w-full rounded border border-gray-300 p-2"
-              {...register("password")}
-            />
+        <div className="flex w-full flex-col justify-center bg-[#fbfaf6] px-8 py-10 sm:px-12 md:w-1/2">
+          <div className="ornament-row mb-3">
+            <span className="select-none text-xs leading-none text-[#c79a3b]">۞</span>
           </div>
+          <h1 className="font-serif text-2xl font-semibold text-(--text)">
+            {t("register.title")}
+          </h1>
+          <p className="mt-1 text-sm text-(--text-muted)">
+            {t("login.subtitle", "Veuillez créer votre compte.")}
+          </p>
 
-          <button
-            type="submit"
-            className="w-full rounded bg-blue-600 p-2 text-white hover:bg-blue-700"
-          >
-           {t("submit")}
-          </button>
-        </form>
+          <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-4">
+            <div>
+              <label className="label-trad">{t("register.firstName")}</label>
+              <div className="flex items-center rounded-lg border border-(--border) px-3 focus-within:border-(--brand) focus-within:ring-1 focus-within:ring-(--brand)">
+                <Mail className="h-4 w-4 text-(--text-muted)" />
+                <input
+                  type="text"
+                  placeholder="ahmed129"
+                  className="w-full border-none bg-transparent p-2.5 text-sm text-(--text) placeholder-(--text-muted) outline-none focus:ring-0"
+                  {...fieldRegister("userName")}
+                />
+              </div>
+            </div>
 
-        <p className="mt-4 text-gray-600 text-center">
-          Already have an account?{" "}
-          <Link to="/login" className="text-blue-600 hover:underline">
-            Login
-          </Link>
-        </p>
+            <div>
+              <label className="label-trad">{t("register.email")}</label>
+              <div className="flex items-center rounded-lg border border-(--border) px-3 focus-within:border-(--brand) focus-within:ring-1 focus-within:ring-(--brand)">
+                <Mail className="h-4 w-4 text-(--text-muted)" />
+                <input
+                  type="email"
+                  className="w-full border-none bg-transparent p-2.5 text-sm text-(--text) placeholder-(--text-muted) outline-none focus:ring-0"
+                  {...fieldRegister("email")}
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="label-trad">Role</label>
+              <div className="flex items-center rounded-lg border border-(--border) px-3 focus-within:border-(--brand) focus-within:ring-1 focus-within:ring-(--brand)">
+                <Lock className="h-4 w-4 text-(--text-muted)" />
+                <input
+                  type="text"
+                  className="w-full border-none bg-transparent p-2.5 text-sm text-(--text) placeholder-(--text-muted) outline-none focus:ring-0"
+                  {...fieldRegister("role")}
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="label-trad">{t("register.password")}</label>
+              <div className="flex items-center rounded-lg border border-(--border) px-3 focus-within:border-(--brand) focus-within:ring-1 focus-within:ring-(--brand)">
+                <Lock className="h-4 w-4 text-(--text-muted)" />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  className="w-full border-none bg-transparent p-2.5 text-sm text-(--text) placeholder-(--text-muted) outline-none focus:ring-0"
+                  {...fieldRegister("password")}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="text-(--text-muted) hover:text-(--text)"
+                >
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              className="btn-trad mt-2 flex w-full items-center justify-center gap-2"
+            >
+              <span className="select-none text-[10px] leading-none text-[#d9b45f]">✦</span>
+              {t("register.submit")}
+              <ArrowRight className="h-4 w-4" />
+            </button>
+          </form>
+
+          <p className="mt-6 text-center text-sm text-(--text-muted)">
+            {t("login.noAccount", "Vous n'avez pas de compte ?")}{" "}
+            <Link to="/login" className="font-medium text-(--brand) hover:underline">
+              {t("login.title")}
+            </Link>
+          </p>
+
+          <Footer />
+        </div>
       </div>
     </div>
   );
 };
 
 export default Register;
-

@@ -14,10 +14,10 @@ const statutKeys = {
 };
 
 const statutColors = {
-  PRESENT: "bg-green-100 text-green-700",
-  RETARD: "bg-yellow-100 text-yellow-700",
-  ABSENT: "bg-red-100 text-red-700",
-  EXCUSE: "bg-gray-100 text-gray-600",
+  PRESENT: "bg-[#0f3d2e]/10 text-[#0f3d2e]",
+  RETARD: "bg-[#c79a3b]/15 text-[#8a691d]",
+  ABSENT: "bg-red-600/10 text-red-700",
+  EXCUSE: "bg-gray-500/10 text-gray-600",
 };
 
 const EleveDetails = () => {
@@ -71,18 +71,21 @@ const EleveDetails = () => {
   }, [username]);
 
   const Row = ({ label, value }) => (
-    <div className="flex justify-between py-2 border-b border-gray-100 last:border-0">
-      <span className="text-gray-500 text-xs">{label}</span>
-      <span className="text-gray-700 text-xs font-medium">{value}</span>
+    <div className="flex justify-between py-2 border-b border-[#0f3d2e]/10 last:border-0">
+      <span className="text-(--text-muted) text-xs">{label}</span>
+      <span className="text-(--text) text-xs font-medium">{value}</span>
     </div>
   );
 
   const Card = ({ title, children }) => (
-    <div className="rounded-xl bg-white ring-1 ring-gray-200">
-      <div className="border-b border-gray-200 px-5 py-3">
-        <h3 className="text-sm font-semibold text-gray-700">{title}</h3>
+    <div className="trad-card p-2">
+      <div className="trad-panel">
+        <div className="flex items-center gap-2 border-b border-[#c79a3b]/25 px-5 py-3">
+          <span className="select-none text-[11px] leading-none text-[#c79a3b]">۞</span>
+          <h3 className="font-serif text-sm font-semibold text-[#0f3d2e]">{title}</h3>
+        </div>
+        <div className="px-5 py-3">{children}</div>
       </div>
-      <div className="px-5 py-3">{children}</div>
     </div>
   );
 
@@ -95,13 +98,18 @@ const EleveDetails = () => {
           <div className="flex items-center justify-between mb-4">
             <button
               onClick={() => navigate("/eleve")}
-              className="rounded-md bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-600 transition-colors hover:bg-gray-200"
+              className="btn-ghost"
             >
               {t("eleveDetails.back")}
             </button>
-            <h2 className="text-base font-semibold text-gray-700 text-right">
-              {t("eleveDetails.title")}
-            </h2>
+            <div>
+              <div className="ornament-row mb-1.5">
+                <span className="select-none text-sm leading-none text-[#c79a3b]">۞</span>
+              </div>
+              <h2 className="text-right font-serif text-lg font-semibold tracking-tight text-(--text)">
+                {t("eleveDetails.title")}
+              </h2>
+            </div>
           </div>
 
           {eleve ? (
@@ -144,7 +152,7 @@ const EleveDetails = () => {
                     )}
                   </div>
                 ) : (
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-(--text-muted)">
                     {t("eleveDetails.noProgression")}
                   </p>
                 )}
@@ -153,9 +161,9 @@ const EleveDetails = () => {
               <Card title={t("eleveDetails.presence")}>
                 {presences.length > 0 ? (
                   <div className="overflow-x-auto">
-                    <table className="w-full text-xs text-left text-gray-600">
+                    <table className="w-full text-xs text-left text-(--text)">
                       <thead>
-                        <tr className="border-b border-gray-200 text-[11px] uppercase tracking-wider text-gray-400">
+                        <tr className="border-b border-[#c79a3b]/30 text-[10px] uppercase tracking-[0.18em] text-[#0f3d2e]">
                           <th className="py-2 pe-4 font-medium">
                             {t("eleveDetails.date")}
                           </th>
@@ -168,7 +176,7 @@ const EleveDetails = () => {
                         {presences.map((presence) => (
                           <tr
                             key={presence.id || `${presence.date}`}
-                            className="border-b border-gray-100 last:border-0"
+                            className="border-b border-[#0f3d2e]/10 last:border-0"
                           >
                             <td className="py-2 pe-4">{presence.date}</td>
                             <td className="py-2">
@@ -191,7 +199,7 @@ const EleveDetails = () => {
                     </table>
                   </div>
                 ) : (
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-(--text-muted)">
                     {t("eleveDetails.noPresence")}
                   </p>
                 )}
@@ -200,9 +208,9 @@ const EleveDetails = () => {
               <Card title={t("eleveDetails.participation")}>
                 {participations.length > 0 ? (
                   <div className="overflow-x-auto">
-                    <table className="w-full text-xs text-left text-gray-600">
+                    <table className="w-full text-xs text-left text-(--text)">
                       <thead>
-                        <tr className="border-b border-gray-200 text-[11px] uppercase tracking-wider text-gray-400">
+                        <tr className="border-b border-[#c79a3b]/30 text-[10px] uppercase tracking-[0.18em] text-[#0f3d2e]">
                           <th className="py-2 pe-4 font-medium">
                             {t("eleveDetails.concour")}
                           </th>
@@ -225,7 +233,7 @@ const EleveDetails = () => {
                               participation.concour?.nom ||
                               participation.note
                             }
-                            className="border-b border-gray-100 last:border-0"
+                            className="border-b border-[#0f3d2e]/10 last:border-0"
                           >
                             <td className="py-2 pe-4">
                               {participation.concour?.nom || "—"}
@@ -243,14 +251,14 @@ const EleveDetails = () => {
                     </table>
                   </div>
                 ) : (
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-(--text-muted)">
                     {t("eleveDetails.noParticipation")}
                   </p>
                 )}
               </Card>
             </div>
           ) : (
-            <p className="rounded-xl bg-white ring-1 ring-gray-200 px-5 py-4 text-xs text-gray-500">
+            <p className="trad-card px-5 py-4 text-xs text-(--text-muted)">
               {t("eleves.notFound")}
             </p>
           )}

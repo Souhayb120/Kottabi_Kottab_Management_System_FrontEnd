@@ -15,7 +15,7 @@ function Sidebar() {
 
   const linkClass = ({ isActive }) =>
     isActive
-      ? "nav-item flex items-center rounded-lg border-s-4 border-rose-300 bg-emerald-700/40 py-2.5 text-sm font-medium text-white"
+      ? "nav-item flex items-center rounded-lg border-s-4 border-[#c79a3b] bg-emerald-700/40 py-2.5 text-sm font-medium text-white"
       : "nav-item flex items-center rounded-lg border-s-4 border-transparent py-2.5 text-sm text-emerald-100/80 transition-colors hover:bg-white/5 hover:text-white";
 
   return (
@@ -28,7 +28,10 @@ function Sidebar() {
           </svg>
         </div>
         <div className="brand-text">
-          <div className="text-base font-semibold leading-tight">Kottabi</div>
+          <div className="flex items-center gap-1.5 text-base font-semibold leading-tight">
+            <span className="select-none text-[9px] leading-none text-[#d9b45f]">۞</span>
+            Kottabi
+          </div>
           <div className="text-[11px] text-emerald-100/60">{t("sidebar.tagline")}</div>
         </div>
       </div>
@@ -102,6 +105,16 @@ function Sidebar() {
               <path d="M17 5h3a3 3 0 0 1-3 4" />
             </svg>
             <span className="nav-text">{t("sidebar.competitions")}</span>
+          </NavLink>
+        </li>
+
+        <li>
+          <NavLink to="/participation" className={linkClass}>
+            <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="12" cy="8" r="5" />
+              <path d="M8.5 14l-1 6.5L12 18.5l4.5 2-1-6.5" />
+            </svg>
+            <span className="nav-text">{t("sidebar.participation")}</span>
           </NavLink>
         </li>
 
