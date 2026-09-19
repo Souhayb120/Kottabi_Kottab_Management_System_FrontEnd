@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   ArrowRight,
-  Bell,
   BookOpen,
   Check,
   CheckCircle2,
@@ -156,7 +155,7 @@ function Landing() {
 
               <a
                 href="#cta"
-                className="hidden items-center gap-1.5 rounded-full bg-(--brand) px-4 py-2 text-sm font-semibold text-(--brand-ink) transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-(--brand)/20 sm:flex"
+                className="hidden items-center gap-1.5 rounded-full bg-(--brand) px-4 py-2 text-sm font-semibold text-[#f3efe3] transition-colors hover:bg-(--brand-strong) sm:flex"
               >
                 {t("landing.navLogin", "Se connecter")}
               </a>
@@ -186,7 +185,7 @@ function Landing() {
               <a
                 href="#cta"
                 onClick={() => setMobileOpen(false)}
-                className="mt-1 flex items-center justify-center gap-1.5 rounded-full bg-(--brand) px-4 py-2.5 text-sm font-semibold text-(--brand-ink)"
+                className="mt-1 flex items-center justify-center gap-1.5 rounded-full bg-(--brand) px-4 py-2.5 text-sm font-semibold text-[#f3efe3]"
               >
                 {t("landing.navLogin", "Se connecter")}
               </a>
@@ -194,10 +193,7 @@ function Landing() {
           )}
         </header>
 
-        <section id="top" className="relative overflow-hidden">
-          <div className="pointer-events-none absolute -top-32 start-1/2 h-80 w-[44rem] -translate-x-1/2 rounded-full bg-(--brand)/[0.07] blur-3xl" />
-          <div className="pointer-events-none absolute top-48 -end-36 h-72 w-72 rounded-full bg-(--accent)/[0.12] blur-3xl" />
-
+        <section id="top">
           <div className="relative mx-auto max-w-6xl px-5 pb-20 pt-16 text-center sm:px-8 lg:pb-24 lg:pt-20">
             <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-(--border) bg-(--surface) px-3.5 py-1.5 text-xs font-medium text-(--text-muted) shadow-sm">
               <span className="flex h-5 w-5 items-center justify-center rounded-full bg-(--brand)">
@@ -231,7 +227,7 @@ function Landing() {
             <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
               <a
                 href="#cta"
-                className="inline-flex items-center gap-2 rounded-full bg-(--brand) px-8 py-3.5 text-sm font-semibold text-(--brand-ink) shadow-lg shadow-(--brand)/25 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-(--brand)/30"
+                className="inline-flex items-center gap-2 rounded-full bg-(--brand) px-8 py-3.5 text-sm font-semibold text-[#f3efe3] transition-colors hover:bg-(--brand-strong)"
               >
                 {t("landing.heroCtaPrimary", "Essayer gratuitement")}
                 <ArrowRight className="h-4 w-4 rtl:rotate-180" />
@@ -249,18 +245,12 @@ function Landing() {
             </p>
           </div>
 
-          <div id="demo" className="relative mx-auto max-w-5xl scroll-mt-24 px-5 pb-24 sm:px-8">
-            <div className="pointer-events-none absolute -bottom-10 start-10 h-52 w-52 rounded-full bg-(--accent)/[0.08] blur-3xl" />
-
-            <div className="relative overflow-hidden rounded-2xl border border-(--border) bg-(--surface) shadow-[0_36px_70px_-32px_rgba(10,46,34,0.45)]">
-              <div className="flex items-center gap-2 border-b border-(--border) bg-(--surface-2) px-4 py-3">
-                <span className="h-3 w-3 rounded-full bg-red-400/80" />
-                <span className="h-3 w-3 rounded-full bg-amber-500/80" />
-                <span className="h-3 w-3 rounded-full bg-emerald-500/80" />
-                <div className="ms-4 flex flex-1 items-center gap-2 rounded-lg bg-(--bg) px-3 py-1.5 text-start text-[11px] text-(--text-muted) ring-1 ring-(--border)">
+          <div id="demo" className="relative mx-auto max-w-5xl scroll-mt-24 px-5 pb-8 sm:px-8">
+            <div className="relative overflow-hidden rounded-2xl border border-(--border) bg-(--surface) shadow-[0_24px_48px_-28px_rgba(10,46,34,0.35)]">
+              <div className="flex items-center gap-2 border-b border-(--border) bg-(--surface-2) px-4 py-2.5">
+                <div className="flex flex-1 items-center gap-2 rounded-lg bg-(--bg) px-3 py-1 text-[11px] text-(--text-muted)">
                   <Search className="h-3 w-3" />
                   app.kottabi.org
-                  <Bell className="ms-auto h-3 w-3" />
                 </div>
               </div>
 
@@ -288,7 +278,7 @@ function Landing() {
                     </span>
                   </div>
 
-                  <div className="flex items-center justify-between gap-3 rounded-xl bg-(--brand) px-4 py-3 text-(--brand-ink)">
+                  <div className="flex items-center justify-between gap-3 rounded-xl bg-(--brand) px-4 py-3 text-[#f3efe3]">
                     <span className="flex items-center gap-2 text-xs font-medium">
                       <CheckCircle2 className="h-4 w-4 text-(--accent)" />
                       {t("landing.demoPresence", "Présence aujourd'hui")}
@@ -353,52 +343,6 @@ function Landing() {
                 </div>
               </div>
             </div>
-
-            <div className="absolute -bottom-12 start-0 max-w-[16rem] animate-[landing-float_7s_ease-in-out_infinite] rounded-2xl border border-(--border) bg-(--surface) p-4 shadow-[0_24px_50px_-24px_rgba(10,46,34,0.5)] sm:-start-10">
-              <div className="flex items-center gap-2">
-                <Bell className="h-4 w-4 text-(--brand)" />
-                <span className="text-[11px] font-semibold text-(--text)">
-                  {t("landing.demoEmailTitle", "Bilan du jour — famille de Youssef")}
-                </span>
-              </div>
-              <div className="mt-3 space-y-1.5 text-[11px] text-(--text-muted)">
-                <p className="flex items-center gap-1.5">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                  {t("landing.demoEmailLine1", "Nouvelle leçon · Sourate Al-Baqarah — Pass")}
-                </p>
-                <p className="flex items-center gap-1.5">
-                  <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
-                  {t("landing.demoEmailLine2", "Révision · Page 391 – 393 — à refaire demain")}
-                </p>
-              </div>
-              <p className="mt-3 border-t border-(--border) pt-2 text-[10px] text-(--text-muted)">
-                {t("landing.demoEmailSent", "Envoyé à 17 h 30, automatiquement.")}
-              </p>
-            </div>
-
-            <div className="absolute -top-6 end-6 flex animate-[landing-float-soft_6s_ease-in-out_infinite] items-center gap-3 rounded-2xl border border-(--border) bg-(--surface) px-4 py-3 shadow-xl shadow-(--brand)/10 sm:end-14">
-              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-(--brand)/10 text-(--brand)">
-                <TrendingUp className="h-4 w-4" />
-              </span>
-              <div className="text-start">
-                <div className="text-sm font-bold text-(--text)">120</div>
-                <div className="text-[10px] text-(--text-muted)">
-                  {t("landing.count1Label", "élèves suivis")}
-                </div>
-              </div>
-            </div>
-
-            <div className="absolute -bottom-12 end-4 flex animate-[landing-float-soft_6.5s_ease-in-out_infinite] items-center gap-3 rounded-2xl border border-(--border) bg-(--surface) px-4 py-3 shadow-xl shadow-(--brand)/10 sm:end-12" style={{ animationDelay: "0.8s" }}>
-              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-(--brand)/10 text-(--brand)">
-                <Trophy className="h-4 w-4" />
-              </span>
-              <div className="text-start">
-                <div className="text-sm font-bold text-(--text)">8</div>
-                <div className="text-[10px] text-(--text-muted)">
-                  {t("landing.count3Label", "concours organisés")}
-                </div>
-              </div>
-            </div>
           </div>
         </section>
 
@@ -432,9 +376,9 @@ function Landing() {
               {roles.map((role) => (
                 <div
                   key={role.title}
-                  className="group rounded-2xl border border-(--border) bg-(--surface) p-7 transition-all hover:-translate-y-1 hover:border-(--brand)/35 hover:shadow-xl hover:shadow-(--brand)/10"
+                  className="rounded-2xl border border-(--border) bg-(--surface) p-7 transition-colors hover:border-(--brand)/35"
                 >
-                  <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-(--brand) text-(--accent) shadow-md shadow-(--brand)/20 transition-transform group-hover:-translate-y-0.5">
+                  <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-(--brand) text-(--accent)">
                     <role.icon className="h-5 w-5" />
                   </span>
                   <h3 className="mt-5 text-lg font-semibold text-(--text)">{role.title}</h3>
@@ -473,7 +417,7 @@ function Landing() {
               {features.map((feature) => (
                 <div
                   key={feature.title}
-                  className="group rounded-2xl border border-(--border) bg-(--bg) p-6 transition-all hover:-translate-y-1 hover:border-(--brand)/35 hover:shadow-lg hover:shadow-(--brand)/10"
+                  className="rounded-2xl border border-(--border) bg-(--bg) p-6 transition-colors hover:border-(--brand)/35"
                 >
                   <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-(--brand)/10 text-(--brand) transition-colors group-hover:bg-(--brand) group-hover:text-(--accent)">
                     <feature.icon className="h-4 w-4" />
@@ -545,14 +489,11 @@ function Landing() {
 
         <section id="cta" className="scroll-mt-24 bg-(--bg) pb-20 pt-4 lg:pb-28">
           <div className="mx-auto max-w-5xl px-5 sm:px-8">
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#0f3d2e] via-[#0c3427] to-[#082a1f] px-8 py-16 text-center text-white shadow-2xl shadow-[#0f3d2e]/30 sm:px-14">
-              <div className="pointer-events-none absolute -end-16 -top-24 h-64 w-64 rounded-full bg-white/[0.06]" />
-              <div className="pointer-events-none absolute -bottom-24 -start-16 h-64 w-64 rounded-full bg-[#c79a3b]/[0.12]" />
-
-              <h2 className="relative text-3xl font-bold tracking-tight sm:text-4xl">
+            <div className="rounded-2xl bg-(--brand) px-8 py-16 text-center sm:px-14">
+              <h2 className="text-3xl font-bold tracking-tight text-[#f3efe3] sm:text-4xl">
                 {t("landing.ctaTitle", "Essayez avec votre école, c'est gratuit.")}
               </h2>
-              <p className="relative mx-auto mt-4 max-w-xl leading-relaxed text-emerald-100/75">
+              <p className="mx-auto mt-4 max-w-xl leading-relaxed text-[#c6d3cb]">
                 {t(
                   "landing.ctaText",
                   "Nous ouvrons tout, sans carte et sans engagement. Si ça vous sert la première semaine, ça vous servira toute l'année.",
@@ -560,7 +501,7 @@ function Landing() {
               </p>
               <a
                 href="/login"
-                className="relative mt-9 inline-flex items-center gap-2 rounded-full bg-[#c79a3b] px-9 py-3.5 text-sm font-semibold text-[#241c08] shadow-lg shadow-black/20 transition-all hover:-translate-y-0.5 hover:bg-[#d4ab54]"
+                className="mt-9 inline-flex items-center gap-2 rounded-full bg-[#c79a3b] px-9 py-3.5 text-sm font-semibold text-[#241c08] transition-colors hover:bg-[#d4ab54]"
               >
                 {t("landing.ctaButton", "Se connecter")}
                 <ArrowRight className="h-4 w-4 rtl:rotate-180" />

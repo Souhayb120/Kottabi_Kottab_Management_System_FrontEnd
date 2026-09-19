@@ -102,6 +102,10 @@ const resources = {
         title: "Créer un compte",
         firstName: "Prénom",
         lastName: "Nom",
+        userName: "Nom d'utilisateur",
+        role: "Rôle",
+        roleAdmin: "Administrateur",
+        roleEnseignant: "Enseignant",
         email: "Email",
         password: "Mot de passe",
         submit: "S'inscrire",
@@ -141,6 +145,12 @@ const resources = {
       },
       footer: {
         rights: "Tous droits réservés.",
+      },
+
+      common: {
+        deleteHint: "Cette action est irréversible.",
+        cancel: "Annuler",
+        confirm: "Confirmer",
       },
       eleves: {
         title: "Élèves",
@@ -233,6 +243,7 @@ const resources = {
         enseignantRole: "Enseignant",
         searchPlaceholder: "Rechercher par spécialité...",
         notFound: "Aucun enseignant trouvé avec cette spécialité.",
+        empty: "Aucun enseignant enregistré.",
         createSuccess: "Enseignant ajouté avec succès !",
         createError: "Erreur lors de l'ajout de l'enseignant.",
         updateSuccess: "Enseignant modifié avec succès !",
@@ -538,6 +549,10 @@ const resources = {
         title: "إنشاء حساب",
         firstName: "الاسم الشخصي",
         lastName: "النسب",
+        userName: "اسم المستخدم",
+        role: "الدور",
+        roleAdmin: "مدير",
+        roleEnseignant: "معلم",
         email: "البريد الإلكتروني",
         password: "كلمة المرور",
         submit: "إنشاء الحساب",
@@ -581,6 +596,12 @@ const resources = {
       },
       footer: {
         rights: "جميع الحقوق محفوظة.",
+      },
+
+      common: {
+        deleteHint: "لا يمكن التراجع عن هذه العملية.",
+        cancel: "إلغاء",
+        confirm: "تأكيد",
       },
       eleves: {
         title: "الطلاب",
@@ -673,6 +694,7 @@ const resources = {
         enseignantRole: "معلم",
         searchPlaceholder: "ابحث بالتخصص...",
         notFound: "لم يتم العثور على معلم بهذا التخصص.",
+        empty: "لا يوجد أي معلم مسجل بعد.",
         createSuccess: "تمت إضافة المعلم بنجاح!",
         createError: "خطأ في إضافة المعلم.",
         updateSuccess: "تم تعديل المعلم بنجاح!",

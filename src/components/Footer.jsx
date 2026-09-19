@@ -6,7 +6,8 @@ function Footer() {
   return (
     <footer className="footer">
       <p>
-        © 2026 Kottabi. {t("footer.rights", "All Rights Reserved.")}
+        © {new Date().getFullYear()} Kottabi —{" "}
+        {t("footer.rights", "All Rights Reserved.")}
       </p>
     </footer>
   );

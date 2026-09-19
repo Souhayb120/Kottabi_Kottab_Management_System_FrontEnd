@@ -4,8 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import AuthService from "../services/AuthService";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
-import { BookOpen, Mail, Lock, Eye, EyeOff, Globe, HelpCircle, ArrowRight } from "lucide-react";
-import Footer from "../components/Footer";
+import { BookOpen, Mail, Lock, Eye, EyeOff, User, ArrowRight } from "lucide-react";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -28,121 +27,128 @@ const Register = () => {
     }
   };
 
+  const inputClass = "input-trad ps-9";
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-(--bg) p-4">
-      <div className="flex w-full max-w-4xl overflow-hidden rounded-2xl trad-card">
-
-        <div className="relative hidden w-1/2 flex-col justify-between bg-gradient-to-br from-[#0f3d2e] to-[#123a2c] p-10 text-white md:flex">
-          <div>
-            <div className="flex items-center gap-2">
-              <BookOpen className="h-6 w-6 text-amber-400" />
-              <span className="text-xl font-semibold">Kottabi</span>
-              <span className="select-none text-sm text-[#d9b45f]">۞</span>
-            </div>
-            <p className="mt-1 text-sm text-gray-300">{t("login.tagline", "Scholarship Management")}</p>
-          </div>
-
-          <div className="border-l-2 border-amber-400 pl-4">
-            <p className="text-lg leading-snug text-gray-100">
-              "{t("login.quote", "Seeking knowledge is an obligation upon every Muslim.")}"
-            </p>
-            <p className="mt-3 text-xs tracking-widest text-gray-400">
-              {t("login.quoteSource", "TRADITION OF LEARNING")}
-            </p>
-          </div>
-
-          <div className="flex items-center gap-4 text-gray-300">
-            <Globe className="h-5 w-5 cursor-pointer hover:text-white" />
-            <HelpCircle className="h-5 w-5 cursor-pointer hover:text-white" />
-          </div>
-        </div>
-
-        <div className="flex w-full flex-col justify-center bg-[#fbfaf6] px-8 py-10 sm:px-12 md:w-1/2">
-          <div className="ornament-row mb-3">
-            <span className="select-none text-xs leading-none text-[#c79a3b]">۞</span>
-          </div>
-          <h1 className="font-serif text-2xl font-semibold text-(--text)">
-            {t("register.title")}
-          </h1>
-          <p className="mt-1 text-sm text-(--text-muted)">
-            {t("login.subtitle", "Veuillez créer votre compte.")}
-          </p>
-
-          <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-4">
-            <div>
-              <label className="label-trad">{t("register.firstName")}</label>
-              <div className="flex items-center rounded-lg border border-(--border) px-3 focus-within:border-(--brand) focus-within:ring-1 focus-within:ring-(--brand)">
-                <Mail className="h-4 w-4 text-(--text-muted)" />
-                <input
-                  type="text"
-                  placeholder="ahmed129"
-                  className="w-full border-none bg-transparent p-2.5 text-sm text-(--text) placeholder-(--text-muted) outline-none focus:ring-0"
-                  {...fieldRegister("userName")}
-                />
+    <div className="flex min-h-screen flex-col bg-(--bg)">
+      <div className="flex flex-1 items-center justify-center p-4">
+        <div className="w-full max-w-[400px]">
+          <div className="panel overflow-hidden">
+            <div className="bg-(--brand) px-8 py-7 border-b border-[#c79a3b]/40">
+              <div className="flex items-center gap-3">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-[#c79a3b]/45 bg-white/5 text-[#e3c472]">
+                  <BookOpen className="h-5 w-5" />
+                </span>
+                <div>
+                  <p className="text-[15px] font-semibold leading-tight text-[#f3efe3]">
+                    Kottabi
+                  </p>
+                  <p className="text-[11px] leading-tight text-[#c6d3cb]">
+                    {t("login.tagline")}
+                  </p>
+                </div>
               </div>
             </div>
 
-            <div>
-              <label className="label-trad">{t("register.email")}</label>
-              <div className="flex items-center rounded-lg border border-(--border) px-3 focus-within:border-(--brand) focus-within:ring-1 focus-within:ring-(--brand)">
-                <Mail className="h-4 w-4 text-(--text-muted)" />
-                <input
-                  type="email"
-                  className="w-full border-none bg-transparent p-2.5 text-sm text-(--text) placeholder-(--text-muted) outline-none focus:ring-0"
-                  {...fieldRegister("email")}
-                />
-              </div>
-            </div>
+            <div className="px-8 py-8">
+              <h1 className="font-display text-[22px] leading-tight text-(--text)">
+                {t("register.title")}
+              </h1>
+              <p className="mt-1 text-[13px] text-(--text-muted)">
+                {t("register.subtitle", "Veuillez créer votre compte.")}
+              </p>
 
-            <div>
-              <label className="label-trad">Role</label>
-              <div className="flex items-center rounded-lg border border-(--border) px-3 focus-within:border-(--brand) focus-within:ring-1 focus-within:ring-(--brand)">
-                <Lock className="h-4 w-4 text-(--text-muted)" />
-                <input
-                  type="text"
-                  className="w-full border-none bg-transparent p-2.5 text-sm text-(--text) placeholder-(--text-muted) outline-none focus:ring-0"
-                  {...fieldRegister("role")}
-                />
-              </div>
-            </div>
+              <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-4">
+                <div>
+                  <label className="label-trad">{t("register.userName")}</label>
+                  <div className="relative">
+                    <User className="absolute inset-y-0 start-3.5 my-auto h-4 w-4 text-(--text-muted)" />
+                    <input
+                      type="text"
+                      placeholder="ahmed129"
+                      className={inputClass}
+                      {...fieldRegister("userName")}
+                    />
+                  </div>
+                </div>
 
-            <div>
-              <label className="label-trad">{t("register.password")}</label>
-              <div className="flex items-center rounded-lg border border-(--border) px-3 focus-within:border-(--brand) focus-within:ring-1 focus-within:ring-(--brand)">
-                <Lock className="h-4 w-4 text-(--text-muted)" />
-                <input
-                  type={showPassword ? "text" : "password"}
-                  className="w-full border-none bg-transparent p-2.5 text-sm text-(--text) placeholder-(--text-muted) outline-none focus:ring-0"
-                  {...fieldRegister("password")}
-                />
+                <div>
+                  <label className="label-trad">{t("register.email")}</label>
+                  <div className="relative">
+                    <Mail className="absolute inset-y-0 start-3.5 my-auto h-4 w-4 text-(--text-muted)" />
+                    <input
+                      type="email"
+                      className={inputClass}
+                      {...fieldRegister("email")}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="label-trad">{t("register.role")}</label>
+                  <div className="relative">
+                    <Lock className="absolute inset-y-0 start-3.5 my-auto h-4 w-4 text-(--text-muted)" />
+                    <select
+                      className={`${inputClass} appearance-none`}
+                      defaultValue="ENSEIGNANT"
+                      {...fieldRegister("role")}
+                    >
+                      <option value="ADMIN">{t("register.roleAdmin")}</option>
+                      <option value="ENSEIGNANT">
+                        {t("register.roleEnseignant")}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="label-trad">{t("register.password")}</label>
+                  <div className="relative">
+                    <Lock className="absolute inset-y-0 start-3.5 my-auto h-4 w-4 text-(--text-muted)" />
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      className={`${inputClass} pe-10`}
+                      {...fieldRegister("password")}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword((prev) => !prev)}
+                      className="absolute inset-y-0 end-3 my-auto text-(--text-muted) hover:text-(--text)"
+                      aria-label={
+                        showPassword
+                          ? t("login.hidePassword", "Masquer")
+                          : t("login.showPassword", "Afficher")
+                      }
+                    >
+                      {showPassword ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
+                    </button>
+                  </div>
+                </div>
+
                 <button
-                  type="button"
-                  onClick={() => setShowPassword((prev) => !prev)}
-                  className="text-(--text-muted) hover:text-(--text)"
+                  type="submit"
+                  className="btn mt-2 flex w-full items-center justify-center gap-2"
                 >
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  {t("register.submit")}
+                  <ArrowRight className="h-4 w-4" />
                 </button>
-              </div>
+              </form>
+
+              <p className="mt-6 text-center text-[13px] text-(--text-muted)">
+                {t("login.noAccount")}{" "}
+                <Link
+                  to="/login"
+                  className="font-medium text-(--brand) hover:underline"
+                >
+                  {t("login.title")}
+                </Link>
+              </p>
             </div>
-
-            <button
-              type="submit"
-              className="btn-trad mt-2 flex w-full items-center justify-center gap-2"
-            >
-              <span className="select-none text-[10px] leading-none text-[#d9b45f]">✦</span>
-              {t("register.submit")}
-              <ArrowRight className="h-4 w-4" />
-            </button>
-          </form>
-
-          <p className="mt-6 text-center text-sm text-(--text-muted)">
-            {t("login.noAccount", "Vous n'avez pas de compte ?")}{" "}
-            <Link to="/login" className="font-medium text-(--brand) hover:underline">
-              {t("login.title")}
-            </Link>
-          </p>
-
-          <Footer />
+          </div>
         </div>
       </div>
     </div>

@@ -4,19 +4,13 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
+import { CalendarCheck } from "lucide-react";
 import api from "../api/Api";
-import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogTitle from "@mui/material/DialogTitle";
-import Modal from "@mui/material/Modal";
-import Box from "@mui/material/Box";
-import Fade from "@mui/material/Fade";
-import Backdrop from "@mui/material/Backdrop";
-import Typography from "@mui/material/Typography";
 import Sidebar from "../components/SideBar";
 import NavBar from "../components/NavBar";
 import Footer from "../components/Footer";
+import AppModal from "../components/AppModal";
+import EmptyState from "../components/EmptyState";
 
 const statutKeys = {
   PRESENT: "present",
@@ -25,11 +19,11 @@ const statutKeys = {
   EXCUSE: "excuse",
 };
 
-const statutColors = {
-  PRESENT: "bg-[#0f3d2e]/10 text-[#0f3d2e] border border-[#0f3d2e]/15",
-  RETARD: "bg-[#c79a3b]/15 text-[#8a691d] border border-[#c79a3b]/30",
-  ABSENT: "bg-red-50 text-red-600 border border-red-200",
-  EXCUSE: "bg-[#0f3d2e]/5 text-(--text-muted) border border-[#0f3d2e]/10",
+const statutBadges = {
+  PRESENT: "badge badge-ok",
+  RETARD: "badge badge-warn",
+  ABSENT: "badge badge-danger",
+  EXCUSE: "badge badge-muted",
 };
 
 const presenceSchema = yup.object({
@@ -48,6 +42,7 @@ const Presences = () => {
 
   const [presences, setPresences] = useState([]);
   const [eleves, setEleves] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [searchUsername, setSearchUsername] = useState("");
   const [dateFilter, setDateFilter] = useState("");
   const [statutFilter, setStatutFilter] = useState("ALL");
@@ -72,26 +67,21 @@ const Presences = () => {
     return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
   };
 
-  const style = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: 440,
-    bgcolor: "#fbfaf6",
-    border: "1px solid rgba(199, 154, 59, 0.4)",
-    boxShadow: "0 22px 60px -20px rgba(15, 61, 46, 0.45)",
-    borderRadius: "18px",
-    p: "22px",
-  };
-
   const fetchPresences = async () => {
     const response = await api.get(`${URL}?size=1000`);
     setPresences(response.data.content);
   };
 
   useEffect(() => {
-    fetchPresences();
+    const init = async () => {
+      try {
+        await fetchPresences();
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    init();
   }, []);
 
   const onSearch = async () => {
@@ -196,357 +186,263 @@ const Presences = () => {
     }
   };
 
+  const searched = searchUsername.trim() !== "" && presences.length === 0;
+
   return (
-    <>
-      <div className="app-layout">
-        <Sidebar />
-        <div className="main">
-          <NavBar />
-          <div className="content">
-            <div className="ornament-row mb-1.5">
-              <span className="select-none text-sm leading-none text-[#c79a3b]">۞</span>
+    <div className="app-layout">
+      <Sidebar />
+      <div className="main">
+        <NavBar />
+        <div className="content">
+          <div className="page-header has-toolbar">
+            <div>
+              <h1 className="page-title">{t("presence.title")}</h1>
             </div>
-            <h2 className="mb-4 text-right font-serif text-lg font-semibold tracking-tight text-(--text)">
-              {t("presence.title")}
-            </h2>
-
-            <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
-              <div className="flex flex-wrap items-center gap-2">
-                <div className="flex items-center gap-2">
-                  <input
-                    type="text"
-                    placeholder={t("presence.searchPlaceholder")}
-                    value={searchUsername}
-                    onChange={(e) => setSearchUsername(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && onSearch()}
-                    className="input-trad w-52"
-                  />
-                  <button
-                    onClick={onSearch}
-                    className="btn-icon"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={2}
-                      stroke="currentColor"
-                      className="w-3 h-3"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
-                      />
-                    </svg>
-                  </button>
-                </div>
-
-                <input
-                  type="date"
-                  value={dateFilter}
-                  onChange={(e) => setDateFilter(e.target.value)}
-                  title={t("presence.filterDate")}
-                  className="input-trad w-40"
-                />
-
-                <select
-                  value={statutFilter}
-                  onChange={(e) => setStatutFilter(e.target.value)}
-                  className="input-trad w-36"
-                >
-                  <option value="ALL">{t("presence.filterAll")}</option>
-                  <option value="PRESENT">{t("eleveDetails.present")}</option>
-                  <option value="RETARD">{t("eleveDetails.retard")}</option>
-                  <option value="ABSENT">{t("eleveDetails.absent")}</option>
-                  <option value="EXCUSE">{t("eleveDetails.excuse")}</option>
-                </select>
-              </div>
-
-              <button onClick={handleOpen} className="btn-trad">
-                <span className="select-none text-[10px] leading-none text-[#d9b45f]">✦</span>
-                {t("presence.add")}
-              </button>
-            </div>
-
-            <div className="mb-3 flex flex-wrap gap-2">
-              {["PRESENT", "RETARD", "ABSENT", "EXCUSE"].map((key) => (
-                <span
-                  key={key}
-                  className={`rounded-full px-3 py-1 text-[11px] font-medium ${statutColors[key]}`}
-                >
-                  {t(`eleveDetails.${statutKeys[key]}`)} : {counts[key] || 0}
-                </span>
-              ))}
-            </div>
-
-            <div className="trad-card p-2">
-              <div className="trad-panel overflow-x-auto">
-              <table className="w-full text-xs text-left text-(--text)">
-                <thead>
-                  <tr className="bg-[#f5efdf]/70 text-[10px] uppercase tracking-[0.18em] text-[#0f3d2e] border-b border-[#c79a3b]/30">
-                    <th className="px-4 py-3 font-medium">{t("presence.id")}</th>
-                    <th className="px-4 py-3 font-medium">{t("presence.eleve")}</th>
-                    <th className="px-4 py-3 font-medium">{t("presence.date")}</th>
-                    <th className="px-4 py-3 font-medium">{t("presence.statut")}</th>
-                    <th className="px-4 py-3 font-medium text-center">
-                      {t("presence.actions")}
-                    </th>
-                  </tr>
-                </thead>
-
-                <tbody>
-                  {filtered.map((presence) => (
-                    <tr
-                      key={presence.id || `${presence.date}-${presence.eleve?.username}`}
-                      className="border-b border-[#0f3d2e]/10 last:border-0 hover:bg-[#f6f0e0]/40 transition-colors"
-                    >
-                      <td className="px-4 py-3">{presence.id}</td>
-                      <td className="px-4 py-3">
-                        <span className="font-medium text-(--text)">
-                          {presence.eleve?.prenom} {presence.eleve?.nom}
-                        </span>
-                        <span className="ms-1 text-[11px] text-(--text-muted)">
-                          ({presence.eleve?.username})
-                        </span>
-                      </td>
-                      <td className="px-4 py-3">{presence.date}</td>
-                      <td className="px-4 py-3">
-                        <span
-                          className={`rounded-md px-2 py-0.5 text-[11px] font-medium ${
-                            statutColors[presence.statut] ||
-                            "bg-[#0f3d2e]/5 text-(--text-muted)"
-                          }`}
-                        >
-                          {t(
-                            `eleveDetails.${
-                              statutKeys[presence.statut] || "present"
-                            }`,
-                          )}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="flex justify-center gap-1.5">
-                          <button
-                            onClick={() => editThisPresence(presence)}
-                            className="btn-xs btn-xs-gold"
-                          >
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-3 h-3">
-                              <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
-                            </svg>
-                            {t("presence.edit")}
-                          </button>
-                          <button
-                            onClick={() => openDeleteDialog(presence.id)}
-                            className="btn-xs btn-xs-danger"
-                          >
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-3 h-3">
-                              <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                            </svg>
-                            {t("presence.delete")}
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-
-                  {filtered.length === 0 && (
-                    <tr className="border-b border-[#0f3d2e]/10 last:border-0">
-                      <td colSpan={5} className="px-4 py-6 text-center text-(--text-muted)">
-                        {t("presence.noPresence")}
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-              </div>
-            </div>
+            <button onClick={handleOpen} className="btn">
+              {t("presence.add")}
+            </button>
           </div>
-          <Footer />
+
+          <div className="toolbar">
+            <div className="searchbox">
+              <svg
+                className="search-ico"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.8}
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+                />
+              </svg>
+              <input
+                type="text"
+                placeholder={t("presence.searchPlaceholder")}
+                value={searchUsername}
+                onChange={(e) => setSearchUsername(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && onSearch()}
+                className="input-trad"
+              />
+            </div>
+
+            <input
+              type="date"
+              value={dateFilter}
+              onChange={(e) => setDateFilter(e.target.value)}
+              title={t("presence.filterDate")}
+              className="input-trad w-40"
+            />
+
+            <select
+              value={statutFilter}
+              onChange={(e) => setStatutFilter(e.target.value)}
+              className="input-trad w-36"
+            >
+              <option value="ALL">{t("presence.filterAll")}</option>
+              <option value="PRESENT">{t("eleveDetails.present")}</option>
+              <option value="RETARD">{t("eleveDetails.retard")}</option>
+              <option value="ABSENT">{t("eleveDetails.absent")}</option>
+              <option value="EXCUSE">{t("eleveDetails.excuse")}</option>
+            </select>
+          </div>
+
+          <div className="mb-4 flex flex-wrap gap-2">
+            {["PRESENT", "RETARD", "ABSENT", "EXCUSE"].map((key) => (
+              <span key={key} className={statutBadges[key]}>
+                <span className="dot" />
+                {t(`eleveDetails.${statutKeys[key]}`)} : {counts[key] || 0}
+              </span>
+            ))}
+          </div>
+
+          <div className="table-shell">
+            <table className="tbl">
+              <thead>
+                <tr>
+                  <th>{t("presence.id")}</th>
+                  <th>{t("presence.eleve")}</th>
+                  <th>{t("presence.date")}</th>
+                  <th>{t("presence.statut")}</th>
+                  <th className="text-end">{t("presence.actions")}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {loading
+                  ? Array.from({ length: 5 }).map((_, i) => (
+                      <tr key={i}>
+                        <td colSpan={5}>
+                          <div className="skeleton h-4 w-full" />
+                        </td>
+                      </tr>
+                    ))
+                  : filtered.map((presence) => (
+                      <tr
+                        key={presence.id || `${presence.date}-${presence.eleve?.username}`}
+                      >
+                        <td className="num">{presence.id}</td>
+                        <td>
+                          <span className="cell-strong">
+                            {presence.eleve?.prenom} {presence.eleve?.nom}
+                          </span>
+                          <span className="ms-2 text-[11px] text-(--text-muted)">
+                            ({presence.eleve?.username})
+                          </span>
+                        </td>
+                        <td className="cell-muted">{presence.date}</td>
+                        <td>
+                          <span className={statutBadges[presence.statut] || "badge badge-muted"}>
+                            <span className="dot" />
+                            {t(`eleveDetails.${statutKeys[presence.statut] || "present"}`)}
+                          </span>
+                        </td>
+                        <td>
+                          <div className="flex justify-end gap-1">
+                            <button
+                              onClick={() => editThisPresence(presence)}
+                              className="btn-xs btn-xs-gold"
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                              </svg>
+                              {t("presence.edit")}
+                            </button>
+                            <button
+                              onClick={() => openDeleteDialog(presence.id)}
+                              className="btn-xs btn-xs-danger"
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                              </svg>
+                              {t("presence.delete")}
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+              </tbody>
+            </table>
+
+            {!loading && filtered.length === 0 && (
+              <EmptyState
+                icon={<CalendarCheck className="h-5 w-5" />}
+                title={searched ? t("presence.notFound") : t("presence.noPresence")}
+              />
+            )}
+          </div>
         </div>
+        <Footer />
       </div>
 
-      <Dialog
+      <AppModal
         open={open}
         onClose={handleCloseDelete}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-        role="alertdialog"
+        title={t("presence.deleteConfirmTitle")}
+        labelledBy="delete-presence-title"
       >
-        <DialogTitle id="alert-dialog-title">
-          {t("presence.deleteConfirmTitle")}
-        </DialogTitle>
+        <p className="text-[13px] leading-relaxed text-(--text-2)">
+          {t("presence.deleteConfirmMessage")}
+        </p>
+        <p className="mt-1 text-[12px] text-(--text-muted)">{t("common.deleteHint")}</p>
+        <div className="mt-6 flex items-center justify-end gap-2">
+          <button type="button" onClick={handleCloseDelete} className="btn-secondary">
+            {t("common.cancel")}
+          </button>
+          <button
+            type="button"
+            onClick={() => deletePresence(selectedPresenceId)}
+            className="btn-danger"
+          >
+            {t("presence.delete")}
+          </button>
+        </div>
+      </AppModal>
 
-        <DialogActions>
-          <Button onClick={handleCloseDelete} autoFocus>
-            NO
-          </Button>
-
-          <Button onClick={() => deletePresence(selectedPresenceId)}>
-            YES
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      <Modal
-        aria-labelledby="add-modal-title"
-        aria-describedby="add-modal-description"
+      <AppModal
         open={openModal}
         onClose={handleClose}
-        closeAfterTransition
-        slots={{ backdrop: Backdrop }}
-        slotProps={{
-          backdrop: {
-            timeout: 500,
-          },
-        }}
+        title={t("presence.createTitle")}
+        labelledBy="add-presence-title"
       >
-        <Fade in={openModal}>
-          <Box sx={style}>
-            <Typography
-              id="add-modal-title"
-              variant="h6"
-              component="h2"
-              sx={{ fontSize: "0.9375rem", fontWeight: 600, color: "#0f3d2e", fontFamily: 'Georgia, "Amiri", serif', mb: 2 }}
-            >
-              <span style={{ color: "#c79a3b", marginInlineEnd: 6 }}>۞</span>
-              {t("presence.createTitle")}
-            </Typography>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
-              <div>
-                <label className="label-trad">
-                  {t("presence.selectEleve")}
-                </label>
-                <select
-                  {...register("eleveId")}
-                  className="input-trad"
-                >
-                  <option value="">
-                    {t("presence.selectElevePlaceholder")}
-                  </option>
-                  {eleves.map((eleve) => (
-                    <option key={eleve.id} value={eleve.id}>
-                      {eleve.prenom} {eleve.nom} ({eleve.username})
-                    </option>
-                  ))}
-                </select>
-                {errors.eleveId && (
-                  <p className="mt-1 text-[11px] text-red-600">
-                    {errors.eleveId.message}
-                  </p>
-                )}
-              </div>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <div>
+            <label className="label-trad">{t("presence.selectEleve")}</label>
+            <select {...register("eleveId")} className="input-trad">
+              <option value="">{t("presence.selectElevePlaceholder")}</option>
+              {eleves.map((eleve) => (
+                <option key={eleve.id} value={eleve.id}>
+                  {eleve.prenom} {eleve.nom} ({eleve.username})
+                </option>
+              ))}
+            </select>
+            {errors.eleveId && (
+              <p className="field-error">{errors.eleveId.message}</p>
+            )}
+          </div>
 
-              <div>
-                <label className="label-trad">
-                  {t("presence.dateLabel")}
-                </label>
-                <input
-                  type="date"
-                  {...register("date")}
-                  className="input-trad"
-                />
-                {errors.date && (
-                  <p className="mt-1 text-[11px] text-red-600">
-                    {errors.date.message}
-                  </p>
-                )}
-              </div>
+          <div>
+            <label className="label-trad">{t("presence.dateLabel")}</label>
+            <input type="date" {...register("date")} className="input-trad" />
+            {errors.date && <p className="field-error">{errors.date.message}</p>}
+          </div>
 
-              <div>
-                <label className="label-trad">
-                  {t("presence.statut")}
-                </label>
-                <select
-                  {...register("statut")}
-                  className="input-trad"
-                >
-                  <option value="PRESENT">{t("eleveDetails.present")}</option>
-                  <option value="RETARD">{t("eleveDetails.retard")}</option>
-                  <option value="ABSENT">{t("eleveDetails.absent")}</option>
-                  <option value="EXCUSE">{t("eleveDetails.excuse")}</option>
-                </select>
-                {errors.statut && (
-                  <p className="mt-1 text-[11px] text-red-600">
-                    {errors.statut.message}
-                  </p>
-                )}
-              </div>
+          <div>
+            <label className="label-trad">{t("presence.statut")}</label>
+            <select {...register("statut")} className="input-trad">
+              <option value="PRESENT">{t("eleveDetails.present")}</option>
+              <option value="RETARD">{t("eleveDetails.retard")}</option>
+              <option value="ABSENT">{t("eleveDetails.absent")}</option>
+              <option value="EXCUSE">{t("eleveDetails.excuse")}</option>
+            </select>
+            {errors.statut && <p className="field-error">{errors.statut.message}</p>}
+          </div>
 
-              <button
-                type="submit"
-                className="btn-trad mt-2 self-end"
-              >
-                <span className="select-none text-[10px] leading-none text-[#d9b45f]">✦</span>
-                {t("presence.save")}
-              </button>
-            </form>
-          </Box>
-        </Fade>
-      </Modal>
+          <div className="flex items-center justify-end pt-1">
+            <button type="submit" className="btn">
+              {t("presence.save")}
+            </button>
+          </div>
+        </form>
+      </AppModal>
 
-      <Modal
-        aria-labelledby="edit-modal-title"
-        aria-describedby="edit-modal-description"
+      <AppModal
         open={openEditModal}
         onClose={() => setOpenEditModal(false)}
-        closeAfterTransition
-        slots={{ backdrop: Backdrop }}
-        slotProps={{
-          backdrop: {
-            timeout: 500,
-          },
-        }}
+        title={t("presence.editTitle")}
+        labelledBy="edit-presence-title"
       >
-        <Fade in={openEditModal}>
-          <Box sx={style}>
-            <Typography
-              id="edit-modal-title"
-              variant="h6"
-              component="h2"
-              sx={{ fontSize: "0.9375rem", fontWeight: 600, color: "#0f3d2e", fontFamily: 'Georgia, "Amiri", serif', mb: 2 }}
-            >
-              <span style={{ color: "#c79a3b", marginInlineEnd: 6 }}>۞</span>
-              {t("presence.editTitle")}
-            </Typography>
-            <form onSubmit={handleSubmit(onEdit)} className="space-y-3">
-              {editPresence && (
-                <div className="text-xs text-(--text-muted) rounded-lg border border-[#c79a3b]/25 bg-white/60 px-3 py-2.5">
-                  <div className="font-medium text-[#0f3d2e]">
-                    {editPresence.eleve?.prenom} {editPresence.eleve?.nom} (
-                    {editPresence.eleve?.username})
-                  </div>
-                  <div className="mt-1 text-(--text-muted)">{editPresence.date}</div>
-                </div>
-              )}
-
-              <div>
-                <label className="label-trad">
-                  {t("presence.statut")}
-                </label>
-                <select
-                  {...register("statut")}
-                  className="input-trad"
-                >
-                  <option value="PRESENT">{t("eleveDetails.present")}</option>
-                  <option value="RETARD">{t("eleveDetails.retard")}</option>
-                  <option value="ABSENT">{t("eleveDetails.absent")}</option>
-                  <option value="EXCUSE">{t("eleveDetails.excuse")}</option>
-                </select>
+        <form onSubmit={handleSubmit(onEdit)} className="space-y-4">
+          {editPresence && (
+            <div className="border border-(--border) bg-(--bg) rounded-(--r-sm) px-3.5 py-3 text-[12px]">
+              <div className="font-medium text-(--text)">
+                {editPresence.eleve?.prenom} {editPresence.eleve?.nom} (
+                {editPresence.eleve?.username})
               </div>
+              <div className="mt-0.5 text-(--text-muted)">{editPresence.date}</div>
+            </div>
+          )}
 
-              <button
-                type="submit"
-                className="btn-trad mt-2 self-end"
-              >
-                <span className="select-none text-[10px] leading-none text-[#d9b45f]">✦</span>
-                {t("presence.save")}
-              </button>
-            </form>
-          </Box>
-        </Fade>
-      </Modal>
-    </>
+          <div>
+            <label className="label-trad">{t("presence.statut")}</label>
+            <select {...register("statut")} className="input-trad">
+              <option value="PRESENT">{t("eleveDetails.present")}</option>
+              <option value="RETARD">{t("eleveDetails.retard")}</option>
+              <option value="ABSENT">{t("eleveDetails.absent")}</option>
+              <option value="EXCUSE">{t("eleveDetails.excuse")}</option>
+            </select>
+          </div>
+
+          <div className="flex items-center justify-end pt-1">
+            <button type="submit" className="btn">
+              {t("presence.save")}
+            </button>
+          </div>
+        </form>
+      </AppModal>
+    </div>
   );
 };
 
