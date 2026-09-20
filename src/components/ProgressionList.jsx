@@ -5,7 +5,11 @@ import * as yup from "yup";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBookQuran } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBookQuran,
+  faChevronLeft,
+  faChevronRight,
+} from "@fortawesome/free-solid-svg-icons";
 import api from "../api/Api";
 import ProgressionForm from "./ProgressionForm";
 import AppModal from "./AppModal";
@@ -33,17 +37,24 @@ const progressionSchema = yup.object({
 
 const ProgressionList = () => {
   const URL = "api/progressions";
+  const SIZE = 10;
   const { t } = useTranslation();
+
   const [progressions, setProgressions] = useState([]);
   const [eleves, setEleves] = useState([]);
   const [enseignants, setEnseignants] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [totalCount, setTotalCount] = useState(0);
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
+  const [inputTerm, setInputTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const [open, setOpen] = useState(false);
   const [selectedProgressionId, setSelectedProgressionId] = useState(null);
   const [openModal, setOpenModal] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
   const [editProgression, setEditProgression] = useState(null);
-  const [searchUsername, setSearchUsername] = useState("");
 
   const {
     register,
@@ -53,6 +64,51 @@ const ProgressionList = () => {
   } = useForm({
     resolver: yupResolver(progressionSchema),
   });
+
+  const fetchProgressions = async () => {
+    setLoading(true);
+    try {
+      let url = `${URL}?page=${page}&size=${SIZE}`;
+      if (searchTerm !== "") {
+        url = `${URL}/eleve/${searchTerm}?page=${page}&size=${SIZE}`;
+      }
+      const response = await api.get(url);
+      const countResponse = await api.get(`${URL}/count`);
+      setProgressions(response.data.content);
+      setTotalPages(response.data.totalPages);
+      setTotalElements(response.data.totalElements);
+      setTotalCount(countResponse.data);
+    } catch (error) {
+      setProgressions([]);
+      setTotalPages(0);
+      setTotalElements(0);
+    }
+    setLoading(false);
+  };
+
+  const fetchFormData = async () => {
+    try {
+      const elevesResponse = await api.get("api/eleve?size=1000");
+      const enseignantsResponse = await api.get("api/enseignant?size=1000");
+      setEleves(elevesResponse.data.content);
+      setEnseignants(enseignantsResponse.data.content);
+    } catch (error) {
+      toast.error(t("progression.loadElevesError"));
+    }
+  };
+
+  useEffect(() => {
+    fetchProgressions();
+  }, [page, searchTerm]);
+
+  useEffect(() => {
+    fetchFormData();
+  }, []);
+
+  const onSearch = () => {
+    setSearchTerm(inputTerm.trim());
+    setPage(0);
+  };
 
   //  Deleting Process
   const handleCloseDelete = () => {
@@ -67,9 +123,9 @@ const ProgressionList = () => {
   const deleteProgression = async (id) => {
     try {
       await api.delete(`${URL}/${id}`);
-      setProgressions(progressions.filter((progression) => progression.id !== id));
       toast.success(t("progression.deleteSuccess"));
       setOpen(false);
+      fetchProgressions();
     } catch (error) {
       toast.error(t("progression.deleteError"));
     }
@@ -92,8 +148,8 @@ const ProgressionList = () => {
         eleveId: Number(data.eleveId),
         enseignantId: Number(data.enseignantId),
       };
-      const response = await api.post(URL, payload);
-      setProgressions((prev) => [response.data, ...prev]);
+      await api.post(URL, payload);
+      setPage(0);
       handleClose();
       toast.success(t("progression.createSuccess"));
     } catch (error) {
@@ -125,67 +181,19 @@ const ProgressionList = () => {
         eleveId: Number(data.eleveId),
         enseignantId: Number(data.enseignantId),
       };
-      const response = await api.put(`${URL}/${editProgression.id}`, payload);
-      setProgressions((prev) =>
-        prev.map((progression) =>
-          progression.id === editProgression.id ? response.data : progression,
-        ),
-      );
+      await api.put(`${URL}/${editProgression.id}`, payload);
       toast.success(t("progression.updateSuccess"));
       setOpenEditModal(false);
+      fetchProgressions();
     } catch (error) {
       toast.error(t("progression.updateError"));
     }
   };
 
-  //  Search Process
-  const onSearch = async () => {
-    if (searchUsername.trim() === "") {
-      const response = await api.get(`${URL}?size=1000`);
-      setProgressions(response.data.content);
-      return;
-    }
-
-    try {
-      const response = await api.get(`${URL}/eleve/${searchUsername}?size=100`);
-      setProgressions(response.data.content);
-    } catch (error) {
-      setProgressions([]);
-      toast.error(t("progression.notFound"));
-    }
-  };
-
-  useEffect(() => {
-    const fetchProgressions = async () => {
-      const response = await api.get(`${URL}?size=1000`);
-      setProgressions(response.data.content);
-      setLoading(false);
-    };
-
-    const fetchEleves = async () => {
-      try {
-        const response = await api.get("api/eleve?size=1000");
-        setEleves(response.data.content);
-      } catch (error) {
-        toast.error(t("progression.loadElevesError"));
-      }
-    };
-
-    const fetchEnseignants = async () => {
-      try {
-        const response = await api.get("api/enseignant?size=1000");
-        setEnseignants(response.data.content);
-      } catch (error) {
-        toast.error(t("progression.loadEnseignantsError"));
-      }
-    };
-
-    fetchProgressions();
-    fetchEleves();
-    fetchEnseignants();
-  }, []);
-
-  const searched = searchUsername.trim() !== "" && progressions.length === 0;
+  const pageNumbers = [...Array(totalPages).keys()];
+  const searched = searchTerm !== "" && progressions.length === 0;
+  const from = totalElements === 0 ? 0 : page * SIZE + 1;
+  const to = totalElements === 0 ? 0 : Math.min((page + 1) * SIZE, totalElements);
 
   return (
     <>
@@ -217,14 +225,17 @@ const ProgressionList = () => {
           <input
             type="text"
             placeholder={t("progression.searchPlaceholder")}
-            value={searchUsername}
-            onChange={(e) => setSearchUsername(e.target.value)}
+            value={inputTerm}
+            onChange={(e) => {
+              setInputTerm(e.target.value);
+              if (e.target.value.trim() === "") setSearchTerm("");
+            }}
             onKeyDown={(e) => e.key === "Enter" && onSearch()}
             className="input-trad"
           />
         </div>
         <span className="text-[11px] uppercase tracking-[0.08em] text-(--text-muted)">
-          {progressions.length}
+          {totalCount}
         </span>
       </div>
 
@@ -308,6 +319,47 @@ const ProgressionList = () => {
                 : t("progression.noProgressions")
             }
           />
+        )}
+
+        {!loading && totalPages > 1 && (
+          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-(--border) px-4 py-3">
+            <span className="text-[12px] text-(--text-muted)">
+              {from}–{to} / {totalElements}
+            </span>
+            <div className="flex items-center gap-1.5">
+              <button
+                onClick={() => setPage(page - 1)}
+                disabled={page === 0}
+                className="flex h-8 w-8 items-center justify-center rounded-md text-[12px] text-(--text-muted) transition-colors hover:bg-(--border) disabled:cursor-not-allowed disabled:opacity-40"
+                aria-label={t("progression.previous")}
+              >
+                <FontAwesomeIcon icon={faChevronLeft} className="h-3 w-3 rtl:rotate-180" />
+              </button>
+
+              {pageNumbers.map((p) => (
+                <button
+                  key={p}
+                  onClick={() => setPage(p)}
+                  className={`flex h-8 w-8 items-center justify-center rounded-md text-[12px] font-medium transition-colors ${
+                    p === page
+                      ? "bg-(--brand) text-white"
+                      : "text-(--text-muted) hover:bg-(--border)"
+                  }`}
+                >
+                  {p + 1}
+                </button>
+              ))}
+
+              <button
+                onClick={() => setPage(page + 1)}
+                disabled={page >= totalPages - 1}
+                className="flex h-8 w-8 items-center justify-center rounded-md text-[12px] text-(--text-muted) transition-colors hover:bg-(--border) disabled:cursor-not-allowed disabled:opacity-40"
+                aria-label={t("progression.next")}
+              >
+                <FontAwesomeIcon icon={faChevronRight} className="h-3 w-3 rtl:rotate-180" />
+              </button>
+            </div>
+          </div>
         )}
       </div>
 
