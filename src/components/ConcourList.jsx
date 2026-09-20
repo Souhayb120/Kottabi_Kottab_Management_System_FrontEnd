@@ -4,7 +4,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
-import { Trophy } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrophy } from "@fortawesome/free-solid-svg-icons";
 import api from "../api/Api";
 import ConcourForm from "./ConcourForm";
 import AppModal from "./AppModal";
@@ -209,7 +210,7 @@ const ConcourList = () => {
 
         {!loading && concours.length === 0 && (
           <EmptyState
-            icon={<Trophy className="h-5 w-5" />}
+            icon={<FontAwesomeIcon icon={faTrophy} className="h-5 w-5" />}
             title={t("concours.noConcours")}
           />
         )}

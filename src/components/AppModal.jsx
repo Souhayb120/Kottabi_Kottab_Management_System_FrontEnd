@@ -2,7 +2,8 @@ import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Fade from "@mui/material/Fade";
 import Backdrop from "@mui/material/Backdrop";
-import { X } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
 /**
  * Single modal used across the whole app — consistent frame,
@@ -60,7 +61,7 @@ const AppModal = ({
               className="icon-btn -me-1 -mt-1"
               aria-label="Fermer"
             >
-              <X className="h-4 w-4" />
+              <FontAwesomeIcon icon={faXmark} className="h-4 w-4" />
             </button>
           </div>
 

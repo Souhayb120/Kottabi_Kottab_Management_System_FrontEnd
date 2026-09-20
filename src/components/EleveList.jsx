@@ -5,7 +5,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
-import { Users } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChildren } from "@fortawesome/free-solid-svg-icons";
 import api from "../api/Api";
 import EleveForm from "./EleveForm";
 import AppModal from "./AppModal";
@@ -256,7 +257,7 @@ const EleveList = () => {
 
         {!loading && eleves.length === 0 && (
           <EmptyState
-            icon={<Users className="h-5 w-5" />}
+            icon={<FontAwesomeIcon icon={faChildren} className="h-5 w-5" />}
             title={searched ? t("eleves.notFound") : t("eleves.empty")}
           />
         )}

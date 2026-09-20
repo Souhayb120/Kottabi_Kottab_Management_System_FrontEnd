@@ -5,6 +5,8 @@ const resources = {
   fr: {
     translation: {
       landing: {
+        titleApp: "Kottabi",
+        schoolTitle: "Kottab El Imam Warsh",
         navRoles: "Pour qui",
         navFeatures: "Fonctionnalités",
         navStory: "L'histoire",
@@ -12,7 +14,8 @@ const resources = {
         darkModeOn: "Passer en clair",
         darkModeOff: "Passer en sombre",
         heroBadge: "Pensé pour les madrasas",
-        heroAyah: "وَلَقَدْ يَسَّرْنَا الْقُرْآنَ لِلذِّكْرِ فَهَلْ مِن مُّدَّكِرٍ",
+        heroAyah:
+          "وَلَقَدْ يَسَّرْنَا الْقُرْآنَ لِلذِّكْرِ فَهَلْ مِن مُّدَّكِرٍ",
         heroAyahRef: "Al-Qamar · 54:17",
         heroTitle1: "Le suivi du Coran,",
         heroTitle2: "enfin simple.",
@@ -42,7 +45,8 @@ const resources = {
         ensure3: "Suivre leçon, révision et rappel séparément ?",
         numbersEyebrow: "Des chiffres vrais",
         numbersTitle: "Une petite école, qui vit vraiment.",
-        numbersText: "Depuis 2019, dans notre madrassa — pas dans une maquette.",
+        numbersText:
+          "Depuis 2019, dans notre madrassa — pas dans une maquette.",
         count1Label: "élèves suivis",
         count2Label: "enseignants",
         count3Label: "concours organisés",
@@ -55,7 +59,8 @@ const resources = {
         roleAdmin2: "Répartir les enseignants",
         roleAdmin3: "Ouvrir les rapports du trimestre",
         roleTeacherTitle: "Les enseignants",
-        roleTeacherDesc: "Trente secondes par élève, puis on revient à l'enseignement.",
+        roleTeacherDesc:
+          "Trente secondes par élève, puis on revient à l'enseignement.",
         roleTeacher1: "Pointer la présence du matin",
         roleTeacher2: "Noter la leçon du jour et sa difficulté",
         roleTeacher3: "Envoyer un mot à la famille, sans rendez-vous",
@@ -179,7 +184,8 @@ const resources = {
         deleteSuccess: "Élève supprimé avec succès !",
         deleteError: "Erreur lors de la suppression de l'élève.",
         deleteConfirmTitle: "Confirmer la suppression",
-        deleteConfirmMessage: "Voulez-vous vraiment supprimer l'élève \"{{username}}\" ?",
+        deleteConfirmMessage:
+          'Voulez-vous vraiment supprimer l\'élève "{{username}}" ?',
         searchPlaceholder: "Rechercher par nom d'utilisateur...",
         notFound: "Aucun élève trouvé avec ce nom d'utilisateur.",
         view: "Consulter",
@@ -252,7 +258,7 @@ const resources = {
         deleteError: "Erreur lors de la suppression de l'enseignant.",
         deleteConfirmTitle: "Confirmer la suppression",
         deleteConfirmMessage:
-          "Voulez-vous vraiment supprimer l'enseignant \"{{username}}\" ?",
+          'Voulez-vous vraiment supprimer l\'enseignant "{{username}}" ?',
       },
 
       presence: {
@@ -270,13 +276,14 @@ const resources = {
         createTitle: "Enregistrer une présence",
         editTitle: "Modifier le statut",
         deleteConfirmTitle: "Supprimer la présence",
-        deleteConfirmMessage:
-          "Voulez-vous vraiment supprimer cette présence ?",
+        deleteConfirmMessage: "Voulez-vous vraiment supprimer cette présence ?",
         searchPlaceholder: "Rechercher par nom d'utilisateur...",
         filterAll: "Tous les statuts",
         filterDate: "Filtrer par date",
         notFound: "Aucune présence trouvée pour cet élève.",
         noPresence: "Aucune présence enregistrée.",
+        previous: "Précédent",
+        next: "Suivant",
         selectEleve: "Élève",
         selectElevePlaceholder: "Sélectionnez un élève...",
         dateLabel: "Date",
@@ -375,7 +382,8 @@ const resources = {
         result: "Résultat",
         resultPlaceholder:
           "Le rapport généré par l'IA s'affichera ici après génération.",
-        pdfSaved: "Le PDF est enregistré sur le serveur dans le dossier reports.",
+        pdfSaved:
+          "Le PDF est enregistré sur le serveur dans le dossier reports.",
         loadingPdf: "Chargement du PDF...",
         download: "Télécharger le PDF",
         pdfError:
@@ -426,7 +434,8 @@ const resources = {
         createTitle: "Ajouter une participation",
         editTitle: "Modifier la participation",
         deleteConfirmTitle: "Supprimer la participation",
-        deleteConfirmMessage: "Voulez-vous vraiment supprimer cette participation ?",
+        deleteConfirmMessage:
+          "Voulez-vous vraiment supprimer cette participation ?",
         searchPlaceholder: "Rechercher par nom d'utilisateur...",
         notFound: "Aucune participation trouvée pour cet élève.",
         noParticipations: "Aucune participation enregistrée.",
@@ -452,6 +461,8 @@ const resources = {
   ar: {
     translation: {
       landing: {
+        titleApp: "كتابي",
+        schoolTitle: "كتاب الإمام ورش",
         navRoles: "لمن",
         navFeatures: "المميزات",
         navStory: "القصة",
@@ -459,7 +470,8 @@ const resources = {
         darkModeOn: "التبديل إلى الوضع الفاتح",
         darkModeOff: "التبديل إلى الوضع الداكن",
         heroBadge: "صُمِّم لِلمدارس القرآنية",
-        heroAyah: "وَلَقَدْ يَسَّرْنَا الْقُرْآنَ لِلذِّكْرِ فَهَلْ مِن مُّدَّكِرٍ",
+        heroAyah:
+          "وَلَقَدْ يَسَّرْنَا الْقُرْآنَ لِلذِّكْرِ فَهَلْ مِن مُّدَّكِرٍ",
         heroAyahRef: "القمر · ٥٤:١٧",
         heroTitle1: "متابعة الحفظ،",
         heroTitle2: "ببساطة.",
@@ -630,7 +642,7 @@ const resources = {
         deleteSuccess: "تم حذف الطالب بنجاح!",
         deleteError: "خطأ في حذف الطالب.",
         deleteConfirmTitle: "تأكيد الحذف",
-        deleteConfirmMessage: "هل تريد بالفعل حذف الطالب \"{{username}}\" ؟",
+        deleteConfirmMessage: 'هل تريد بالفعل حذف الطالب "{{username}}" ؟',
         searchPlaceholder: "ابحث باسم المستخدم...",
         notFound: "لم يتم العثور على طالب بهذا الاسم.",
         view: "عرض",
@@ -702,7 +714,7 @@ const resources = {
         deleteSuccess: "تم حذف المعلم بنجاح!",
         deleteError: "خطأ في حذف المعلم.",
         deleteConfirmTitle: "تأكيد الحذف",
-        deleteConfirmMessage: "هل تريد بالفعل حذف المعلم \"{{username}}\" ؟",
+        deleteConfirmMessage: 'هل تريد بالفعل حذف المعلم "{{username}}" ؟',
       },
 
       presence: {
@@ -726,6 +738,8 @@ const resources = {
         filterDate: "تصفية بالتاريخ",
         notFound: "لا توجد حضور مسجّلة لهذا التلميذ.",
         noPresence: "لا يوجد حضور مسجّل.",
+        previous: "السابق",
+        next: "التالي",
         selectEleve: "التلميذ",
         selectElevePlaceholder: "اختر تلميذًا...",
         dateLabel: "التاريخ",

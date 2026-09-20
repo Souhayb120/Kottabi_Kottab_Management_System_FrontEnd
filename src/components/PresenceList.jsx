@@ -1,10 +1,15 @@
-import { useEffect, useState } from "react";
+import { Fragment, useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
-import { CalendarCheck } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faCalendarCheck,
+  faChevronLeft,
+  faChevronRight,
+} from "@fortawesome/free-solid-svg-icons";
 import api from "../api/Api";
 import AppModal from "./AppModal";
 import EmptyState from "./EmptyState";
@@ -35,14 +40,25 @@ const presenceSchema = yup.object({
 const PresenceList = () => {
   const URL = "api/presence";
   const ELEVE_URL = "api/eleve";
+  const SIZE = 10;
   const { t } = useTranslation();
 
   const [presences, setPresences] = useState([]);
   const [eleves, setEleves] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchUsername, setSearchUsername] = useState("");
-  const [dateFilter, setDateFilter] = useState("");
+  const [appliedSearch, setAppliedSearch] = useState("");
   const [statutFilter, setStatutFilter] = useState("ALL");
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
+  const [reloadKey, setReloadKey] = useState(0);
+  const [counts, setCounts] = useState({
+    PRESENT: 0,
+    RETARD: 0,
+    ABSENT: 0,
+    EXCUSE: 0,
+  });
   const [open, setOpen] = useState(false);
   const [selectedPresenceId, setSelectedPresenceId] = useState(null);
   const [openModal, setOpenModal] = useState(false);
@@ -64,51 +80,80 @@ const PresenceList = () => {
     return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
   };
 
-  const fetchPresences = async () => {
-    const response = await api.get(`${URL}?size=1000`);
-    setPresences(response.data.content);
-  };
+  const fetchCounts = useCallback(async () => {
+    try {
+      const [p, r, a, e] = await Promise.all([
+        api.get(`${URL}/countPresence/PRESENT`),
+        api.get(`${URL}/countPresence/RETARD`),
+        api.get(`${URL}/countPresence/ABSENT`),
+        api.get(`${URL}/countPresence/EXCUSE`),
+      ]);
+      setCounts({ PRESENT: p.data, RETARD: r.data, ABSENT: a.data, EXCUSE: e.data });
+    } catch (error) {
+      // keep previous counts
+    }
+  }, [URL]);
 
   useEffect(() => {
-    const init = async () => {
+    let cancelled = false;
+    const load = async () => {
+      setLoading(true);
       try {
-        await fetchPresences();
+        let url = `${URL}?page=${page}&size=${SIZE}`;
+        if (appliedSearch !== "") {
+          url = `${URL}/eleve/${encodeURIComponent(appliedSearch)}?page=${page}&size=${SIZE}`;
+        } else if (statutFilter !== "ALL") {
+          url = `${URL}/filterPresence?statut=${statutFilter}&page=${page}&size=${SIZE}`;
+        }
+        const response = await api.get(url);
+        if (!cancelled) {
+          setPresences(response.data.content);
+          setTotalPages(response.data.totalPages);
+          setTotalElements(response.data.totalElements);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          setPresences([]);
+          setTotalPages(0);
+          setTotalElements(0);
+        }
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
 
-    init();
-  }, []);
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, [URL, page, statutFilter, appliedSearch, reloadKey]);
 
-  const onSearch = async () => {
-    if (searchUsername.trim() === "") {
-      fetchPresences();
-      return;
-    }
+  useEffect(() => {
+    fetchCounts();
+  }, [fetchCounts, reloadKey]);
 
-    try {
-      const response = await api.get(`${URL}/eleve/${searchUsername}?size=100`);
-      setPresences(response.data.content);
-    } catch (error) {
-      setPresences([]);
-      toast.error(t("presence.notFound"));
+  const onSearch = () => {
+    const term = searchUsername.trim();
+    if (term === "") {
+      setAppliedSearch("");
+    } else {
+      setStatutFilter("ALL");
+      setAppliedSearch(term);
     }
+    setPage(0);
   };
 
-  const filtered = presences.filter(
-    (presence) =>
-      (!dateFilter || presence.date === dateFilter) &&
-      (statutFilter === "ALL" || presence.statut === statutFilter),
-  );
+  const onStatutChange = (e) => {
+    setAppliedSearch("");
+    setStatutFilter(e.target.value);
+    setPage(0);
+  };
 
-  const counts = presences.reduce(
-    (acc, presence) => {
-      acc[presence.statut] = (acc[presence.statut] || 0) + 1;
-      return acc;
-    },
-    { PRESENT: 0, RETARD: 0, ABSENT: 0, EXCUSE: 0 },
-  );
+  const getPageNumbers = (current, total) => {
+    if (total <= 7) return Array.from({ length: total }, (_, i) => i);
+    const pages = new Set([0, total - 1, current - 1, current, current + 1]);
+    return [...pages].filter((p) => p >= 0 && p < total).sort((a, b) => a - b);
+  };
 
   //  Deleting Process
   const handleCloseDelete = () => setOpen(false);
@@ -121,9 +166,9 @@ const PresenceList = () => {
   const deletePresence = async (id) => {
     try {
       await api.delete(`${URL}/${id}`);
-      setPresences((prev) => prev.filter((presence) => presence.id !== id));
       toast.success(t("presence.deleteSuccess"));
       setOpen(false);
+      setReloadKey((k) => k + 1);
     } catch (error) {
       toast.error(t("presence.deleteError"));
     }
@@ -145,15 +190,14 @@ const PresenceList = () => {
 
   const onSubmit = async (data) => {
     try {
-      const payload = {
+      await api.post(URL, {
         date: data.date,
         statut: data.statut,
         eleveId: Number(data.eleveId),
-      };
-      const response = await api.post(URL, payload);
-      setPresences((prev) => [response.data, ...prev]);
+      });
       handleClose();
       toast.success(t("presence.createSuccess"));
+      setReloadKey((k) => k + 1);
     } catch (error) {
       toast.error(t("presence.createError"));
     }
@@ -171,21 +215,18 @@ const PresenceList = () => {
   const onEdit = async (data) => {
     try {
       await api.put(`${URL}/${editPresence.id}?statut=${data.statut}`);
-      setPresences((prev) =>
-        prev.map((presence) =>
-          presence.id === editPresence.id
-            ? { ...presence, statut: data.statut }
-            : presence,
-        ),
-      );
       toast.success(t("presence.updateSuccess"));
       setOpenEditModal(false);
+      setReloadKey((k) => k + 1);
     } catch (error) {
       toast.error(t("presence.updateError"));
     }
   };
 
-  const searched = searchUsername.trim() !== "" && presences.length === 0;
+  const searched = appliedSearch !== "" && presences.length === 0;
+  const pageItems = getPageNumbers(page, totalPages);
+  const from = totalElements === 0 ? 0 : page * SIZE + 1;
+  const to = totalElements === 0 ? 0 : Math.min((page + 1) * SIZE, totalElements);
 
   return (
     <>
@@ -218,23 +259,18 @@ const PresenceList = () => {
             type="text"
             placeholder={t("presence.searchPlaceholder")}
             value={searchUsername}
-            onChange={(e) => setSearchUsername(e.target.value)}
+            onChange={(e) => {
+              setSearchUsername(e.target.value);
+              if (e.target.value.trim() === "") setAppliedSearch("");
+            }}
             onKeyDown={(e) => e.key === "Enter" && onSearch()}
             className="input-trad"
           />
         </div>
 
-        <input
-          type="date"
-          value={dateFilter}
-          onChange={(e) => setDateFilter(e.target.value)}
-          title={t("presence.filterDate")}
-          className="input-trad w-40"
-        />
-
         <select
           value={statutFilter}
-          onChange={(e) => setStatutFilter(e.target.value)}
+          onChange={onStatutChange}
           className="input-trad w-36"
         >
           <option value="ALL">{t("presence.filterAll")}</option>
@@ -274,7 +310,7 @@ const PresenceList = () => {
                     </td>
                   </tr>
                 ))
-              : filtered.map((presence) => (
+              : presences.map((presence) => (
                   <tr
                     key={presence.id || `${presence.date}-${presence.eleve?.username}`}
                   >
@@ -321,11 +357,56 @@ const PresenceList = () => {
           </tbody>
         </table>
 
-        {!loading && filtered.length === 0 && (
+        {!loading && presences.length === 0 && (
           <EmptyState
-            icon={<CalendarCheck className="h-5 w-5" />}
+            icon={<FontAwesomeIcon icon={faCalendarCheck} className="h-5 w-5" />}
             title={searched ? t("presence.notFound") : t("presence.noPresence")}
           />
+        )}
+
+        {!loading && totalPages > 1 && (
+          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-(--border) px-4 py-3">
+            <span className="text-[12px] text-(--text-muted)">
+              {from}–{to} / {totalElements}
+            </span>
+            <div className="flex items-center gap-1.5">
+              <button
+                onClick={() => setPage((p) => Math.max(0, p - 1))}
+                disabled={page === 0}
+                className="flex h-8 w-8 items-center justify-center rounded-md text-[12px] text-(--text-muted) transition-colors hover:bg-(--border) disabled:cursor-not-allowed disabled:opacity-40"
+                aria-label={t("presence.previous")}
+              >
+                <FontAwesomeIcon icon={faChevronLeft} className="h-3 w-3 rtl:rotate-180" />
+              </button>
+
+              {pageItems.map((p, i, arr) => (
+                <Fragment key={p}>
+                  {i > 0 && p - arr[i - 1] > 1 && (
+                    <span className="px-1 text-[12px] text-(--text-muted)">…</span>
+                  )}
+                  <button
+                    onClick={() => setPage(p)}
+                    className={`flex h-8 w-8 items-center justify-center rounded-md text-[12px] font-medium transition-colors ${
+                      p === page
+                        ? "bg-(--brand) text-white"
+                        : "text-(--text-muted) hover:bg-(--border)"
+                    }`}
+                  >
+                    {p + 1}
+                  </button>
+                </Fragment>
+              ))}
+
+              <button
+                onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+                disabled={page >= totalPages - 1}
+                className="flex h-8 w-8 items-center justify-center rounded-md text-[12px] text-(--text-muted) transition-colors hover:bg-(--border) disabled:cursor-not-allowed disabled:opacity-40"
+                aria-label={t("presence.next")}
+              >
+                <FontAwesomeIcon icon={faChevronRight} className="h-3 w-3 rtl:rotate-180" />
+              </button>
+            </div>
+          </div>
         )}
       </div>
 

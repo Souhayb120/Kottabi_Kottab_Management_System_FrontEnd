@@ -4,7 +4,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
-import { Medal } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMedal } from "@fortawesome/free-solid-svg-icons";
 import api from "../api/Api";
 import ParticipationForm from "./ParticipationForm";
 import AppModal from "./AppModal";
@@ -320,7 +321,7 @@ const ParticipationList = () => {
 
         {!loading && participations.length === 0 && (
           <EmptyState
-            icon={<Medal className="h-5 w-5" />}
+            icon={<FontAwesomeIcon icon={faMedal} className="h-5 w-5" />}
             title={
               searched
                 ? t("participation.notFound")

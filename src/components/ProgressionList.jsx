@@ -4,7 +4,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
-import { BookOpen } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBookQuran } from "@fortawesome/free-solid-svg-icons";
 import api from "../api/Api";
 import ProgressionForm from "./ProgressionForm";
 import AppModal from "./AppModal";
@@ -300,7 +301,7 @@ const ProgressionList = () => {
 
         {!loading && progressions.length === 0 && (
           <EmptyState
-            icon={<BookOpen className="h-5 w-5" />}
+            icon={<FontAwesomeIcon icon={faBookQuran} className="h-5 w-5" />}
             title={
               searched
                 ? t("progression.notFound")

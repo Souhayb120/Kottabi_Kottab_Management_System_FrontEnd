@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
-import { FileText, Loader2 } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFileLines, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import api from "../api/Api";
 import adkarList from "../assets/adkar";
 import Sidebar from "../components/SideBar";
@@ -140,12 +141,12 @@ const Rapport = () => {
                 >
                   {loading ? (
                     <>
-                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                      <FontAwesomeIcon icon={faSpinner} spin className="h-3.5 w-3.5" />
                       {t("rapport.generating")}
                     </>
                   ) : (
                     <>
-                      <FileText className="h-3.5 w-3.5" />
+                      <FontAwesomeIcon icon={faFileLines} className="h-3.5 w-3.5" />
                       {t("rapport.generate")}
                     </>
                   )}
@@ -182,7 +183,7 @@ const Rapport = () => {
               {pdfUrl && (
                 <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-(--border) pt-4">
                   <p className="flex items-center gap-2 text-[12px] text-(--text-2)">
-                    <FileText className="h-3.5 w-3.5 text-(--brand)" />
+                    <FontAwesomeIcon icon={faFileLines} className="h-3.5 w-3.5 text-(--brand)" />
                     {t("rapport.pdfSaved")}
                   </p>
                   <button onClick={redownload} className="btn-secondary">

@@ -1,4 +1,5 @@
-import { Moon, Sun } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
 
 function ThemeToggle({ value, onToggle, light, dark, className }) {
   return (
@@ -9,7 +10,7 @@ function ThemeToggle({ value, onToggle, light, dark, className }) {
       title={value ? light : dark}
       className={className || "p-2"}
     >
-      {value ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+      {value ? <FontAwesomeIcon icon={faSun} className="h-5 w-5" /> : <FontAwesomeIcon icon={faMoon} className="h-5 w-5" />}
     </button>
   );
 }

@@ -2,11 +2,6 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* ─────────────────────────────────────────────────────────────
-   Kottabi design tokens
-   Green = brand (calm, trusted). Gold = significance, used little.
-   Neutral paper surfaces carry the interface.
-   ───────────────────────────────────────────────────────────── */
 
 :root {
   color-scheme: light;
@@ -108,7 +103,6 @@ body {
   font-family: var(--font-display);
 }
 
-/* ── App frame ───────────────────────────────────────────────── */
 
 .app-layout {
   min-height: 100vh;
@@ -133,7 +127,7 @@ body {
   color: var(--text);
 }
 
-/* ── Sidebar ─────────────────────────────────────────────────── */
+/* Sidebar  */
 
 .sidebar {
   position: fixed;
@@ -190,7 +184,7 @@ body {
   padding-inline: 14px;
 }
 
-/* ── Top bar ─────────────────────────────────────────────────── */
+/* Top bar */
 
 .topbar {
   position: sticky;
@@ -228,7 +222,7 @@ body {
   flex-shrink: 0;
 }
 
-/* ── Footer ──────────────────────────────────────────────────── */
+/*  Footer  */
 
 .footer {
   background-color: var(--brand);
@@ -243,7 +237,7 @@ body {
   margin: 0;
 }
 
-/* ── Page header (one motif: the gold rule) ──────────────────── */
+/*  Page header */
 
 .page-header {
   display: flex;
@@ -284,7 +278,7 @@ body {
   color: var(--text-muted);
 }
 
-/* ── Toolbar / search ────────────────────────────────────────── */
+/*  Toolbar , search  */
 
 .toolbar {
   display: flex;
@@ -317,7 +311,7 @@ body {
   width: 250px;
 }
 
-/* ── Buttons ─────────────────────────────────────────────────── */
+/*  Buttons  */
 
 .btn,
 .btn-trad {
@@ -422,7 +416,6 @@ body {
   background: var(--surface-2);
 }
 
-/* Row action buttons: neutral by default, coloured on hover */
 
 .btn-xs {
   display: inline-flex;
@@ -463,7 +456,7 @@ body {
   border-color: rgba(179, 67, 47, 0.35);
 }
 
-/* ── Form fields ─────────────────────────────────────────────── */
+/*  Form fields  */
 
 .label-trad {
   display: block;
@@ -511,7 +504,7 @@ body {
   margin-top: 4px;
 }
 
-/* ── Tables ──────────────────────────────────────────────────── */
+/* Tables  */
 
 .table-shell {
   border: 1px solid var(--border);
@@ -618,7 +611,7 @@ body {
   color: var(--brand);
 }
 
-/* ── Panels (modals, standalone blocks) ──────────────────────── */
+/* Panels */
 
 .panel {
   border: 1px solid var(--border);
@@ -657,7 +650,7 @@ body {
   padding: 20px 22px;
 }
 
-/* ── State blocks ────────────────────────────────────────────── */
+/* State blocks  */
 
 .empty-state {
   display: flex;
@@ -715,7 +708,7 @@ body {
   }
 }
 
-/* ── Dashboard ledger ────────────────────────────────────────── */
+/*  Dashboard ledger  */
 
 .stat-ledger {
   display: flex;

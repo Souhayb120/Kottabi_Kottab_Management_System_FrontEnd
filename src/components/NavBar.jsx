@@ -1,6 +1,7 @@
 import { jwtDecode } from "jwt-decode";
 import { useTranslation } from "react-i18next";
-import { CalendarDays, Globe, GraduationCap } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCalendarDays, faGlobe, faMosque } from "@fortawesome/free-solid-svg-icons";
 
 function Topbar() {
   const { t, i18n } = useTranslation();
@@ -34,12 +35,12 @@ function Topbar() {
     <div className="topbar">
       <div className="hidden items-center gap-3 text-[13px] sm:flex">
         <span className="flex items-center gap-2 font-medium text-white">
-          <GraduationCap className="h-4 w-4 text-[#d9b45f]" />
-          Kottab el Imam Warch
+          <FontAwesomeIcon icon={faMosque} className="h-4 w-4 text-[#d9b45f]" />
+          {t("landing.schoolTitle")}
         </span>
         <span className="topbar-split" />
         <span className="flex items-center gap-1.5 text-xs text-white/60">
-          <CalendarDays className="h-3.5 w-3.5" />
+          <FontAwesomeIcon icon={faCalendarDays} className="h-3.5 w-3.5" />
           <span className="capitalize">{dateLabel}</span>
         </span>
       </div>
@@ -49,7 +50,7 @@ function Topbar() {
           onClick={toggleLang}
           className="flex items-center gap-1.5 rounded-md border border-white/20 bg-white/5 px-2.5 py-1.5 text-[11.5px] font-medium text-[#e3c472] transition-colors hover:bg-white/10 hover:text-white"
         >
-          <Globe className="h-3.5 w-3.5" />
+          <FontAwesomeIcon icon={faGlobe} className="h-3.5 w-3.5" />
           {i18n.language === "ar" ? "FR" : "عربي"}
         </button>
         <div className="avatar">{initials || "U"}</div>

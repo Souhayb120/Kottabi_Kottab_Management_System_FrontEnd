@@ -1,22 +1,24 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  ArrowRight,
-  BookOpen,
-  Check,
-  CheckCircle2,
-  FileText,
-  Globe,
-  GraduationCap,
-  LayoutDashboard,
-  Menu,
-  Search,
-  Settings,
-  TrendingUp,
-  Trophy,
-  Users,
-  X,
-} from "lucide-react";
+  faArrowRight,
+  faBars,
+  faBookQuran,
+  faCalendarCheck,
+  faChalkboardUser,
+  faCheck,
+  faChildren,
+  faCircleCheck,
+  faFileLines,
+  faGear,
+  faGlobe,
+  faMagnifyingGlass,
+  faStarAndCrescent,
+  faTrophy,
+  faUserShield,
+  faXmark,
+} from "@fortawesome/free-solid-svg-icons";
 import ThemeToggle from "../components/ThemeToggle";
 
 function Landing() {
@@ -35,11 +37,11 @@ function Landing() {
     { href: "#story", label: t("landing.navStory", "L'histoire") },
   ];
 
-  const sidebarIcons = [LayoutDashboard, Users, TrendingUp, Trophy, FileText, Settings];
+  const sidebarIcons = [faStarAndCrescent, faChildren, faBookQuran, faTrophy, faFileLines, faGear];
 
   const roles = [
     {
-      icon: Users,
+      icon: faUserShield,
       title: t("landing.roleAdminTitle", "La direction"),
       desc: t("landing.roleAdminDesc", "Toute l'école en un écran, sans recompter les cahiers."),
       points: [
@@ -49,7 +51,7 @@ function Landing() {
       ],
     },
     {
-      icon: GraduationCap,
+      icon: faChalkboardUser,
       title: t("landing.roleTeacherTitle", "Les enseignants"),
       desc: t("landing.roleTeacherDesc", "Trente secondes par élève, puis on revient à l'enseignement."),
       points: [
@@ -59,7 +61,7 @@ function Landing() {
       ],
     },
     {
-      icon: BookOpen,
+      icon: faBookQuran,
       title: t("landing.roleParentTitle", "Les familles"),
       desc: t("landing.roleParentDesc", "Suivre de loin, sans bruit, l'essentiel seulement."),
       points: [
@@ -72,32 +74,32 @@ function Landing() {
 
   const features = [
     {
-      icon: Check,
+      icon: faCalendarCheck,
       title: t("landing.f1Title", "La présence"),
       desc: t("landing.f1Desc", "Le pointage du matin, en trente secondes."),
     },
     {
-      icon: TrendingUp,
+      icon: faBookQuran,
       title: t("landing.f2Title", "Le suivi de la mémorisation"),
       desc: t("landing.f2Desc", "Sourates, versets, et degré de difficulté."),
     },
     {
-      icon: Users,
+      icon: faChildren,
       title: t("landing.f3Title", "Les fiches élèves"),
       desc: t("landing.f3Desc", "Coordonnées, naissance, et historique complet."),
     },
     {
-      icon: Trophy,
+      icon: faTrophy,
       title: t("landing.f4Title", "Les concours"),
       desc: t("landing.f4Desc", "Inscription, notes, classement."),
     },
     {
-      icon: FileText,
+      icon: faFileLines,
       title: t("landing.f5Title", "Les rapports"),
       desc: t("landing.f5Desc", "Un bilan simple, envoyé aux familles."),
     },
     {
-      icon: Search,
+      icon: faMagnifyingGlass,
       title: t("landing.f6Title", "La recherche"),
       desc: t("landing.f6Desc", "Retrouver un élève par son nom, immédiatement."),
     },
@@ -119,7 +121,7 @@ function Landing() {
           <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 sm:px-8">
             <a href="#top" className="flex items-center gap-2.5">
               <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-(--brand) shadow-md shadow-(--brand)/20">
-                <BookOpen className="h-5 w-5 text-(--accent)" />
+                <FontAwesomeIcon icon={faBookQuran} className="h-5 w-5 text-(--accent)" />
               </span>
               <span className="text-lg font-bold tracking-tight text-(--brand)">Kottabi</span>
             </a>
@@ -141,7 +143,7 @@ function Landing() {
                 onClick={toggleLang}
                 className="flex items-center gap-1.5 rounded-full border border-(--border) bg-(--surface) px-3 py-2 text-xs font-medium text-(--text-muted) transition-colors hover:text-(--brand)"
               >
-                <Globe className="h-3.5 w-3.5" />
+                <FontAwesomeIcon icon={faGlobe} className="h-3.5 w-3.5" />
                 {isAr ? "FR" : "عربي"}
               </button>
 
@@ -165,7 +167,11 @@ function Landing() {
                 className="rounded-md p-2 text-(--text-muted) transition-colors hover:bg-(--border) md:hidden"
                 aria-label="Menu"
               >
-                {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+                {mobileOpen ? (
+                  <FontAwesomeIcon icon={faXmark} className="h-5 w-5" />
+                ) : (
+                  <FontAwesomeIcon icon={faBars} className="h-5 w-5" />
+                )}
               </button>
             </div>
           </div>
@@ -197,7 +203,7 @@ function Landing() {
           <div className="relative mx-auto max-w-6xl px-5 pb-20 pt-16 text-center sm:px-8 lg:pb-24 lg:pt-20">
             <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-(--border) bg-(--surface) px-3.5 py-1.5 text-xs font-medium text-(--text-muted) shadow-sm">
               <span className="flex h-5 w-5 items-center justify-center rounded-full bg-(--brand)">
-                <BookOpen className="h-3 w-3 text-(--accent)" />
+                <FontAwesomeIcon icon={faBookQuran} className="h-3 w-3 text-(--accent)" />
               </span>
               {t("landing.heroBadge", "Pensé pour les madrasas")}
             </div>
@@ -230,7 +236,7 @@ function Landing() {
                 className="inline-flex items-center gap-2 rounded-full bg-(--brand) px-8 py-3.5 text-sm font-semibold text-[#f3efe3] transition-colors hover:bg-(--brand-strong)"
               >
                 {t("landing.heroCtaPrimary", "Essayer gratuitement")}
-                <ArrowRight className="h-4 w-4 rtl:rotate-180" />
+                <FontAwesomeIcon icon={faArrowRight} className="h-4 w-4 rtl:rotate-180" />
               </a>
               <a
                 href="#demo"
@@ -249,7 +255,7 @@ function Landing() {
             <div className="relative overflow-hidden rounded-2xl border border-(--border) bg-(--surface) shadow-[0_24px_48px_-28px_rgba(10,46,34,0.35)]">
               <div className="flex items-center gap-2 border-b border-(--border) bg-(--surface-2) px-4 py-2.5">
                 <div className="flex flex-1 items-center gap-2 rounded-lg bg-(--bg) px-3 py-1 text-[11px] text-(--text-muted)">
-                  <Search className="h-3 w-3" />
+                  <FontAwesomeIcon icon={faMagnifyingGlass} className="h-3 w-3" />
                   app.kottabi.org
                 </div>
               </div>
@@ -263,7 +269,7 @@ function Landing() {
                         index === 1 ? "bg-(--brand) text-(--accent)" : "text-(--text-muted)"
                       }`}
                     >
-                      <Icon className="h-4 w-4" />
+                      <FontAwesomeIcon icon={Icon} className="h-4 w-4" />
                     </span>
                   ))}
                 </div>
@@ -280,7 +286,7 @@ function Landing() {
 
                   <div className="flex items-center justify-between gap-3 rounded-xl bg-(--brand) px-4 py-3 text-[#f3efe3]">
                     <span className="flex items-center gap-2 text-xs font-medium">
-                      <CheckCircle2 className="h-4 w-4 text-(--accent)" />
+                      <FontAwesomeIcon icon={faCircleCheck} className="h-4 w-4 text-(--accent)" />
                       {t("landing.demoPresence", "Présence aujourd'hui")}
                     </span>
                     <span className="text-sm font-bold">24/25</span>
@@ -379,7 +385,7 @@ function Landing() {
                   className="rounded-2xl border border-(--border) bg-(--surface) p-7 transition-colors hover:border-(--brand)/35"
                 >
                   <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-(--brand) text-(--accent)">
-                    <role.icon className="h-5 w-5" />
+                    <FontAwesomeIcon icon={role.icon} className="h-5 w-5" />
                   </span>
                   <h3 className="mt-5 text-lg font-semibold text-(--text)">{role.title}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-(--text-muted)">{role.desc}</p>
@@ -387,7 +393,7 @@ function Landing() {
                     {role.points.map((point) => (
                       <li key={point} className="flex items-start gap-3 text-sm text-(--text-muted)">
                         <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-300">
-                          <Check className="h-3 w-3" />
+                          <FontAwesomeIcon icon={faCheck} className="h-3 w-3" />
                         </span>
                         {point}
                       </li>
@@ -420,7 +426,7 @@ function Landing() {
                   className="rounded-2xl border border-(--border) bg-(--bg) p-6 transition-colors hover:border-(--brand)/35"
                 >
                   <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-(--brand)/10 text-(--brand) transition-colors group-hover:bg-(--brand) group-hover:text-(--accent)">
-                    <feature.icon className="h-4 w-4" />
+                    <FontAwesomeIcon icon={feature.icon} className="h-4 w-4" />
                   </span>
                   <h3 className="mt-4 font-semibold text-(--text)">{feature.title}</h3>
                   <p className="mt-1.5 text-sm leading-relaxed text-(--text-muted)">{feature.desc}</p>
@@ -504,7 +510,7 @@ function Landing() {
                 className="mt-9 inline-flex items-center gap-2 rounded-full bg-[#c79a3b] px-9 py-3.5 text-sm font-semibold text-[#241c08] transition-colors hover:bg-[#d4ab54]"
               >
                 {t("landing.ctaButton", "Se connecter")}
-                <ArrowRight className="h-4 w-4 rtl:rotate-180" />
+                <FontAwesomeIcon icon={faArrowRight} className="h-4 w-4 rtl:rotate-180" />
               </a>
             </div>
           </div>
@@ -515,7 +521,7 @@ function Landing() {
             <div className="flex flex-col items-center justify-between gap-8 md:flex-row">
               <div className="flex items-center gap-3 text-white">
                 <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/10">
-                  <BookOpen className="h-5 w-5 text-[#c79a3b]" />
+                  <FontAwesomeIcon icon={faBookQuran} className="h-5 w-5 text-[#c79a3b]" />
                 </span>
                 <span className="text-lg font-bold tracking-tight">Kottabi</span>
               </div>

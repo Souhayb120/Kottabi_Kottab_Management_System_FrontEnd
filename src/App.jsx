@@ -1,4 +1,7 @@
 import { Route, Routes } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import { useTranslation } from "react-i18next";
+import "react-toastify/dist/ReactToastify.css";
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
@@ -12,6 +15,7 @@ import Rapport from "./pages/Rapport";
 import Participations from "./pages/Participations";
 
 function App() {
+  const { i18n } = useTranslation();
   return (
     <>
       <Routes>
@@ -27,6 +31,15 @@ function App() {
         <Route path="/reports" element={<Rapport />} />
         <Route path="/enseignant" element={<Enseignants />} />
       </Routes>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={i18n.language === "ar"}
+        theme="light"
+      />
     </>
   );
 }

@@ -4,7 +4,16 @@ import { Link, useNavigate } from "react-router-dom";
 import AuthService from "../services/AuthService";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
-import { BookOpen, Mail, Lock, Eye, EyeOff, ArrowRight } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faArrowRight,
+  faBookQuran,
+  faEnvelope,
+  faEye,
+  faEyeSlash,
+  faLock,
+} from "@fortawesome/free-solid-svg-icons";
+import kottabiVideo from "../assets/kottabi.mp4";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -28,22 +37,22 @@ const Login = () => {
     }
   };
 
-  const inputClass =
-    "input-trad ps-9";
+  const inputClass = "input-trad ps-9";
 
   return (
-    <div className="flex min-h-screen flex-col bg-(--bg)">
-      <div className="flex flex-1 items-center justify-center p-4">
+    <div className="min-h-screen bg-(--bg) lg:grid lg:grid-cols-2">
+      {/* Login side */}
+      <div className="flex min-h-screen items-center justify-center p-4 lg:min-h-0 lg:py-10">
         <div className="w-full max-w-[400px]">
           <div className="panel overflow-hidden">
             <div className="bg-(--brand) px-8 py-7 border-b border-[#c79a3b]/40">
               <div className="flex items-center gap-3">
                 <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-[#c79a3b]/45 bg-white/5 text-[#e3c472]">
-                  <BookOpen className="h-5 w-5" />
+                  <FontAwesomeIcon icon={faBookQuran} className="h-5 w-5" />
                 </span>
                 <div>
                   <p className="text-[15px] font-semibold leading-tight text-[#f3efe3]">
-                    Kottabi
+                    {t("landing.titleApp")}
                   </p>
                   <p className="text-[11px] leading-tight text-[#c6d3cb]">
                     {t("login.tagline")}
@@ -64,7 +73,7 @@ const Login = () => {
                 <div>
                   <label className="label-trad">{t("login.username")}</label>
                   <div className="relative">
-                    <Mail className="absolute inset-y-0 start-3.5 my-auto h-4 w-4 text-(--text-muted)" />
+                    <FontAwesomeIcon icon={faEnvelope} className="absolute inset-y-0 start-3.5 my-auto h-4 w-4 text-(--text-muted)" />
                     <input
                       type="text"
                       placeholder="ahmed129"
@@ -77,7 +86,7 @@ const Login = () => {
                 <div>
                   <label className="label-trad">{t("login.password")}</label>
                   <div className="relative">
-                    <Lock className="absolute inset-y-0 start-3.5 my-auto h-4 w-4 text-(--text-muted)" />
+                    <FontAwesomeIcon icon={faLock} className="absolute inset-y-0 start-3.5 my-auto h-4 w-4 text-(--text-muted)" />
                     <input
                       type={showPassword ? "text" : "password"}
                       placeholder="••••••••"
@@ -95,9 +104,9 @@ const Login = () => {
                       }
                     >
                       {showPassword ? (
-                        <EyeOff className="h-4 w-4" />
+                        <FontAwesomeIcon icon={faEyeSlash} className="h-4 w-4" />
                       ) : (
-                        <Eye className="h-4 w-4" />
+                        <FontAwesomeIcon icon={faEye} className="h-4 w-4" />
                       )}
                     </button>
                   </div>
@@ -108,7 +117,7 @@ const Login = () => {
                   className="btn mt-2 flex w-full items-center justify-center gap-2"
                 >
                   {t("login.submit")}
-                  <ArrowRight className="h-4 w-4" />
+                  <FontAwesomeIcon icon={faArrowRight} className="h-4 w-4" />
                 </button>
               </form>
 
@@ -123,6 +132,30 @@ const Login = () => {
               </p>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Video side */}
+      <div className="relative hidden overflow-hidden bg-(--brand) lg:block">
+        <video
+          src={kottabiVideo}
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+
+        <div className="absolute inset-0 bg-linear-to-t from-[#0f3d2e]/95 via-[#0f3d2e]/40 to-[#0f3d2e]/5" />
+
+        <div className="relative flex h-full flex-col justify-end p-8 xl:p-12">
+          <span className="mb-4 h-px w-12 bg-[#c79a3b]" />
+          <p className="font-display max-w-md text-[22px] leading-snug text-[#f3efe3] xl:text-[26px]">
+            {t("login.quote")}
+          </p>
+          <p className="mt-3 text-[11px] uppercase tracking-[0.14em] text-[#c6d3cb]">
+            {t("login.quoteSource")}
+          </p>
         </div>
       </div>
     </div>

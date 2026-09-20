@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { ArrowRight } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import api from "../api/Api";
 import Sidebar from "../components/SideBar";
 import NavBar from "../components/NavBar";
@@ -85,7 +86,7 @@ const EleveDetails = () => {
               <h1 className="page-title">{t("eleveDetails.title")}</h1>
             </div>
             <button onClick={() => navigate("/eleve")} className="btn-secondary">
-              <ArrowRight className="h-3.5 w-3.5" />
+              <FontAwesomeIcon icon={faArrowRight} className="h-3.5 w-3.5" />
               {t("eleveDetails.back")}
             </button>
           </div>
