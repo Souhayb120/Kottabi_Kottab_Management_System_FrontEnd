@@ -41,7 +41,7 @@ api.interceptors.response.use(
                 localStorage.removeItem("username");
                 localStorage.removeItem("role");
 
-                window.location.href = "/";
+                window.location.href = "/login";
                 break;
 
             case 403:

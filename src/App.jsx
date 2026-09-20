@@ -13,6 +13,8 @@ import Progressions from "./pages/Progression";
 import Concours from "./pages/Concours";
 import Rapport from "./pages/Rapport";
 import Participations from "./pages/Participations";
+import RequireAuth from "./components/RequireAuth";
+import NotFound from "./components/NotFound";
 
 function App() {
   const { i18n } = useTranslation();
@@ -21,15 +23,79 @@ function App() {
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/eleve" element={<Eleves />} />
-        <Route path="/eleve/details/:username" element={<EleveDetails />} />
-        <Route path="/presence" element={<Presences />} />
-        <Route path="/progress" element={<Progressions />} />
-        <Route path="/competitions" element={<Concours />} />
-        <Route path="/participation" element={<Participations />} />
-        <Route path="/reports" element={<Rapport />} />
-        <Route path="/enseignant" element={<Enseignants />} />
+        <Route
+          path="/dashboard"
+          element={
+            <RequireAuth>
+              <Dashboard />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/eleve"
+          element={
+            <RequireAuth>
+              <Eleves />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/eleve/details/:username"
+          element={
+            <RequireAuth>
+              <EleveDetails />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/presence"
+          element={
+            <RequireAuth>
+              <Presences />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/progress"
+          element={
+            <RequireAuth>
+              <Progressions />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/competitions"
+          element={
+            <RequireAuth>
+              <Concours />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/participation"
+          element={
+            <RequireAuth>
+              <Participations />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/reports"
+          element={
+            <RequireAuth>
+              <Rapport />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/enseignant"
+          element={
+            <RequireAuth>
+              <Enseignants />
+            </RequireAuth>
+          }
+        />
+        <Route path="*" element={<NotFound />} />
       </Routes>
       <ToastContainer
         position="top-right"

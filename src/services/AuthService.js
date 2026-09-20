@@ -1,13 +1,37 @@
+import { jwtDecode } from "jwt-decode";
 import api from "../api/Api";
-const API_BASE_URL = "http://localhost:8080/api/auth";
 
 class AuthService {
-  register(user) {
-    return api.post(`${API_BASE_URL}/register`, user);
+  login(credentials) {
+    return api.post("api/auth/login", credentials);
   }
 
-  login(credentials) {
-    return api.post(`${API_BASE_URL}/login`, credentials);
+  saveToken(token) {
+    localStorage.setItem("token", token);
+  }
+
+  getToken() {
+    return localStorage.getItem("token");
+  }
+
+  hasToken() {
+    return Boolean(this.getToken());
+  }
+
+  getUsername() {
+    try {
+      return jwtDecode(this.getToken()).sub || "";
+    } catch {
+      return "";
+    }
+  }
+
+  getRole() {
+    try {
+      return (jwtDecode(this.getToken()).role || "").replace("ROLE_", "");
+    } catch {
+      return "";
+    }
   }
 
   logout() {

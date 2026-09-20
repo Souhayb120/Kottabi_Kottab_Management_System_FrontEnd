@@ -5,7 +5,11 @@ import * as yup from "yup";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChalkboardUser } from "@fortawesome/free-solid-svg-icons";
+import {
+  faChalkboardUser,
+  faChevronLeft,
+  faChevronRight,
+} from "@fortawesome/free-solid-svg-icons";
 import api from "../api/Api";
 import EnseignantForm from "./EnseignantForm";
 import AppModal from "./AppModal";
@@ -26,9 +30,16 @@ const enseignantSchema = yup.object({
 
 const EnseignantList = () => {
   const URL = "api/enseignant";
+  const SIZE = 10;
   const { t } = useTranslation();
   const [enseignants, setEnseignants] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [totalCount, setTotalCount] = useState(0);
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
+  const [inputTerm, setInputTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const [open, setOpen] = useState(false);
   const [selectedEnseignantId, setSelectedEnseignantId] = useState(null);
   const [openModal, setOpenModal] = useState(false);
@@ -36,7 +47,6 @@ const EnseignantList = () => {
   const [openDetailsModal, setOpenDetailsModal] = useState(false);
   const [editEnseignant, setEditEnseignant] = useState(null);
   const [selectedEnseignant, setSelectedEnseignant] = useState(null);
-  const [searchSpecialite, setSearchSpecialite] = useState("");
 
   const {
     register,
@@ -47,7 +57,37 @@ const EnseignantList = () => {
     resolver: yupResolver(enseignantSchema),
   });
 
-  //  Deleting Process
+  const fetchEnseignants = async () => {
+    setLoading(true);
+    try {
+      let url = `${URL}?page=${page}&size=${SIZE}`;
+      if (searchTerm !== "") {
+        url = `${URL}/specialite/${searchTerm}?page=${page}&size=${SIZE}`;
+      }
+      const response = await api.get(url);
+      const countResponse = await api.get(`${URL}/countEnseignants`);
+      setEnseignants(response.data.content);
+      setTotalPages(response.data.totalPages);
+      setTotalElements(response.data.totalElements);
+      setTotalCount(countResponse.data);
+    } catch (error) {
+      setEnseignants([]);
+      setTotalPages(0);
+      setTotalElements(0);
+      toast.error(t("enseignants.notFound"));
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchEnseignants();
+  }, [page, searchTerm]);
+
+  const onSearch = () => {
+    setSearchTerm(inputTerm.trim());
+    setPage(0);
+  };
+
   const handleCloseDelete = () => {
     setOpen(false);
   };
@@ -60,15 +100,14 @@ const EnseignantList = () => {
   const deleteEnseignant = async (id) => {
     try {
       await api.delete(`${URL}/${id}`);
-      setEnseignants(enseignants.filter((enseignant) => enseignant.id !== id));
       toast.success(t("enseignants.deleteSuccess"));
       setOpen(false);
+      fetchEnseignants();
     } catch (error) {
       toast.error(t("enseignants.deleteError"));
     }
   };
 
-  //  Adding Process
   const handleClose = () => setOpenModal(false);
 
   const handleOpen = () => {
@@ -78,8 +117,8 @@ const EnseignantList = () => {
 
   const onSubmit = async (data) => {
     try {
-      const response = await api.post(URL, data);
-      setEnseignants((prev) => [...prev, response.data]);
+      await api.post(URL, data);
+      setPage(0);
       handleClose();
       toast.success(t("enseignants.createSuccess"));
     } catch (error) {
@@ -87,7 +126,6 @@ const EnseignantList = () => {
     }
   };
 
-  //  Edit Process
   const editThisEnseignant = (enseignant) => {
     setEditEnseignant(enseignant);
     reset(enseignant);
@@ -98,20 +136,15 @@ const EnseignantList = () => {
 
   const onEdit = async (data) => {
     try {
-      const response = await api.put(`${URL}/${editEnseignant.id}`, data);
-      setEnseignants((prev) =>
-        prev.map((enseignant) =>
-          enseignant.id === editEnseignant.id ? response.data : enseignant,
-        ),
-      );
+      await api.put(`${URL}/${editEnseignant.id}`, data);
       toast.success(t("enseignants.updateSuccess"));
       setOpenEditModal(false);
+      fetchEnseignants();
     } catch (error) {
       toast.error(t("enseignants.updateError"));
     }
   };
 
-  //  Details Process
   const openThisEnseignant = (enseignant) => {
     setSelectedEnseignant(enseignant);
     setOpenDetailsModal(true);
@@ -119,39 +152,10 @@ const EnseignantList = () => {
 
   const handleCloseDetails = () => setOpenDetailsModal(false);
 
-  //  Search Process
-  const onSearch = async () => {
-    if (searchSpecialite.trim() === "") {
-      const response = await api.get(`${URL}?size=1000`);
-      setEnseignants(response.data.content);
-      return;
-    }
-
-    try {
-      const response = await api.get(
-        `${URL}/specialite/${searchSpecialite}?size=1000`,
-      );
-      setEnseignants(response.data.content);
-    } catch (error) {
-      setEnseignants([]);
-      toast.error(t("enseignants.notFound"));
-    }
-  };
-
-  useEffect(() => {
-    const fetchEnseignants = async () => {
-      try {
-        const response = await api.get(`${URL}?size=1000`);
-        setEnseignants(response.data.content);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchEnseignants();
-  }, []);
-
-  const searched = searchSpecialite.trim() !== "" && enseignants.length === 0;
+  const pageNumbers = [...Array(totalPages).keys()];
+  const searched = searchTerm !== "" && enseignants.length === 0;
+  const from = totalElements === 0 ? 0 : page * SIZE + 1;
+  const to = totalElements === 0 ? 0 : Math.min((page + 1) * SIZE, totalElements);
 
   return (
     <>
@@ -183,14 +187,17 @@ const EnseignantList = () => {
           <input
             type="text"
             placeholder={t("enseignants.searchPlaceholder")}
-            value={searchSpecialite}
-            onChange={(e) => setSearchSpecialite(e.target.value)}
+            value={inputTerm}
+            onChange={(e) => {
+              setInputTerm(e.target.value);
+              if (e.target.value.trim() === "") setSearchTerm("");
+            }}
             onKeyDown={(e) => e.key === "Enter" && onSearch()}
             className="input-trad"
           />
         </div>
         <span className="text-[11px] uppercase tracking-[0.08em] text-(--text-muted)">
-          {enseignants.length}
+          {totalCount}
         </span>
       </div>
 
@@ -272,6 +279,47 @@ const EnseignantList = () => {
             icon={<FontAwesomeIcon icon={faChalkboardUser} className="h-5 w-5" />}
             title={searched ? t("enseignants.notFound") : t("enseignants.empty")}
           />
+        )}
+
+        {!loading && totalPages > 1 && (
+          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-(--border) px-4 py-3">
+            <span className="text-[12px] text-(--text-muted)">
+              {from}–{to} / {totalElements}
+            </span>
+            <div className="flex items-center gap-1.5">
+              <button
+                onClick={() => setPage(page - 1)}
+                disabled={page === 0}
+                className="flex h-8 w-8 items-center justify-center rounded-md text-[12px] text-(--text-muted) transition-colors hover:bg-(--border) disabled:cursor-not-allowed disabled:opacity-40"
+                aria-label={t("enseignants.previous")}
+              >
+                <FontAwesomeIcon icon={faChevronLeft} className="h-3 w-3 rtl:rotate-180" />
+              </button>
+
+              {pageNumbers.map((p) => (
+                <button
+                  key={p}
+                  onClick={() => setPage(p)}
+                  className={`flex h-8 w-8 items-center justify-center rounded-md text-[12px] font-medium transition-colors ${
+                    p === page
+                      ? "bg-(--brand) text-white"
+                      : "text-(--text-muted) hover:bg-(--border)"
+                  }`}
+                >
+                  {p + 1}
+                </button>
+              ))}
+
+              <button
+                onClick={() => setPage(page + 1)}
+                disabled={page >= totalPages - 1}
+                className="flex h-8 w-8 items-center justify-center rounded-md text-[12px] text-(--text-muted) transition-colors hover:bg-(--border) disabled:cursor-not-allowed disabled:opacity-40"
+                aria-label={t("enseignants.next")}
+              >
+                <FontAwesomeIcon icon={faChevronRight} className="h-3 w-3 rtl:rotate-180" />
+              </button>
+            </div>
+          </div>
         )}
       </div>
 

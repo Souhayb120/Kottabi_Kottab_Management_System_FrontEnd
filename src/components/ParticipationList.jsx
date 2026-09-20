@@ -5,7 +5,11 @@ import * as yup from "yup";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMedal } from "@fortawesome/free-solid-svg-icons";
+import {
+  faChevronLeft,
+  faChevronRight,
+  faMedal,
+} from "@fortawesome/free-solid-svg-icons";
 import api from "../api/Api";
 import ParticipationForm from "./ParticipationForm";
 import AppModal from "./AppModal";
@@ -36,18 +40,23 @@ const participationSchema = yup.object({
 
 const ParticipationList = () => {
   const URL = "api/participation";
+  const SIZE = 10;
   const { t } = useTranslation();
   const [participations, setParticipations] = useState([]);
   const [eleves, setEleves] = useState([]);
   const [enseignants, setEnseignants] = useState([]);
   const [concours, setConcours] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
+  const [inputTerm, setInputTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const [open, setOpen] = useState(false);
   const [selectedParticipationId, setSelectedParticipationId] = useState(null);
   const [openModal, setOpenModal] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
   const [editParticipation, setEditParticipation] = useState(null);
-  const [searchUsername, setSearchUsername] = useState("");
 
   const {
     register,
@@ -58,7 +67,62 @@ const ParticipationList = () => {
     resolver: yupResolver(participationSchema),
   });
 
-  //  Deleting Process
+  const fetchParticipations = async () => {
+    setLoading(true);
+    try {
+      let url = `${URL}?page=${page}&size=${SIZE}`;
+      if (searchTerm !== "") {
+        url = `${URL}/eleve/${searchTerm}?page=${page}&size=${SIZE}`;
+      }
+      const response = await api.get(url);
+      setParticipations(response.data.content);
+      setTotalPages(response.data.totalPages);
+      setTotalElements(response.data.totalElements);
+    } catch (error) {
+      setParticipations([]);
+      setTotalPages(0);
+      setTotalElements(0);
+      toast.error(t("participation.notFound"));
+    }
+    setLoading(false);
+  };
+
+  const fetchFormData = async () => {
+    try {
+      const elevesResponse = await api.get("api/eleve?size=1000");
+      setEleves(elevesResponse.data.content);
+    } catch (error) {
+      toast.error(t("participation.loadElevesError"));
+    }
+
+    try {
+      const enseignantsResponse = await api.get("api/enseignant?size=1000");
+      setEnseignants(enseignantsResponse.data.content);
+    } catch (error) {
+      toast.error(t("participation.loadEnseignantsError"));
+    }
+
+    try {
+      const concoursResponse = await api.get("api/concour?size=1000");
+      setConcours(concoursResponse.data.content);
+    } catch (error) {
+      toast.error(t("participation.loadConcoursError"));
+    }
+  };
+
+  useEffect(() => {
+    fetchParticipations();
+  }, [page, searchTerm]);
+
+  useEffect(() => {
+    fetchFormData();
+  }, []);
+
+  const onSearch = () => {
+    setSearchTerm(inputTerm.trim());
+    setPage(0);
+  };
+
   const handleCloseDelete = () => {
     setOpen(false);
   };
@@ -71,15 +135,14 @@ const ParticipationList = () => {
   const deleteParticipation = async (id) => {
     try {
       await api.delete(`${URL}/${id}`);
-      setParticipations(participations.filter((participation) => participation.id !== id));
       toast.success(t("participation.deleteSuccess"));
       setOpen(false);
+      fetchParticipations();
     } catch (error) {
       toast.error(t("participation.deleteError"));
     }
   };
 
-  //  Adding Process
   const handleClose = () => setOpenModal(false);
 
   const handleOpen = () => {
@@ -97,8 +160,8 @@ const ParticipationList = () => {
         eleveId: Number(data.eleveId),
         enseignantId: Number(data.enseignantId),
       };
-      const response = await api.post(URL, payload);
-      setParticipations((prev) => [response.data, ...prev]);
+      await api.post(URL, payload);
+      setPage(0);
       handleClose();
       toast.success(t("participation.createSuccess"));
     } catch (error) {
@@ -106,7 +169,6 @@ const ParticipationList = () => {
     }
   };
 
-  //  Edit Process
   const editThisParticipation = (participation) => {
     setEditParticipation(participation);
     reset({
@@ -132,77 +194,19 @@ const ParticipationList = () => {
         eleveId: Number(data.eleveId),
         enseignantId: Number(data.enseignantId),
       };
-      const response = await api.put(`${URL}/${editParticipation.id}`, payload);
-      setParticipations((prev) =>
-        prev.map((participation) =>
-          participation.id === editParticipation.id ? response.data : participation,
-        ),
-      );
+      await api.put(`${URL}/${editParticipation.id}`, payload);
       toast.success(t("participation.updateSuccess"));
       setOpenEditModal(false);
+      fetchParticipations();
     } catch (error) {
       toast.error(t("participation.updateError"));
     }
   };
 
-  //  Search Process
-  const onSearch = async () => {
-    if (searchUsername.trim() === "") {
-      const response = await api.get(`${URL}?size=1000`);
-      setParticipations(response.data.content);
-      return;
-    }
-
-    try {
-      const response = await api.get(`${URL}/eleve/${searchUsername}?size=100`);
-      setParticipations(response.data.content);
-    } catch (error) {
-      setParticipations([]);
-      toast.error(t("participation.notFound"));
-    }
-  };
-
-  useEffect(() => {
-    const fetchParticipations = async () => {
-      const response = await api.get(`${URL}?size=1000`);
-      setParticipations(response.data.content);
-      setLoading(false);
-    };
-
-    const fetchEleves = async () => {
-      try {
-        const response = await api.get("api/eleve?size=1000");
-        setEleves(response.data.content);
-      } catch (error) {
-        toast.error(t("participation.loadElevesError"));
-      }
-    };
-
-    const fetchEnseignants = async () => {
-      try {
-        const response = await api.get("api/enseignant?size=1000");
-        setEnseignants(response.data.content);
-      } catch (error) {
-        toast.error(t("participation.loadEnseignantsError"));
-      }
-    };
-
-    const fetchConcours = async () => {
-      try {
-        const response = await api.get("api/concour?size=1000");
-        setConcours(response.data.content);
-      } catch (error) {
-        toast.error(t("participation.loadConcoursError"));
-      }
-    };
-
-    fetchParticipations();
-    fetchEleves();
-    fetchEnseignants();
-    fetchConcours();
-  }, []);
-
-  const searched = searchUsername.trim() !== "" && participations.length === 0;
+  const pageNumbers = [...Array(totalPages).keys()];
+  const searched = searchTerm !== "" && participations.length === 0;
+  const from = totalElements === 0 ? 0 : page * SIZE + 1;
+  const to = totalElements === 0 ? 0 : Math.min((page + 1) * SIZE, totalElements);
 
   return (
     <>
@@ -234,14 +238,17 @@ const ParticipationList = () => {
           <input
             type="text"
             placeholder={t("participation.searchPlaceholder")}
-            value={searchUsername}
-            onChange={(e) => setSearchUsername(e.target.value)}
+            value={inputTerm}
+            onChange={(e) => {
+              setInputTerm(e.target.value);
+              if (e.target.value.trim() === "") setSearchTerm("");
+            }}
             onKeyDown={(e) => e.key === "Enter" && onSearch()}
             className="input-trad"
           />
         </div>
         <span className="text-[11px] uppercase tracking-[0.08em] text-(--text-muted)">
-          {participations.length}
+          {totalElements}
         </span>
       </div>
 
@@ -328,6 +335,47 @@ const ParticipationList = () => {
                 : t("participation.noParticipations")
             }
           />
+        )}
+
+        {!loading && totalPages > 1 && (
+          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-(--border) px-4 py-3">
+            <span className="text-[12px] text-(--text-muted)">
+              {from}–{to} / {totalElements}
+            </span>
+            <div className="flex items-center gap-1.5">
+              <button
+                onClick={() => setPage(page - 1)}
+                disabled={page === 0}
+                className="flex h-8 w-8 items-center justify-center rounded-md text-[12px] text-(--text-muted) transition-colors hover:bg-(--border) disabled:cursor-not-allowed disabled:opacity-40"
+                aria-label={t("participation.previous")}
+              >
+                <FontAwesomeIcon icon={faChevronLeft} className="h-3 w-3 rtl:rotate-180" />
+              </button>
+
+              {pageNumbers.map((p) => (
+                <button
+                  key={p}
+                  onClick={() => setPage(p)}
+                  className={`flex h-8 w-8 items-center justify-center rounded-md text-[12px] font-medium transition-colors ${
+                    p === page
+                      ? "bg-(--brand) text-white"
+                      : "text-(--text-muted) hover:bg-(--border)"
+                  }`}
+                >
+                  {p + 1}
+                </button>
+              ))}
+
+              <button
+                onClick={() => setPage(page + 1)}
+                disabled={page >= totalPages - 1}
+                className="flex h-8 w-8 items-center justify-center rounded-md text-[12px] text-(--text-muted) transition-colors hover:bg-(--border) disabled:cursor-not-allowed disabled:opacity-40"
+                aria-label={t("participation.next")}
+              >
+                <FontAwesomeIcon icon={faChevronRight} className="h-3 w-3 rtl:rotate-180" />
+              </button>
+            </div>
+          </div>
         )}
       </div>
 

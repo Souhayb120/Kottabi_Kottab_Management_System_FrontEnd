@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { jwtDecode } from "jwt-decode";
 import api from "../api/Api";
+import AuthService from "../services/AuthService";
 import Sidebar from "../components/SideBar";
 import NavBar from "../components/NavBar";
 import Footer from "../components/Footer";
@@ -16,6 +16,27 @@ const statOrder = [
   "participations",
 ];
 
+const presenceKeys = [
+  "PRESENT",
+  "RETARD",
+  "ABSENT",
+  "EXCUSE",
+];
+
+const statutBadges = {
+  PRESENT: "badge badge-ok",
+  RETARD: "badge badge-warn",
+  ABSENT: "badge badge-danger",
+  EXCUSE: "badge badge-muted",
+};
+
+const statutKeys = {
+  PRESENT: "present",
+  RETARD: "retard",
+  ABSENT: "absent",
+  EXCUSE: "excuse",
+};
+
 const Dashboard = () => {
   const { t, i18n } = useTranslation();
   const [stats, setStats] = useState({
@@ -26,50 +47,92 @@ const Dashboard = () => {
     progressions: 0,
     participations: 0,
   });
+  const [presenceCounts, setPresenceCounts] = useState({
+    PRESENT: 0,
+    RETARD: 0,
+    ABSENT: 0,
+    EXCUSE: 0,
+  });
   const [recentProgressions, setRecentProgressions] = useState([]);
+  const [todayPresence, setTodayPresence] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  let username = "";
-  try {
-    username = jwtDecode(localStorage.getItem("token")).sub || "";
-  } catch (error) {
-    username = "";
-  }
+  const username = AuthService.getUsername();
+
+  const getCount = async (url) => {
+    try {
+      const response = await api.get(url);
+      return response.data;
+    } catch {
+      return 0;
+    }
+  };
+
+  const getList = async (url) => {
+    try {
+      const response = await api.get(url);
+      return response.data.content;
+    } catch {
+      return [];
+    }
+  };
+
+  const getTotalElements = async (url) => {
+    try {
+      const response = await api.get(url);
+      return response.data.totalElements;
+    } catch {
+      return 0;
+    }
+  };
 
   useEffect(() => {
-    const fetchStat = async (url, key) => {
+    const loadDashboard = async () => {
       try {
-        const response = await api.get(url);
-        setStats((prev) => ({ ...prev, [key]: response.data }));
-      } catch (error) {
-        setStats((prev) => ({ ...prev, [key]: 0 }));
+        const [
+          eleves,
+          enseignants,
+          concours,
+          progressions,
+          present,
+          retard,
+          absent,
+          excuse,
+          participations,
+          recentProgressions,
+          todayPresence,
+        ] = await Promise.all([
+          getCount("api/eleve/countEleves"),
+          getCount("api/enseignant/countEnseignants"),
+          getCount("api/concour/countConcours"),
+          getCount("api/progressions/count"),
+          getCount("api/presence/countPresence/PRESENT"),
+          getCount("api/presence/countPresence/RETARD"),
+          getCount("api/presence/countPresence/ABSENT"),
+          getCount("api/presence/countPresence/EXCUSE"),
+          getTotalElements("api/participation?size=1"),
+          getList("api/progressions/recentProgressions?size=5"),
+          getList("api/presence/Recent6Presence?size=6"),
+        ]);
+
+        setStats({
+          eleves,
+          enseignants,
+          concours,
+          progressions,
+          participations,
+          presences: present + retard + absent + excuse,
+        });
+        setPresenceCounts({ PRESENT: present, RETARD: retard, ABSENT: absent, EXCUSE: excuse });
+
+        setRecentProgressions(recentProgressions);
+        setTodayPresence(todayPresence);
+      } finally {
+        setLoading(false);
       }
     };
 
-    const fetchCount = async (url, key) => {
-      try {
-        const response = await api.get(url);
-        setStats((prev) => ({ ...prev, [key]: response.data.totalElements }));
-      } catch (error) {
-        setStats((prev) => ({ ...prev, [key]: 0 }));
-      }
-    };
-
-    const fetchRecentProgressions = async () => {
-      try {
-        const response = await api.get("api/progressions?size=5");
-        setRecentProgressions(response.data.content);
-      } catch (error) {
-        setRecentProgressions([]);
-      }
-    };
-
-    fetchStat("api/eleve/countEleves", "eleves");
-    fetchStat("api/enseignant/countEnseignants", "enseignants");
-    fetchStat("api/concour/countConcours", "concours");
-    fetchCount("api/presence?size=1", "presences");
-    fetchCount("api/progressions?size=1", "progressions");
-    fetchCount("api/participation?size=1", "participations");
-    fetchRecentProgressions();
+    loadDashboard();
   }, []);
 
   const dateLabel = new Date().toLocaleDateString(
@@ -101,7 +164,7 @@ const Dashboard = () => {
           <div className="stat-ledger">
             {statOrder.map((key) => (
               <div key={key} className="stat-item">
-                <div className="stat-value">{stats[key]}</div>
+                <div className="stat-value">{loading ? "–" : stats[key]}</div>
                 <div className="stat-label">{t(`dashboard.${key}`)}</div>
               </div>
             ))}
@@ -109,59 +172,136 @@ const Dashboard = () => {
 
           <section className="panel mt-5">
             <header className="panel-head">
-              <h2 className="panel-title">
-                {t("dashboard.recentProgressions")}
-              </h2>
-              <Link to="/progress" className="btn-xs btn-xs-green">
-                {t("dashboard.viewAll")}
-              </Link>
+              <h2 className="panel-title">{t("dashboard.presenceOverview")}</h2>
             </header>
             <div className="panel-body">
-              <div className="table-shell">
-                <table className="tbl">
-                  <thead>
-                    <tr>
-                      <th>{t("progression.eleve")}</th>
-                      <th>{t("progression.sourate")}</th>
-                      <th>{t("progression.versets")}</th>
-                      <th>{t("progression.enseignant")}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {recentProgressions.map((progression) => (
-                      <tr key={progression.id}>
-                        <td className="cell-strong">
-                          {progression.eleve?.prenom} {progression.eleve?.nom}
-                        </td>
-                        <td>
-                          <span className="badge badge-ink">
-                            {progression.sourat}
-                          </span>
-                        </td>
-                        <td className="cell-muted">
-                          {progression.versetDebut} – {progression.versetFin}
-                        </td>
-                        <td className="cell-muted">
-                          {progression.enseignant?.prenom}{" "}
-                          {progression.enseignant?.nom}
-                        </td>
-                      </tr>
-                    ))}
-                    {recentProgressions.length === 0 && (
-                      <tr>
-                        <td
-                          colSpan={4}
-                          className="py-6 text-center text-(--text-muted)"
-                        >
-                          {t("dashboard.noProgressions")}
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
+              <div className="stat-ledger">
+                {presenceKeys.map((key) => (
+                  <div key={key} className="stat-item">
+                    <div className="stat-value">
+                      {loading ? "–" : presenceCounts[key]}
+                    </div>
+                    <div className="stat-label">
+                      <span className={statutBadges[key]}>
+                        <span className="dot" />
+                        {t(`eleveDetails.${statutKeys[key]}`)}
+                      </span>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </section>
+
+          <div className="mt-5 grid gap-5 xl:grid-cols-2">
+            <section className="panel">
+              <header className="panel-head">
+                <h2 className="panel-title">{t("dashboard.todayPresence")}</h2>
+              </header>
+              <div className="panel-body">
+                <div className="table-shell">
+                  <table className="tbl">
+                    <thead>
+                      <tr>
+                        <th>{t("presence.eleve")}</th>
+                        <th>{t("presence.statut")}</th>
+                        <th>{t("presence.date")}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {loading
+                        ? Array.from({ length: 3 }).map((_, i) => (
+                            <tr key={i}>
+                              <td colSpan={3}>
+                                <div className="skeleton h-4 w-full" />
+                              </td>
+                            </tr>
+                          ))
+                        : todayPresence.map((presence) => (
+                            <tr key={presence.id}>
+                              <td className="cell-strong">
+                                {presence.eleve?.prenom} {presence.eleve?.nom}
+                              </td>
+                              <td>
+                                <span className={statutBadges[presence.statut] || "badge badge-muted"}>
+                                  <span className="dot" />
+                                  {t(`eleveDetails.${statutKeys[presence.statut] || "present"}`)}
+                                </span>
+                              </td>
+                              <td className="cell-muted">{presence.date}</td>
+                            </tr>
+                          ))}
+                      {!loading && todayPresence.length === 0 && (
+                        <tr>
+                          <td colSpan={3} className="py-6 text-center text-(--text-muted)">
+                            {t("dashboard.noTodayPresence")}
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </section>
+
+            <section className="panel">
+              <header className="panel-head">
+                <h2 className="panel-title">{t("dashboard.recentProgressions")}</h2>
+                <Link to="/progress" className="btn-xs btn-xs-green">
+                  {t("dashboard.viewAll")}
+                </Link>
+              </header>
+              <div className="panel-body">
+                <div className="table-shell">
+                  <table className="tbl">
+                    <thead>
+                      <tr>
+                        <th>{t("progression.eleve")}</th>
+                        <th>{t("progression.sourate")}</th>
+                        <th>{t("progression.enseignant")}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {loading
+                        ? Array.from({ length: 3 }).map((_, i) => (
+                            <tr key={i}>
+                              <td colSpan={3}>
+                                <div className="skeleton h-4 w-full" />
+                              </td>
+                            </tr>
+                          ))
+                        : recentProgressions.map((progression) => (
+                            <tr key={progression.id}>
+                              <td className="cell-strong">
+                                {progression.eleve?.prenom} {progression.eleve?.nom}
+                              </td>
+                              <td>
+                                <span className="badge badge-ink">
+                                  {progression.sourat}{" "}
+                                  <span className="text-(--text-muted)">
+                                    ({progression.versetDebut}–{progression.versetFin})
+                                  </span>
+                                </span>
+                              </td>
+                              <td className="cell-muted">
+                                {progression.enseignant?.prenom}{" "}
+                                {progression.enseignant?.nom}
+                              </td>
+                            </tr>
+                          ))}
+                      {!loading && recentProgressions.length === 0 && (
+                        <tr>
+                          <td colSpan={3} className="py-6 text-center text-(--text-muted)">
+                            {t("dashboard.noProgressions")}
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </section>
+          </div>
         </div>
         <Footer />
       </div>

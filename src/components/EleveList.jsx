@@ -6,7 +6,11 @@ import * as yup from "yup";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChildren } from "@fortawesome/free-solid-svg-icons";
+import {
+  faChevronLeft,
+  faChevronRight,
+  faChildren,
+} from "@fortawesome/free-solid-svg-icons";
 import api from "../api/Api";
 import EleveForm from "./EleveForm";
 import AppModal from "./AppModal";
@@ -26,16 +30,22 @@ const eleveSchema = yup.object({
 
 const EleveList = () => {
   const URL = "api/eleve";
+  const SIZE = 10;
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [eleves, setEleves] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [totalCount, setTotalCount] = useState(0);
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
+  const [inputTerm, setInputTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const [open, setOpen] = useState(false);
   const [selectedEleveId, setSelectedEleveId] = useState(null);
   const [openModal, setOpenModal] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
   const [editEleve, setEditEleve] = useState(null);
-  const [searchUsername, setSearchUsername] = useState("");
 
   const {
     register,
@@ -46,7 +56,40 @@ const EleveList = () => {
     resolver: yupResolver(eleveSchema),
   });
 
-  //  Deleting Process
+  const fetchEleves = async () => {
+    setLoading(true);
+    try {
+      if (searchTerm !== "") {
+        const response = await api.get(`${URL}/username/${searchTerm}`);
+        setEleves([response.data]);
+        setTotalPages(0);
+        setTotalElements(1);
+      } else {
+        const response = await api.get(`${URL}?page=${page}&size=${SIZE}`);
+        const countResponse = await api.get(`${URL}/countEleves`);
+        setEleves(response.data.content);
+        setTotalPages(response.data.totalPages);
+        setTotalElements(response.data.totalElements);
+        setTotalCount(countResponse.data);
+      }
+    } catch (error) {
+      setEleves([]);
+      setTotalPages(0);
+      setTotalElements(0);
+      toast.error(t("eleves.notFound"));
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchEleves();
+  }, [page, searchTerm]);
+
+  const onSearch = () => {
+    setSearchTerm(inputTerm.trim());
+    setPage(0);
+  };
+
   const handleCloseDelete = () => {
     setOpen(false);
   };
@@ -59,15 +102,14 @@ const EleveList = () => {
   const deleteEleve = async (id) => {
     try {
       await api.delete(`${URL}/${id}`);
-      setEleves(eleves.filter((eleve) => eleve.id !== id));
       toast.success(t("eleves.deleteSuccess"));
       setOpen(false);
+      fetchEleves();
     } catch (error) {
       toast.error(t("eleves.deleteError"));
     }
   };
 
-  //  Adding Process
   const handleOpen = () => {
     reset();
     setOpenModal(true);
@@ -77,8 +119,8 @@ const EleveList = () => {
 
   const onSubmit = async (data) => {
     try {
-      const response = await api.post(URL, data);
-      setEleves((prev) => [...prev, response.data]);
+      await api.post(URL, data);
+      setPage(0);
       handleClose();
       toast.success(t("eleves.createSuccess"));
     } catch (error) {
@@ -86,7 +128,6 @@ const EleveList = () => {
     }
   };
 
-  //  Edit Process
   const editThisEleve = (eleve) => {
     setEditEleve(eleve);
     reset(eleve);
@@ -97,53 +138,23 @@ const EleveList = () => {
 
   const onEdit = async (data) => {
     try {
-      const response = await api.put(`${URL}/${editEleve.id}`, data);
-      setEleves((prev) =>
-        prev.map((eleve) => (eleve.id === editEleve.id ? response.data : eleve)),
-      );
+      await api.put(`${URL}/${editEleve.id}`, data);
       toast.success(t("eleves.updateSuccess"));
       setOpenEditModal(false);
+      fetchEleves();
     } catch (error) {
       toast.error(t("eleves.updateError"));
     }
   };
 
-  //  View Process
   const viewThisEleve = (eleve) => {
     navigate(`/eleve/details/${eleve.username}`);
   };
 
-  //  Search Process
-  const onSearch = async () => {
-    if (searchUsername.trim() === "") {
-      const response = await api.get(`${URL}?size=1000`);
-      setEleves(response.data.content);
-      return;
-    }
-
-    try {
-      const response = await api.get(`${URL}/username/${searchUsername}`);
-      setEleves([response.data]);
-    } catch (error) {
-      setEleves([]);
-      toast.error(t("eleves.notFound"));
-    }
-  };
-
-  useEffect(() => {
-    const fetchEleves = async () => {
-      try {
-        const response = await api.get(`${URL}?size=1000`);
-        setEleves(response.data.content);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchEleves();
-  }, []);
-
-  const searched = searchUsername.trim() !== "" && eleves.length === 0;
+  const pageNumbers = [...Array(totalPages).keys()];
+  const searched = searchTerm !== "" && eleves.length === 0;
+  const from = totalElements === 0 ? 0 : page * SIZE + 1;
+  const to = totalElements === 0 ? 0 : Math.min((page + 1) * SIZE, totalElements);
 
   return (
     <>
@@ -175,14 +186,17 @@ const EleveList = () => {
           <input
             type="text"
             placeholder={t("eleves.searchPlaceholder")}
-            value={searchUsername}
-            onChange={(e) => setSearchUsername(e.target.value)}
+            value={inputTerm}
+            onChange={(e) => {
+              setInputTerm(e.target.value);
+              if (e.target.value.trim() === "") setSearchTerm("");
+            }}
             onKeyDown={(e) => e.key === "Enter" && onSearch()}
             className="input-trad"
           />
         </div>
         <span className="text-[11px] uppercase tracking-[0.08em] text-(--text-muted)">
-          {eleves.length}
+          {totalCount}
         </span>
       </div>
 
@@ -260,6 +274,47 @@ const EleveList = () => {
             icon={<FontAwesomeIcon icon={faChildren} className="h-5 w-5" />}
             title={searched ? t("eleves.notFound") : t("eleves.empty")}
           />
+        )}
+
+        {!loading && totalPages > 1 && (
+          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-(--border) px-4 py-3">
+            <span className="text-[12px] text-(--text-muted)">
+              {from}–{to} / {totalElements}
+            </span>
+            <div className="flex items-center gap-1.5">
+              <button
+                onClick={() => setPage(page - 1)}
+                disabled={page === 0}
+                className="flex h-8 w-8 items-center justify-center rounded-md text-[12px] text-(--text-muted) transition-colors hover:bg-(--border) disabled:cursor-not-allowed disabled:opacity-40"
+                aria-label={t("eleves.previous")}
+              >
+                <FontAwesomeIcon icon={faChevronLeft} className="h-3 w-3 rtl:rotate-180" />
+              </button>
+
+              {pageNumbers.map((p) => (
+                <button
+                  key={p}
+                  onClick={() => setPage(p)}
+                  className={`flex h-8 w-8 items-center justify-center rounded-md text-[12px] font-medium transition-colors ${
+                    p === page
+                      ? "bg-(--brand) text-white"
+                      : "text-(--text-muted) hover:bg-(--border)"
+                  }`}
+                >
+                  {p + 1}
+                </button>
+              ))}
+
+              <button
+                onClick={() => setPage(page + 1)}
+                disabled={page >= totalPages - 1}
+                className="flex h-8 w-8 items-center justify-center rounded-md text-[12px] text-(--text-muted) transition-colors hover:bg-(--border) disabled:cursor-not-allowed disabled:opacity-40"
+                aria-label={t("eleves.next")}
+              >
+                <FontAwesomeIcon icon={faChevronRight} className="h-3 w-3 rtl:rotate-180" />
+              </button>
+            </div>
+          </div>
         )}
       </div>
 

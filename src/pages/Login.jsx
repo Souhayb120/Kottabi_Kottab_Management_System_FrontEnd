@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import AuthService from "../services/AuthService";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
@@ -21,12 +21,16 @@ const Login = () => {
   const { register, handleSubmit } = useForm();
   const [showPassword, setShowPassword] = useState(false);
 
+  if (AuthService.hasToken()) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
   const onSubmit = async (data) => {
     try {
       const response = await AuthService.login(data);
 
       if (response.data.token) {
-        localStorage.setItem("token", response.data.token);
+        AuthService.saveToken(response.data.token);
         toast.success(t("login.success"));
         navigate("/dashboard");
       } else {
@@ -120,22 +124,11 @@ const Login = () => {
                   <FontAwesomeIcon icon={faArrowRight} className="h-4 w-4" />
                 </button>
               </form>
-
-              <p className="mt-6 text-center text-[13px] text-(--text-muted)">
-                {t("login.noAccount")}{" "}
-                <Link
-                  to="/register"
-                  className="font-medium text-(--brand) hover:underline"
-                >
-                  {t("register.title")}
-                </Link>
-              </p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Video side */}
       <div className="relative hidden overflow-hidden bg-(--brand) lg:block">
         <video
           src={kottabiVideo}

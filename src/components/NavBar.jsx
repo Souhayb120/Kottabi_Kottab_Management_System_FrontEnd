@@ -1,23 +1,15 @@
-import { jwtDecode } from "jwt-decode";
 import { useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarDays, faGlobe, faMosque } from "@fortawesome/free-solid-svg-icons";
+import AuthService from "../services/AuthService";
 
 function Topbar() {
   const { t, i18n } = useTranslation();
-  const token = localStorage.getItem("token");
 
   const toggleLang = () => i18n.changeLanguage(i18n.language === "ar" ? "fr" : "ar");
 
-  let username = "";
-  let role = "";
-  try {
-    const decoded = jwtDecode(token);
-    username = decoded.sub || "";
-    role = (decoded.role || "").replace("ROLE_", "");
-  } catch (e) {
-    username = "";
-  }
+  const username = AuthService.getUsername();
+  const role = AuthService.getRole();
 
   const initials = username
     .split(/[\s._-]+/)

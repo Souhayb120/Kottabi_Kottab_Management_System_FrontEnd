@@ -157,6 +157,10 @@ const resources = {
         cancel: "Annuler",
         confirm: "Confirmer",
       },
+      notFound: {
+        message: "Cette page n'existe pas.",
+        backHome: "Retour à l'accueil",
+      },
       eleves: {
         title: "Élèves",
         id: "ID",
@@ -189,6 +193,8 @@ const resources = {
         searchPlaceholder: "Rechercher par nom d'utilisateur...",
         notFound: "Aucun élève trouvé avec ce nom d'utilisateur.",
         view: "Consulter",
+        previous: "Précédent",
+        next: "Suivant",
       },
 
       eleveDetails: {
@@ -250,6 +256,8 @@ const resources = {
         searchPlaceholder: "Rechercher par spécialité...",
         notFound: "Aucun enseignant trouvé avec cette spécialité.",
         empty: "Aucun enseignant enregistré.",
+        previous: "Précédent",
+        next: "Suivant",
         createSuccess: "Enseignant ajouté avec succès !",
         createError: "Erreur lors de l'ajout de l'enseignant.",
         updateSuccess: "Enseignant modifié avec succès !",
@@ -414,6 +422,9 @@ const resources = {
         noProgressions: "Aucune progression enregistrée.",
         viewAll: "Voir tout",
         loadError: "Erreur lors du chargement des statistiques.",
+        presenceOverview: "Répartition de la présence",
+        todayPresence: "Présence du jour",
+        noTodayPresence: "Aucune présence enregistrée aujourd'hui.",
       },
 
       participation: {
@@ -441,6 +452,8 @@ const resources = {
         searchPlaceholder: "Rechercher par nom d'utilisateur...",
         notFound: "Aucune participation trouvée pour cet élève.",
         noParticipations: "Aucune participation enregistrée.",
+        previous: "Précédent",
+        next: "Suivant",
         selectEleve: "Élève",
         selectElevePlaceholder: "Sélectionnez un élève...",
         selectEnseignant: "Enseignant",
@@ -617,6 +630,10 @@ const resources = {
         cancel: "إلغاء",
         confirm: "تأكيد",
       },
+      notFound: {
+        message: "هذه الصفحة غير موجودة.",
+        backHome: "العودة إلى الرئيسية",
+      },
       eleves: {
         title: "الطلاب",
         id: "المعرّف",
@@ -648,6 +665,8 @@ const resources = {
         searchPlaceholder: "ابحث باسم المستخدم...",
         notFound: "لم يتم العثور على طالب بهذا الاسم.",
         view: "عرض",
+        previous: "السابق",
+        next: "التالي",
       },
 
       eleveDetails: {
@@ -709,6 +728,8 @@ const resources = {
         searchPlaceholder: "ابحث بالتخصص...",
         notFound: "لم يتم العثور على معلم بهذا التخصص.",
         empty: "لا يوجد أي معلم مسجل بعد.",
+        previous: "السابق",
+        next: "التالي",
         createSuccess: "تمت إضافة المعلم بنجاح!",
         createError: "خطأ في إضافة المعلم.",
         updateSuccess: "تم تعديل المعلم بنجاح!",
@@ -868,6 +889,9 @@ const resources = {
         noProgressions: "لا يوجد تقدم مسجّل.",
         viewAll: "عرض الكل",
         loadError: "خطأ في تحميل الإحصائيات.",
+        presenceOverview: "توزيع الحضور",
+        todayPresence: "حضور اليوم",
+        noTodayPresence: "لا يوجد حضور مسجّل اليوم.",
       },
 
       participation: {
@@ -894,6 +918,8 @@ const resources = {
         searchPlaceholder: "ابحث باسم المستخدم...",
         notFound: "لا توجد مشاركات لهذا التلميذ.",
         noParticipations: "لا توجد مشاركات مسجّلة.",
+        previous: "السابق",
+        next: "التالي",
         selectEleve: "التلميذ",
         selectElevePlaceholder: "اختر تلميذًا...",
         selectEnseignant: "المعلم",
