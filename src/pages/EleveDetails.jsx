@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import api from "../api/Api";
+import AuthService from "../services/AuthService";
 import Sidebar from "../components/SideBar";
 import NavBar from "../components/NavBar";
 import Footer from "../components/Footer";
@@ -26,6 +27,7 @@ const EleveDetails = () => {
   const { username } = useParams();
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const isEleve = AuthService.getRole() === "ELEVE";
 
   const [eleve, setEleve] = useState(null);
   const [progression, setProgression] = useState(null);
@@ -38,7 +40,7 @@ const EleveDetails = () => {
       try {
         const eleveRes = await api.get(`api/eleve/username/${username}`);
         setEleve(eleveRes.data);
-      } catch (error) {
+      } catch {
         setEleve(null);
       }
 
@@ -47,7 +49,7 @@ const EleveDetails = () => {
           `api/progressions/eleve/${username}`,
         );
         setProgression(progressionRes.data);
-      } catch (error) {
+      } catch {
         setProgression(null);
       }
 
@@ -56,7 +58,7 @@ const EleveDetails = () => {
           `api/presence/eleve/${username}?size=100`,
         );
         setPresences(presenceRes.data.content);
-      } catch (error) {
+      } catch {
         setPresences([]);
       }
 
@@ -65,7 +67,7 @@ const EleveDetails = () => {
           `api/participation/eleve/${username}?size=100`,
         );
         setParticipations(participationRes.data.content);
-      } catch (error) {
+      } catch {
         setParticipations([]);
       }
 
@@ -85,7 +87,7 @@ const EleveDetails = () => {
             <div>
               <h1 className="page-title">{t("eleveDetails.title")}</h1>
             </div>
-            <button onClick={() => navigate("/eleve")} className="btn-secondary">
+            <button onClick={() => navigate(isEleve ? "/dashboard" : "/eleve")} className="btn-secondary">
               <FontAwesomeIcon icon={faArrowRight} className="h-3.5 w-3.5" />
               {t("eleveDetails.back")}
             </button>

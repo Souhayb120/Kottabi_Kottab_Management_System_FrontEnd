@@ -1,7 +1,7 @@
 import { Navigate } from "react-router-dom";
 import AuthService from "../services/AuthService";
 
-const RequireAuth = ({ children }) => {
+const AuthGuard = ({ children }) => {
   if (!AuthService.hasToken()) {
     return <Navigate to="/login" replace />;
   }
@@ -9,4 +9,4 @@ const RequireAuth = ({ children }) => {
   return children;
 };
 
-export default RequireAuth;
+export default AuthGuard;

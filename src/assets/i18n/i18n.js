@@ -146,6 +146,7 @@ const resources = {
         participation: "Participation",
         reports: "Rapports",
         settings: "Settings",
+        profile: "Mon profil",
         logout: "Logout",
       },
       footer: {
@@ -427,6 +428,48 @@ const resources = {
         noTodayPresence: "Aucune présence enregistrée aujourd'hui.",
       },
 
+      eleveDashboard: {
+        title: "Mon tableau",
+        viewProfile: "Voir mon profil",
+        statProgression: "Sourate actuelle",
+        statPresences: "Présences",
+        statPresent: "Présent",
+        statParticipations: "Participations",
+        progressionTitle: "Ma progression",
+        presenceTitle: "Ma présence",
+        participationTitle: "Mes participations",
+      },
+
+      enseignantDashboard: {
+        title: "Espace enseignant",
+        viewProfile: "Voir mon profil",
+        statProgressions: "Progressions",
+        statPresent: "Présents",
+        statAbsent: "Absents",
+        statToday: "Présence du jour",
+        recentProgressions: "Dernières progressions",
+        noProgressions: "Aucune progression enregistrée.",
+        todayPresence: "Présence du jour",
+        noTodayPresence: "Aucune présence enregistrée aujourd'hui.",
+        viewAll: "Voir tout",
+      },
+
+      enseignantDetails: {
+        title: "Détails de l'enseignant",
+        back: "Retour à l'accueil",
+        identity: "Identité",
+        role: "Rôle",
+        id: "ID",
+        username: "Nom d'utilisateur",
+        nom: "Nom",
+        prenom: "Prénom",
+        email: "Email",
+        tel: "Téléphone",
+        specialite: "Spécialité",
+        description: "Description",
+        enseignantRole: "Enseignant",
+      },
+
       participation: {
         title: "Participations",
         id: "ID",
@@ -614,6 +657,7 @@ const resources = {
         participation: "المشاركة",
         reports: "التقارير",
         settings: "الإعدادات",
+        profile: "ملفي الشخصي",
         logout: "تسجيل الخروج",
       },
 
@@ -892,6 +936,48 @@ const resources = {
         presenceOverview: "توزيع الحضور",
         todayPresence: "حضور اليوم",
         noTodayPresence: "لا يوجد حضور مسجّل اليوم.",
+      },
+
+      eleveDashboard: {
+        title: "لوحتي",
+        viewProfile: "عرض ملفي",
+        statProgression: "السورة الحالية",
+        statPresences: "الحضور",
+        statPresent: "حاضر",
+        statParticipations: "المشاركات",
+        progressionTitle: "تقدّمي",
+        presenceTitle: "حضوري",
+        participationTitle: "مشاركاتي",
+      },
+
+      enseignantDashboard: {
+        title: "فضاء المعلم",
+        viewProfile: "عرض ملفي",
+        statProgressions: "التقدّم",
+        statPresent: "حاضر",
+        statAbsent: "غائب",
+        statToday: "حضور اليوم",
+        recentProgressions: "أحدث التقدّم",
+        noProgressions: "لا يوجد تقدم مسجّل.",
+        todayPresence: "حضور اليوم",
+        noTodayPresence: "لا يوجد حضور مسجّل اليوم.",
+        viewAll: "عرض الكل",
+      },
+
+      enseignantDetails: {
+        title: "تفاصيل المعلم",
+        back: "العودة إلى الرئيسية",
+        identity: "بيانات الهوية",
+        role: "الدور",
+        id: "المعرّف",
+        username: "اسم المستخدم",
+        nom: "النسب",
+        prenom: "الاسم الشخصي",
+        email: "البريد الإلكتروني",
+        tel: "الهاتف",
+        specialite: "التخصص",
+        description: "الوصف",
+        enseignantRole: "معلم",
       },
 
       participation: {

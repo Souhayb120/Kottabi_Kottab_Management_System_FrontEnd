@@ -12,6 +12,7 @@ import {
   faRightFromBracket,
   faStarAndCrescent,
   faTrophy,
+  faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import AuthService from "../services/AuthService";
 import { toast } from "react-toastify";
@@ -31,16 +32,34 @@ function Sidebar() {
       ? "nav-item flex items-center rounded-md border-s-2 border-[#c79a3b] bg-white/10 py-2.5 text-[13px] font-medium text-white"
       : "nav-item flex items-center rounded-md border-s-2 border-transparent py-2.5 text-[13px] text-white/70 transition-colors hover:bg-white/5 hover:text-white";
 
-  const navItems = [
-    { to: "/dashboard", labelKey: "sidebar.dashboard", icon: faStarAndCrescent },
-    { to: "/eleve", labelKey: "sidebar.students", icon: faChildren },
-    { to: "/presence", labelKey: "sidebar.presence", icon: faCalendarCheck },
-    { to: "/enseignant", labelKey: "sidebar.teachers", icon: faChalkboardUser },
-    { to: "/progress", labelKey: "sidebar.progress", icon: faBookQuran },
-    { to: "/competitions", labelKey: "sidebar.competitions", icon: faTrophy },
-    { to: "/participation", labelKey: "sidebar.participation", icon: faMedal },
-    { to: "/reports", labelKey: "sidebar.reports", icon: faFileLines },
-  ];
+  const role = AuthService.getRole();
+  const username = AuthService.getUsername();
+
+  let navItems = [];
+  if (role === "ELEVE") {
+    navItems = [
+      { to: "/dashboard", labelKey: "sidebar.dashboard", icon: faStarAndCrescent },
+      { to: `/eleve/details/${username}`, labelKey: "sidebar.profile", icon: faUser },
+    ];
+  } else if (role === "ENSEIGNANT") {
+    navItems = [
+      { to: "/dashboard", labelKey: "sidebar.dashboard", icon: faStarAndCrescent },
+      { to: "/progress", labelKey: "sidebar.progress", icon: faBookQuran },
+      { to: "/participation", labelKey: "sidebar.participation", icon: faMedal },
+      { to: `/enseignant/details/${username}`, labelKey: "sidebar.profile", icon: faUser },
+    ];
+  } else {
+    navItems = [
+      { to: "/dashboard", labelKey: "sidebar.dashboard", icon: faStarAndCrescent },
+      { to: "/eleve", labelKey: "sidebar.students", icon: faChildren },
+      { to: "/presence", labelKey: "sidebar.presence", icon: faCalendarCheck },
+      { to: "/enseignant", labelKey: "sidebar.teachers", icon: faChalkboardUser },
+      { to: "/progress", labelKey: "sidebar.progress", icon: faBookQuran },
+      { to: "/competitions", labelKey: "sidebar.competitions", icon: faTrophy },
+      { to: "/participation", labelKey: "sidebar.participation", icon: faMedal },
+      { to: "/reports", labelKey: "sidebar.reports", icon: faFileLines },
+    ];
+  }
 
   return (
     <aside className="sidebar flex h-screen flex-col text-white">

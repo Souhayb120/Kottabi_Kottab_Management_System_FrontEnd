@@ -27,8 +27,12 @@ class AuthService {
   }
 
   getRole() {
+    return this.getRawRole().replace("ROLE_", "");
+  }
+
+  getRawRole() {
     try {
-      return (jwtDecode(this.getToken()).role || "").replace("ROLE_", "");
+      return jwtDecode(this.getToken()).role || "";
     } catch {
       return "";
     }

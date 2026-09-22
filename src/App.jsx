@@ -8,12 +8,14 @@ import Dashboard from "./pages/Dashboard";
 import Eleves from "./pages/eleves";
 import EleveDetails from "./pages/EleveDetails";
 import Enseignants from "./pages/Enseignants";
+import EnseignantDetails from "./pages/EnseignantDetails";
 import Presences from "./pages/Presence";
 import Progressions from "./pages/Progression";
 import Concours from "./pages/Concours";
 import Rapport from "./pages/Rapport";
 import Participations from "./pages/Participations";
-import RequireAuth from "./components/RequireAuth";
+import AuthGuard from "./guards/AuthGuard";
+import RoleGuard from "./guards/RoleGuard";
 import NotFound from "./components/NotFound";
 
 function App() {
@@ -26,73 +28,101 @@ function App() {
         <Route
           path="/dashboard"
           element={
-            <RequireAuth>
-              <Dashboard />
-            </RequireAuth>
+            <AuthGuard>
+              <RoleGuard roles={["ROLE_ADMIN", "ROLE_ENSEIGNANT", "ROLE_ELEVE"]}>
+                <Dashboard />
+              </RoleGuard>
+            </AuthGuard>
           }
         />
         <Route
           path="/eleve"
           element={
-            <RequireAuth>
-              <Eleves />
-            </RequireAuth>
+            <AuthGuard>
+              <RoleGuard roles={["ROLE_ADMIN"]}>
+                <Eleves />
+              </RoleGuard>
+            </AuthGuard>
           }
         />
         <Route
           path="/eleve/details/:username"
           element={
-            <RequireAuth>
-              <EleveDetails />
-            </RequireAuth>
+            <AuthGuard>
+              <RoleGuard roles={["ROLE_ADMIN", "ROLE_ELEVE"]}>
+                <EleveDetails />
+              </RoleGuard>
+            </AuthGuard>
           }
         />
         <Route
           path="/presence"
           element={
-            <RequireAuth>
-              <Presences />
-            </RequireAuth>
+            <AuthGuard>
+              <RoleGuard roles={["ROLE_ADMIN", "ROLE_ENSEIGNANT"]}>
+                <Presences />
+              </RoleGuard>
+            </AuthGuard>
           }
         />
         <Route
           path="/progress"
           element={
-            <RequireAuth>
-              <Progressions />
-            </RequireAuth>
+            <AuthGuard>
+              <RoleGuard roles={["ROLE_ADMIN", "ROLE_ENSEIGNANT"]}>
+                <Progressions />
+              </RoleGuard>
+            </AuthGuard>
           }
         />
         <Route
           path="/competitions"
           element={
-            <RequireAuth>
-              <Concours />
-            </RequireAuth>
+            <AuthGuard>
+              <RoleGuard roles={["ROLE_ADMIN"]}>
+                <Concours />
+              </RoleGuard>
+            </AuthGuard>
           }
         />
         <Route
           path="/participation"
           element={
-            <RequireAuth>
-              <Participations />
-            </RequireAuth>
+            <AuthGuard>
+              <RoleGuard roles={["ROLE_ADMIN", "ROLE_ENSEIGNANT"]}>
+                <Participations />
+              </RoleGuard>
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/enseignant/details/:username"
+          element={
+            <AuthGuard>
+              <RoleGuard roles={["ROLE_ADMIN", "ROLE_ENSEIGNANT"]}>
+                <EnseignantDetails />
+              </RoleGuard>
+            </AuthGuard>
           }
         />
         <Route
           path="/reports"
           element={
-            <RequireAuth>
-              <Rapport />
-            </RequireAuth>
+            <AuthGuard>
+              <RoleGuard roles={["ROLE_ADMIN", "ROLE_ENSEIGNANT"]}>
+                <Rapport />
+              </RoleGuard>
+            </AuthGuard>
           }
         />
         <Route
           path="/enseignant"
           element={
-            <RequireAuth>
-              <Enseignants />
-            </RequireAuth>
+            <AuthGuard>
+              <RoleGuard roles={["ROLE_ADMIN"]}>
+                <Enseignants />
+              </RoleGuard>
+            </AuthGuard>
           }
         />
         <Route path="*" element={<NotFound />} />

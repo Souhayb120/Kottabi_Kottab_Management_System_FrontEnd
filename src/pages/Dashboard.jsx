@@ -6,6 +6,8 @@ import AuthService from "../services/AuthService";
 import Sidebar from "../components/SideBar";
 import NavBar from "../components/NavBar";
 import Footer from "../components/Footer";
+import EleveDashboard from "../components/EleveDashboard";
+import EnseignantDashboard from "../components/EnseignantDashboard";
 
 const statOrder = [
   "eleves",
@@ -58,6 +60,9 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
 
   const username = AuthService.getUsername();
+  const role = AuthService.getRole();
+  const isEleve = role === "ELEVE";
+  const isEnseignant = role === "ENSEIGNANT";
 
   const getCount = async (url) => {
     try {
@@ -144,6 +149,32 @@ const Dashboard = () => {
       year: "numeric",
     },
   );
+
+  if (isEleve) {
+    return (
+      <div className="app-layout">
+        <Sidebar />
+        <div className="main">
+          <NavBar />
+          <EleveDashboard username={username} />
+          <Footer />
+        </div>
+      </div>
+    );
+  }
+
+  if (isEnseignant) {
+    return (
+      <div className="app-layout">
+        <Sidebar />
+        <div className="main">
+          <NavBar />
+          <EnseignantDashboard username={username} />
+          <Footer />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="app-layout">
