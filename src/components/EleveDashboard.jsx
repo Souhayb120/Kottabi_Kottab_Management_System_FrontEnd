@@ -21,62 +21,62 @@ const statutBadges = {
 
 const statusOrder = ["PRESENT", "RETARD", "ABSENT", "EXCUSE"];
 
-const EleveDashboard = ({ username }) => {
+const EleveDashboard = () => {
   const { t } = useTranslation();
   const [eleve, setEleve] = useState(null);
-  const [progression, setProgression] = useState(null);
-  const [presences, setPresences] = useState([]);
-  const [participations, setParticipations] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
+    let active = true;
+
     const loadDashboard = async () => {
       try {
-        const eleveResponse = await api.get(`api/eleve/username/${username}`);
-        setEleve(eleveResponse.data);
-      } catch {
-        setEleve(null);
-      }
+        const response = await api.get("/api/eleve/me");
 
-      try {
-        const progressionResponse = await api.get(
-          `api/progressions/eleve/${username}?size=1`,
-        );
-        setProgression(progressionResponse.data.content[0] || null);
+        if (active) {
+          setEleve(response.data);
+          setError(false);
+        }
       } catch {
-        setProgression(null);
+        if (active) {
+          setEleve(null);
+          setError(true);
+        }
+      } finally {
+        if (active) setLoading(false);
       }
-
-      try {
-        const presenceResponse = await api.get(
-          `api/presence/eleve/${username}?size=100`,
-        );
-        setPresences(presenceResponse.data.content);
-      } catch {
-        setPresences([]);
-      }
-
-      try {
-        const participationResponse = await api.get(
-          `api/participation/eleve/${username}?size=100`,
-        );
-        setParticipations(participationResponse.data.content);
-      } catch {
-        setParticipations([]);
-      }
-
-      setLoading(false);
     };
 
     loadDashboard();
-  }, [username]);
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const presences = eleve?.presences ?? [];
+  const progressions = eleve?.progressions ?? [];
+  const participations = eleve?.participations ?? [];
+
+  const progression = progressions[0] ?? null;
 
   const presenceCounts = statusOrder.reduce((acc, status) => {
     acc[status] = presences.filter((p) => p.statut === status).length;
     return acc;
   }, {});
 
-  const recentPresences = presences.slice(0, 6);
+  const recentPresences = [...presences]
+    .sort((a, b) => b.date.localeCompare(a.date))
+    .slice(0, 6);
+
+  if (error) {
+    return (
+      <div className="content">
+        <p>Impossible de charger votre espace. Veuillez réessayer.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="content">
@@ -84,38 +84,63 @@ const EleveDashboard = ({ username }) => {
         <div>
           <h1 className="page-title">{t("eleveDashboard.title")}</h1>
           <p className="page-sub">
-            {eleve?.prenom} {eleve?.nom} ({username})
+            {eleve?.prenom} {eleve?.nom}
           </p>
         </div>
-        <Link to={`/eleve/details/${username}`} className="btn">
-          <FontAwesomeIcon icon={faArrowRight} className="h-3.5 w-3.5 rtl:-scale-x-100" />
+
+        <Link to="/eleve/profile" className="btn">
+          <FontAwesomeIcon
+            icon={faArrowRight}
+            className="h-3.5 w-3.5 rtl:-scale-x-100"
+          />
           {t("eleveDashboard.viewProfile")}
         </Link>
       </div>
 
       <div className="stat-ledger">
         <div className="stat-item">
-          <div className="stat-value">{loading ? "–" : progression?.sourat || "—"}</div>
-          <div className="stat-label">{t("eleveDashboard.statProgression")}</div>
+          <div className="stat-value">
+            {loading ? "–" : progression?.sourat || "—"}
+          </div>
+          <div className="stat-label">
+            {t("eleveDashboard.statProgression")}
+          </div>
         </div>
+
         <div className="stat-item">
-          <div className="stat-value">{loading ? "–" : presences.length}</div>
-          <div className="stat-label">{t("eleveDashboard.statPresences")}</div>
+          <div className="stat-value">
+            {loading ? "–" : presences.length}
+          </div>
+          <div className="stat-label">
+            {t("eleveDashboard.statPresences")}
+          </div>
         </div>
+
         <div className="stat-item">
-          <div className="stat-value">{loading ? "–" : presenceCounts.PRESENT}</div>
-          <div className="stat-label">{t("eleveDashboard.statPresent")}</div>
+          <div className="stat-value">
+            {loading ? "–" : presenceCounts.PRESENT}
+          </div>
+          <div className="stat-label">
+            {t("eleveDashboard.statPresent")}
+          </div>
         </div>
+
         <div className="stat-item">
-          <div className="stat-value">{loading ? "–" : participations.length}</div>
-          <div className="stat-label">{t("eleveDashboard.statParticipations")}</div>
+          <div className="stat-value">
+            {loading ? "–" : participations.length}
+          </div>
+          <div className="stat-label">
+            {t("eleveDashboard.statParticipations")}
+          </div>
         </div>
       </div>
 
       <div className="mt-5 grid gap-5 xl:grid-cols-2">
         <section className="panel">
           <header className="panel-head">
-            <h2 className="panel-title">{t("eleveDashboard.progressionTitle")}</h2>
+            <h2 className="panel-title">
+              {t("eleveDashboard.progressionTitle")}
+            </h2>
           </header>
           <div className="panel-body">
             {progression ? (
@@ -123,7 +148,9 @@ const EleveDashboard = ({ username }) => {
                 <div className="dl">
                   <dt>{t("eleveDetails.sourate")}</dt>
                   <dd>
-                    <span className="badge badge-ink">{progression.sourat}</span>
+                    <span className="badge badge-ink">
+                      {progression.sourat}
+                    </span>
                   </dd>
                 </div>
                 <div className="dl">
@@ -132,14 +159,6 @@ const EleveDashboard = ({ username }) => {
                     {progression.versetDebut} – {progression.versetFin}
                   </dd>
                 </div>
-                {progression.enseignant && (
-                  <div className="dl">
-                    <dt>{t("eleveDetails.enseignant")}</dt>
-                    <dd>
-                      {progression.enseignant.prenom} {progression.enseignant.nom}
-                    </dd>
-                  </div>
-                )}
               </dl>
             ) : (
               <p className="m-0 text-[12px] text-(--text-muted)">
@@ -151,7 +170,9 @@ const EleveDashboard = ({ username }) => {
 
         <section className="panel">
           <header className="panel-head">
-            <h2 className="panel-title">{t("eleveDashboard.presenceTitle")}</h2>
+            <h2 className="panel-title">
+              {t("eleveDashboard.presenceTitle")}
+            </h2>
           </header>
           <div className="panel-body">
             {recentPresences.length > 0 ? (
@@ -164,20 +185,21 @@ const EleveDashboard = ({ username }) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {recentPresences.map((presence) => (
-                      <tr key={presence.id || presence.date}>
+                    {recentPresences.map((presence, index) => (
+                      <tr key={`${presence.date}-${index}`}>
                         <td className="cell-muted">{presence.date}</td>
                         <td>
                           <span
                             className={
-                              statutBadges[presence.statut] || "badge badge-muted"
+                              statutBadges[presence.statut] ||
+                              "badge badge-muted"
                             }
                           >
                             <span className="dot" />
                             {t(
                               `eleveDetails.${
                                 statutKeys[presence.statut] || "present"
-                              }`,
+                              }`
                             )}
                           </span>
                         </td>
@@ -196,7 +218,9 @@ const EleveDashboard = ({ username }) => {
 
         <section className="panel">
           <header className="panel-head">
-            <h2 className="panel-title">{t("eleveDashboard.participationTitle")}</h2>
+            <h2 className="panel-title">
+              {t("eleveDashboard.participationTitle")}
+            </h2>
           </header>
           <div className="panel-body">
             {participations.length > 0 ? (
@@ -210,17 +234,19 @@ const EleveDashboard = ({ username }) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {participations.slice(0, 6).map((participation) => (
-                      <tr key={participation.id}>
+                    {participations.slice(0, 6).map((participation, index) => (
+                      <tr key={participation.id ?? index}>
                         <td className="cell-strong">
                           {participation.concour?.nom || "—"}
                         </td>
                         <td>
                           <span className="badge badge-ink">
-                            {participation.note}
+                            {participation.note ?? "—"}
                           </span>
                         </td>
-                        <td className="num">{participation.classement}</td>
+                        <td className="num">
+                          {participation.classement ?? "—"}
+                        </td>
                       </tr>
                     ))}
                   </tbody>

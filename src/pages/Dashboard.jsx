@@ -91,7 +91,12 @@ const Dashboard = () => {
     }
   };
 
+ 
+
+ 
+
   useEffect(() => {
+     if (role !== "ADMIN") return;
     const loadDashboard = async () => {
       try {
         const [
@@ -138,7 +143,7 @@ const Dashboard = () => {
     };
 
     loadDashboard();
-  }, []);
+  }, [role]);
 
   const dateLabel = new Date().toLocaleDateString(
     i18n.language === "ar" ? "ar-EG" : "fr-FR",

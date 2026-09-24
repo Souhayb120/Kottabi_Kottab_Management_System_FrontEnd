@@ -28,7 +28,7 @@ const Rapport = () => {
   useEffect(() => {
     const fetchEleves = async () => {
       try {
-        const response = await api.get("api/eleve?size=1000");
+        const response = await api.get("api/eleve/consulterEleves?size=1000");
         setEleves(response.data.content);
       } catch (error) {
         toast.error(t("rapport.loadElevesError"));
@@ -49,6 +49,7 @@ const Rapport = () => {
 
   useEffect(() => {
     return () => {
+    
       if (pdfUrl) URL.revokeObjectURL(pdfUrl);
     };
   }, [pdfUrl]);

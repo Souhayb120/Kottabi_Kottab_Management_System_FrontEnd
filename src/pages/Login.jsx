@@ -41,7 +41,7 @@ const Login = () => {
     }
   };
 
-  const inputClass = "input-trad ps-9";
+  const inputClass = "input-trad ps-12";
 
   return (
     <div className="min-h-screen bg-(--bg) lg:grid lg:grid-cols-2">
@@ -80,7 +80,6 @@ const Login = () => {
                     <FontAwesomeIcon icon={faEnvelope} className="absolute inset-y-0 start-3.5 my-auto h-4 w-4 text-(--text-muted)" />
                     <input
                       type="text"
-                      placeholder="ahmed129"
                       className={inputClass}
                       {...register("username")}
                     />
@@ -93,7 +92,6 @@ const Login = () => {
                     <FontAwesomeIcon icon={faLock} className="absolute inset-y-0 start-3.5 my-auto h-4 w-4 text-(--text-muted)" />
                     <input
                       type={showPassword ? "text" : "password"}
-                      placeholder="••••••••"
                       className={`${inputClass} pe-10`}
                       {...register("password")}
                     />

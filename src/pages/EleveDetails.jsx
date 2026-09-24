@@ -35,48 +35,71 @@ const EleveDetails = () => {
   const [participations, setParticipations] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchDetails = async () => {
+useEffect(() => {
+  const fetchDetails = async () => {
+    setLoading(true);
+
+    if (isEleve) {
       try {
-        const eleveRes = await api.get(`api/eleve/username/${username}`);
-        setEleve(eleveRes.data);
-      } catch {
+        const { data } = await api.get("api/eleve/me");
+
+        setEleve({ ...data, username: data.username || username });
+        setProgression(data.progressions?.[0] || null);
+        setPresences(data.presences || []);
+        setParticipations(data.participations || []);
+      } catch (error) {
+        console.error("Failed to load student profile:", error);
         setEleve(null);
-      }
-
-      try {
-        const progressionRes = await api.get(
-          `api/progressions/eleve/${username}`,
-        );
-        setProgression(progressionRes.data);
-      } catch {
         setProgression(null);
-      }
-
-      try {
-        const presenceRes = await api.get(
-          `api/presence/eleve/${username}?size=100`,
-        );
-        setPresences(presenceRes.data.content);
-      } catch {
         setPresences([]);
-      }
-
-      try {
-        const participationRes = await api.get(
-          `api/participation/eleve/${username}?size=100`,
-        );
-        setParticipations(participationRes.data.content);
-      } catch {
         setParticipations([]);
+      } finally {
+        setLoading(false);
       }
+      return;
+    }
 
-      setLoading(false);
-    };
+    try {
+      const eleveRes = await api.get(
+        `api/eleve/username/${encodeURIComponent(username)}`
+      );
+      setEleve(eleveRes.data);
+    } catch {
+      setEleve(null);
+    }
 
-    fetchDetails();
-  }, [username]);
+    try {
+      const progressionRes = await api.get(
+        `api/progressions/eleve/${username}?size=100`
+      );
+      setProgression(progressionRes.data.content[0] || null);
+    } catch {
+      setProgression(null);
+    }
 
+    try {
+      const presenceRes = await api.get(
+        `api/presence/eleve/${username}?size=100`
+      );
+      setPresences(presenceRes.data.content);
+    } catch {
+      setPresences([]);
+    }
+
+    try {
+      const participationRes = await api.get(
+        `api/participation/eleve/${username}?size=100`
+      );
+      setParticipations(participationRes.data.content);
+    } catch {
+      setParticipations([]);
+    }
+
+    setLoading(false);
+  };
+
+  fetchDetails();
+}, [username, isEleve]);
   return (
     <div className="app-layout">
       <Sidebar />
@@ -114,10 +137,12 @@ const EleveDetails = () => {
                 </header>
                 <div className="panel-body">
                   <dl className="m-0 max-w-md">
-                    <div className="dl">
-                      <dt>{t("eleveDetails.id")}</dt>
-                      <dd className="num">{eleve.id}</dd>
-                    </div>
+                    {eleve.id != null && (
+                      <div className="dl">
+                        <dt>{t("eleveDetails.id")}</dt>
+                        <dd className="num">{eleve.id}</dd>
+                      </div>
+                    )}
                     <div className="dl">
                       <dt>{t("eleveDetails.username")}</dt>
                       <dd>{eleve.username}</dd>
@@ -130,14 +155,18 @@ const EleveDetails = () => {
                       <dt>{t("eleveDetails.prenom")}</dt>
                       <dd>{eleve.prenom}</dd>
                     </div>
-                    <div className="dl">
-                      <dt>{t("eleveDetails.email")}</dt>
-                      <dd>{eleve.email}</dd>
-                    </div>
-                    <div className="dl">
-                      <dt>{t("eleveDetails.tel")}</dt>
-                      <dd>{eleve.tel}</dd>
-                    </div>
+                    {eleve.email != null && (
+                      <div className="dl">
+                        <dt>{t("eleveDetails.email")}</dt>
+                        <dd>{eleve.email}</dd>
+                      </div>
+                    )}
+                    {eleve.tel != null && (
+                      <div className="dl">
+                        <dt>{t("eleveDetails.tel")}</dt>
+                        <dd>{eleve.tel}</dd>
+                      </div>
+                    )}
                     <div className="dl">
                       <dt>{t("eleveDetails.dateNaissance")}</dt>
                       <dd>{eleve.dateNaissance}</dd>
