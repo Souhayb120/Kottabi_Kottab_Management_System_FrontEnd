@@ -7,7 +7,7 @@ const ProgressionForm = ({ register, errors, eleves, enseignants }) => {
   const labelClass = "label-trad";
 
   return (
-    <div className="grid grid-cols-2 gap-3 py-3">
+    <div className="grid grid-cols-1 gap-3 py-3 sm:grid-cols-2">
       <div>
         <label className={labelClass}>{t("progression.selectEleve")}</label>
         <select className={inputClass} {...register("eleveId")}>
@@ -19,7 +19,7 @@ const ProgressionForm = ({ register, errors, eleves, enseignants }) => {
           ))}
         </select>
         {errors.eleveId && (
-          <p className="text-red-600 text-[11px] mt-0.5">
+          <p className="field-error">
             {errors.eleveId.message}
           </p>
         )}
@@ -36,7 +36,7 @@ const ProgressionForm = ({ register, errors, eleves, enseignants }) => {
           ))}
         </select>
         {errors.enseignantId && (
-          <p className="text-red-600 text-[11px] mt-0.5">
+          <p className="field-error">
             {errors.enseignantId.message}
           </p>
         )}
@@ -46,7 +46,7 @@ const ProgressionForm = ({ register, errors, eleves, enseignants }) => {
         <label className={labelClass}>{t("progression.sourateLabel")}</label>
         <input className={inputClass} placeholder="Al-Baqarah" {...register("sourat")} />
         {errors.sourat && (
-          <p className="text-red-600 text-[11px] mt-0.5">{errors.sourat.message}</p>
+          <p className="field-error">{errors.sourat.message}</p>
         )}
       </div>
 
@@ -59,7 +59,7 @@ const ProgressionForm = ({ register, errors, eleves, enseignants }) => {
           {...register("versetDebut")}
         />
         {errors.versetDebut && (
-          <p className="text-red-600 text-[11px] mt-0.5">
+          <p className="field-error">
             {errors.versetDebut.message}
           </p>
         )}
@@ -74,7 +74,7 @@ const ProgressionForm = ({ register, errors, eleves, enseignants }) => {
           {...register("versetFin")}
         />
         {errors.versetFin && (
-          <p className="text-red-600 text-[11px] mt-0.5">
+          <p className="field-error">
             {errors.versetFin.message}
           </p>
         )}

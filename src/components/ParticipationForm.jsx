@@ -7,7 +7,7 @@ const ParticipationForm = ({ register, errors, eleves, enseignants, concours }) 
   const labelClass = "label-trad";
 
   return (
-    <div className="grid grid-cols-2 gap-3 py-3">
+    <div className="grid grid-cols-1 gap-3 py-3 sm:grid-cols-2">
       <div>
         <label className={labelClass}>{t("participation.selectEleve")}</label>
         <select className={inputClass} {...register("eleveId")}>
@@ -19,7 +19,7 @@ const ParticipationForm = ({ register, errors, eleves, enseignants, concours }) 
           ))}
         </select>
         {errors.eleveId && (
-          <p className="text-red-600 text-[11px] mt-0.5">
+          <p className="field-error">
             {errors.eleveId.message}
           </p>
         )}
@@ -36,7 +36,7 @@ const ParticipationForm = ({ register, errors, eleves, enseignants, concours }) 
           ))}
         </select>
         {errors.enseignantId && (
-          <p className="text-red-600 text-[11px] mt-0.5">
+          <p className="field-error">
             {errors.enseignantId.message}
           </p>
         )}
@@ -53,7 +53,7 @@ const ParticipationForm = ({ register, errors, eleves, enseignants, concours }) 
           ))}
         </select>
         {errors.concourId && (
-          <p className="text-red-600 text-[11px] mt-0.5">
+          <p className="field-error">
             {errors.concourId.message}
           </p>
         )}
@@ -69,7 +69,7 @@ const ParticipationForm = ({ register, errors, eleves, enseignants, concours }) 
           {...register("note")}
         />
         {errors.note && (
-          <p className="text-red-600 text-[11px] mt-0.5">{errors.note.message}</p>
+          <p className="field-error">{errors.note.message}</p>
         )}
       </div>
 
@@ -82,7 +82,7 @@ const ParticipationForm = ({ register, errors, eleves, enseignants, concours }) 
           {...register("classement")}
         />
         {errors.classement && (
-          <p className="text-red-600 text-[11px] mt-0.5">
+          <p className="field-error">
             {errors.classement.message}
           </p>
         )}
@@ -96,7 +96,7 @@ const ParticipationForm = ({ register, errors, eleves, enseignants, concours }) 
           {...register("commentaire")}
         />
         {errors.commentaire && (
-          <p className="text-red-600 text-[11px] mt-0.5">
+          <p className="field-error">
             {errors.commentaire.message}
           </p>
         )}

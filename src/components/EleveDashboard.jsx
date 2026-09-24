@@ -176,7 +176,7 @@ const EleveDashboard = () => {
           </header>
           <div className="panel-body">
             {recentPresences.length > 0 ? (
-              <div className="table-shell">
+              <div className="table-shell table-shell--bare">
                 <table className="tbl">
                   <thead>
                     <tr>
@@ -224,7 +224,7 @@ const EleveDashboard = () => {
           </header>
           <div className="panel-body">
             {participations.length > 0 ? (
-              <div className="table-shell">
+              <div className="table-shell table-shell--bare">
                 <table className="tbl">
                   <thead>
                     <tr>

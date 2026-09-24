@@ -224,7 +224,7 @@ useEffect(() => {
                 </header>
                 <div className="panel-body">
                   {presences.length > 0 ? (
-                    <div className="table-shell">
+                    <div className="table-shell table-shell--bare">
                       <table className="tbl">
                         <thead>
                           <tr>
@@ -274,7 +274,7 @@ useEffect(() => {
                 </header>
                 <div className="panel-body">
                   {participations.length > 0 ? (
-                    <div className="table-shell">
+                    <div className="table-shell table-shell--bare">
                       <table className="tbl">
                         <thead>
                           <tr>

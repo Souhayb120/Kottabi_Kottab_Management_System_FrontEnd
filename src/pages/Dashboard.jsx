@@ -206,28 +206,24 @@ const Dashboard = () => {
             ))}
           </div>
 
-          <section className="panel mt-5">
-            <header className="panel-head">
-              <h2 className="panel-title">{t("dashboard.presenceOverview")}</h2>
-            </header>
-            <div className="panel-body">
-              <div className="stat-ledger">
-                {presenceKeys.map((key) => (
-                  <div key={key} className="stat-item">
-                    <div className="stat-value">
-                      {loading ? "–" : presenceCounts[key]}
-                    </div>
-                    <div className="stat-label">
-                      <span className={statutBadges[key]}>
-                        <span className="dot" />
-                        {t(`eleveDetails.${statutKeys[key]}`)}
-                      </span>
-                    </div>
-                  </div>
-                ))}
+          <h2 className="panel-title mt-6 mb-2.5">
+            {t("dashboard.presenceOverview")}
+          </h2>
+          <div className="stat-ledger">
+            {presenceKeys.map((key) => (
+              <div key={key} className="stat-item">
+                <div className="stat-value">
+                  {loading ? "–" : presenceCounts[key]}
+                </div>
+                <div className="stat-label">
+                  <span className={statutBadges[key]}>
+                    <span className="dot" />
+                    {t(`eleveDetails.${statutKeys[key]}`)}
+                  </span>
+                </div>
               </div>
-            </div>
-          </section>
+            ))}
+          </div>
 
           <div className="mt-5 grid gap-5 xl:grid-cols-2">
             <section className="panel">
@@ -235,7 +231,7 @@ const Dashboard = () => {
                 <h2 className="panel-title">{t("dashboard.todayPresence")}</h2>
               </header>
               <div className="panel-body">
-                <div className="table-shell">
+                <div className="table-shell table-shell--bare">
                   <table className="tbl">
                     <thead>
                       <tr>
@@ -288,7 +284,7 @@ const Dashboard = () => {
                 </Link>
               </header>
               <div className="panel-body">
-                <div className="table-shell">
+                <div className="table-shell table-shell--bare">
                   <table className="tbl">
                     <thead>
                       <tr>

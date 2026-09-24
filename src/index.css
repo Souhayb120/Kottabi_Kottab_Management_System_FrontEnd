@@ -38,6 +38,9 @@
   --shadow-sm: 0 1px 2px rgba(11, 32, 24, 0.06), 0 6px 18px -14px rgba(11, 32, 24, 0.22);
   --shadow-lg: 0 26px 60px -28px rgba(10, 46, 34, 0.42);
 
+  --ease: cubic-bezier(0.33, 1, 0.68, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
   --r-sm: 7px;
   --r-md: 10px;
   --r-lg: 14px;
@@ -91,8 +94,19 @@ body {
   background-color: var(--bg);
   color: var(--text);
   font-family: var(--font-sans);
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 ::selection {
@@ -113,8 +127,7 @@ body {
   display: flex;
   flex-direction: column;
   min-width: 0;
-  margin-inline-start: 80px;
-  transition: margin-inline-start 0.18s ease;
+  margin-inline-start: 256px;
 }
 
 .content {
@@ -134,21 +147,12 @@ body {
   top: 0;
   bottom: 0;
   inset-inline-start: 0;
-  width: 80px;
-  overflow: hidden;
+  width: 256px;
+  overflow-y: auto;
   z-index: 40;
   background: var(--brand);
   color: #eff2ec;
   box-shadow: 2px 0 14px rgba(9, 41, 30, 0.34);
-  transition: width 0.18s ease;
-}
-
-.sidebar:hover {
-  width: 256px;
-}
-
-.sidebar:hover ~ .main {
-  margin-inline-start: 256px;
 }
 
 .sidebar .brand-block {
@@ -156,30 +160,7 @@ body {
   gap: 12px;
 }
 
-.sidebar .brand-text,
-.sidebar .menu-text,
-.sidebar .nav-text {
-  max-width: 0;
-  opacity: 0;
-  overflow: hidden;
-  white-space: nowrap;
-  transition: max-width 0.18s ease, opacity 0.15s ease;
-}
-
-.sidebar:hover .brand-text,
-.sidebar:hover .menu-text,
-.sidebar:hover .nav-text {
-  max-width: 200px;
-  opacity: 1;
-}
-
 .sidebar .nav-item {
-  gap: 0;
-  padding-inline: 30px;
-  transition: gap 0.18s ease, padding-inline 0.18s ease;
-}
-
-.sidebar:hover .nav-item {
   gap: 13px;
   padding-inline: 14px;
 }
@@ -304,11 +285,8 @@ body {
 }
 
 .searchbox .input-trad {
-  padding-inline-start: 34px;
-}
-
-.searchbox .input-trad {
   width: 250px;
+  padding-inline-start: 34px;
 }
 
 /*  Buttons  */
@@ -327,13 +305,21 @@ body {
   font-weight: 600;
   font-family: inherit;
   cursor: pointer;
-  transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  transition: background-color 0.15s var(--ease), border-color 0.15s var(--ease),
+    box-shadow 0.15s var(--ease), transform 0.12s var(--ease);
 }
 
 .btn:hover,
 .btn-trad:hover {
   background: var(--brand-strong);
   border-color: var(--brand-strong);
+  box-shadow: var(--shadow-xs);
+}
+
+.btn:active,
+.btn-trad:active {
+  transform: translateY(1px);
+  box-shadow: none;
 }
 
 .btn:focus-visible,
@@ -366,7 +352,8 @@ body {
   font-weight: 500;
   font-family: inherit;
   cursor: pointer;
-  transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+  transition: color 0.15s var(--ease), border-color 0.15s var(--ease),
+    background-color 0.15s var(--ease), transform 0.12s var(--ease);
 }
 
 .btn-secondary:hover,
@@ -374,6 +361,11 @@ body {
   border-color: var(--border-strong);
   color: var(--text);
   background: var(--surface-2);
+}
+
+.btn-secondary:active,
+.btn-ghost:active {
+  transform: translateY(1px);
 }
 
 .btn-danger {
@@ -389,11 +381,15 @@ body {
   font-weight: 600;
   font-family: inherit;
   cursor: pointer;
-  transition: background-color 0.15s ease;
+  transition: background-color 0.15s var(--ease), transform 0.12s var(--ease);
 }
 
 .btn-danger:hover {
   background: color-mix(in srgb, var(--danger) 86%, #000);
+}
+
+.btn-danger:active {
+  transform: translateY(1px);
 }
 
 .icon-btn {
@@ -407,13 +403,18 @@ body {
   background: var(--surface);
   color: var(--text-muted);
   cursor: pointer;
-  transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+  transition: color 0.15s var(--ease), background-color 0.15s var(--ease),
+    border-color 0.15s var(--ease), transform 0.12s var(--ease);
 }
 
 .icon-btn:hover {
   color: var(--text);
   border-color: var(--border-strong);
   background: var(--surface-2);
+}
+
+.icon-btn:active {
+  transform: translateY(1px);
 }
 
 
@@ -430,12 +431,17 @@ body {
   color: var(--text-muted);
   border: 1px solid transparent;
   cursor: pointer;
-  transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+  transition: color 0.15s var(--ease), background-color 0.15s var(--ease),
+    border-color 0.15s var(--ease), transform 0.12s var(--ease);
 }
 
 .btn-xs svg {
   width: 13px;
   height: 13px;
+}
+
+.btn-xs:active {
+  transform: translateY(1px);
 }
 
 .btn-xs-green:hover {
@@ -470,6 +476,7 @@ body {
 
 .input-trad {
   width: 100%;
+  min-height: 38px;
   border: 1px solid var(--border-strong);
   background: var(--surface);
   color: var(--text);
@@ -478,7 +485,7 @@ body {
   font-size: 13px;
   font-family: inherit;
   box-shadow: none;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition: border-color 0.15s var(--ease), box-shadow 0.15s var(--ease);
 }
 
 .input-trad:focus {
@@ -512,6 +519,16 @@ body {
   border-radius: var(--r-lg);
   box-shadow: var(--shadow-xs);
   overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* A table that sits inside a panel — the surrounding frame does the job,
+   so the inner shell stays quiet. */
+.table-shell--bare {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
 }
 
 .tbl {
@@ -538,6 +555,7 @@ body {
   padding: 11px 18px;
   border-bottom: 1px solid var(--border);
   vertical-align: middle;
+  transition: background-color 0.15s var(--ease);
 }
 
 .tbl tbody tr:last-child td {
@@ -698,8 +716,13 @@ body {
   position: absolute;
   inset: 0;
   transform: translateX(-100%);
-  background-image: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
-  animation: shimmer 1.4s ease infinite;
+  background-image: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--surface) 55%, transparent),
+    transparent
+  );
+  animation: shimmer 1.5s ease infinite;
 }
 
 @keyframes shimmer {
@@ -773,4 +796,40 @@ body {
   font-weight: 600;
   color: var(--text);
   text-align: end;
+}
+
+/* Modal entrance — short, restrained, respects MUI's own positioning. */
+@keyframes modal-in {
+  from {
+    transform: translate(-50%, -50%) scale(0.97);
+  }
+  to {
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+/* Small screens: keep the same language, simply tighten the container. */
+@media (max-width: 640px) {
+  .content {
+    padding: 20px 16px 28px;
+  }
+
+  .page-header,
+  .page-header.has-toolbar {
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+
+  .toolbar {
+    flex-wrap: wrap;
+  }
+
+  .toolbar .searchbox,
+  .toolbar .searchbox .input-trad {
+    width: 100%;
+  }
+
+  .topbar {
+    padding: 8px 14px;
+  }
 }

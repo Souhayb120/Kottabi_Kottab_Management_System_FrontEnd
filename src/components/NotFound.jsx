@@ -8,7 +8,7 @@ function NotFound() {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-(--bg) p-6 text-center">
-      <span className="flex h-16 w-16 items-center justify-center rounded-2xl border border-(--border-strong) bg-(--surface) text-[#c79a3b]">
+      <span className="flex h-16 w-16 items-center justify-center rounded-(--r-md) border border-(--border-strong) bg-(--surface) text-[#c79a3b]">
         <FontAwesomeIcon icon={faTriangleExclamation} className="h-7 w-7" />
       </span>
       <div>

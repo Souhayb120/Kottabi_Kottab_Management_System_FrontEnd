@@ -46,7 +46,7 @@ function Topbar() {
           {i18n.language === "ar" ? "FR" : "عربي"}
         </button>
         <div className="avatar">{initials || "U"}</div>
-        <div className="leading-tight">
+        <div className="hidden leading-tight sm:block">
           <div className="text-[13px] font-medium text-white">
             {username || "Utilisateur"}
           </div>

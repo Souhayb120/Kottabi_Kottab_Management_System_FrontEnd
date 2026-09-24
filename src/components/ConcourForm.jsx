@@ -7,12 +7,12 @@ const ConcourForm = ({ register, errors }) => {
   const labelClass = "label-trad";
 
   return (
-    <div className="grid grid-cols-2 gap-3 py-3">
+    <div className="grid grid-cols-1 gap-3 py-3 sm:grid-cols-2">
       <div>
         <label className={labelClass}>{t("concours.nomLabel")}</label>
         <input className={inputClass} {...register("nom")} />
         {errors.nom && (
-          <p className="text-red-600 text-[11px] mt-0.5">{errors.nom.message}</p>
+          <p className="field-error">{errors.nom.message}</p>
         )}
       </div>
 
@@ -20,7 +20,7 @@ const ConcourForm = ({ register, errors }) => {
         <label className={labelClass}>{t("concours.dateLabel")}</label>
         <input className={inputClass} type="date" {...register("dateCreation")} />
         {errors.dateCreation && (
-          <p className="text-red-600 text-[11px] mt-0.5">
+          <p className="field-error">
             {errors.dateCreation.message}
           </p>
         )}
@@ -35,7 +35,7 @@ const ConcourForm = ({ register, errors }) => {
           <option value="HIFZ_60_HIZB">{t("concours.hifz60")}</option>
         </select>
         {errors.niveauHifz && (
-          <p className="text-red-600 text-[11px] mt-0.5">
+          <p className="field-error">
             {errors.niveauHifz.message}
           </p>
         )}
@@ -49,7 +49,7 @@ const ConcourForm = ({ register, errors }) => {
           {...register("description")}
         />
         {errors.description && (
-          <p className="text-red-600 text-[11px] mt-0.5">
+          <p className="field-error">
             {errors.description.message}
           </p>
         )}

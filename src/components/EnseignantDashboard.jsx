@@ -131,7 +131,7 @@ const EnseignantDashboard = ({ username }) => {
           </header>
           <div className="panel-body">
             {todayPresence.length > 0 ? (
-              <div className="table-shell">
+              <div className="table-shell table-shell--bare">
                 <table className="tbl">
                   <thead>
                     <tr>
@@ -183,7 +183,7 @@ const EnseignantDashboard = ({ username }) => {
           </header>
           <div className="panel-body">
             {recentProgressions.length > 0 ? (
-              <div className="table-shell">
+              <div className="table-shell table-shell--bare">
                 <table className="tbl">
                   <thead>
                     <tr>

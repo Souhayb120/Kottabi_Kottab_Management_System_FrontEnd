@@ -9,12 +9,9 @@ import {
   faChalkboardUser,
   faCheck,
   faChildren,
-  faCircleCheck,
   faFileLines,
-  faGear,
   faGlobe,
   faMagnifyingGlass,
-  faStarAndCrescent,
   faTrophy,
   faUserShield,
   faXmark,
@@ -25,51 +22,18 @@ function Landing() {
   const { t, i18n } = useTranslation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dark, setDark] = useState(
-    () => typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches,
+    () =>
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches,
   );
 
   const isAr = i18n.language === "ar";
   const toggleLang = () => i18n.changeLanguage(isAr ? "fr" : "ar");
 
   const navLinks = [
+    { href: "#product", label: t("landing.navFeatures", "Fonctionnalités") },
     { href: "#roles", label: t("landing.navRoles", "Pour qui") },
-    { href: "#features", label: t("landing.navFeatures", "Fonctionnalités") },
     { href: "#story", label: t("landing.navStory", "L'histoire") },
-  ];
-
-  const sidebarIcons = [faStarAndCrescent, faChildren, faBookQuran, faTrophy, faFileLines, faGear];
-
-  const roles = [
-    {
-      icon: faUserShield,
-      title: t("landing.roleAdminTitle", "La direction"),
-      desc: t("landing.roleAdminDesc", "Toute l'école en un écran, sans recompter les cahiers."),
-      points: [
-        t("landing.roleAdmin1", "Créer les comptes, les classes et les niveaux"),
-        t("landing.roleAdmin2", "Répartir les enseignants"),
-        t("landing.roleAdmin3", "Ouvrir les rapports du trimestre"),
-      ],
-    },
-    {
-      icon: faChalkboardUser,
-      title: t("landing.roleTeacherTitle", "Les enseignants"),
-      desc: t("landing.roleTeacherDesc", "Trente secondes par élève, puis on revient à l'enseignement."),
-      points: [
-        t("landing.roleTeacher1", "Pointer la présence du matin"),
-        t("landing.roleTeacher2", "Noter la leçon du jour et sa difficulté"),
-        t("landing.roleTeacher3", "Envoyer un mot à la famille, sans rendez-vous"),
-      ],
-    },
-    {
-      icon: faBookQuran,
-      title: t("landing.roleParentTitle", "Les familles"),
-      desc: t("landing.roleParentDesc", "Suivre de loin, sans bruit, l'essentiel seulement."),
-      points: [
-        t("landing.roleParent1", "Voir la leçon du jour"),
-        t("landing.roleParent2", "Recevoir le bilan du trimestre"),
-        t("landing.roleParent3", "Encourager une réussite, le jour même"),
-      ],
-    },
   ];
 
   const features = [
@@ -105,6 +69,39 @@ function Landing() {
     },
   ];
 
+  const roles = [
+    {
+      icon: faUserShield,
+      title: t("landing.roleAdminTitle", "La direction"),
+      desc: t("landing.roleAdminDesc", "Toute l'école en un écran, sans recompter les cahiers."),
+      points: [
+        t("landing.roleAdmin1", "Créer les comptes, les classes et les niveaux"),
+        t("landing.roleAdmin2", "Répartir les enseignants"),
+        t("landing.roleAdmin3", "Ouvrir les rapports du trimestre"),
+      ],
+    },
+    {
+      icon: faChalkboardUser,
+      title: t("landing.roleTeacherTitle", "Les enseignants"),
+      desc: t("landing.roleTeacherDesc", "Trente secondes par élève, puis on revient à l'enseignement."),
+      points: [
+        t("landing.roleTeacher1", "Pointer la présence du matin"),
+        t("landing.roleTeacher2", "Noter la leçon du jour et sa difficulté"),
+        t("landing.roleTeacher3", "Envoyer un mot à la famille, sans rendez-vous"),
+      ],
+    },
+    {
+      icon: faBookQuran,
+      title: t("landing.roleParentTitle", "Les familles"),
+      desc: t("landing.roleParentDesc", "Suivre de loin, sans bruit, l'essentiel seulement."),
+      points: [
+        t("landing.roleParent1", "Voir la leçon du jour"),
+        t("landing.roleParent2", "Recevoir le bilan du trimestre"),
+        t("landing.roleParent3", "Encourager une réussite, le jour même"),
+      ],
+    },
+  ];
+
   const numbers = [
     { value: "120", label: t("landing.count1Label", "élèves suivis") },
     { value: "12", label: t("landing.count2Label", "enseignants") },
@@ -117,430 +114,435 @@ function Landing() {
   return (
     <div className={dark ? "dark" : undefined}>
       <div className="min-h-screen bg-(--bg) text-(--text) transition-colors duration-300">
-        <header className="sticky top-0 z-50 border-b border-(--border) bg-(--bg)/85 backdrop-blur-xl">
-          <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 sm:px-8">
-            <a href="#top" className="flex items-center gap-2.5">
-              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-(--brand) shadow-md shadow-(--brand)/20">
-                <FontAwesomeIcon icon={faBookQuran} className="h-5 w-5 text-(--accent)" />
+        <header className="sticky top-0 z-50 border-b border-(--border) bg-(--bg)/95 backdrop-blur-sm">
+          <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 sm:px-8">
+            <a href="#top" className="flex items-center gap-3">
+              <span className="flex h-9 w-9 items-center justify-center rounded-md border border-(--border) bg-(--surface)">
+                <FontAwesomeIcon icon={faBookQuran} className="h-4 w-4 text-(--brand)" />
               </span>
-              <span className="text-lg font-bold tracking-tight text-(--brand)">Kottabi</span>
+              <div className="leading-tight">
+                <div className="text-sm font-semibold text-(--text)">Kottabi</div>
+                <div className="hidden text-[10px] text-(--text-muted) sm:block">
+                  {t("sidebar.tagline", "Gestion des écoles coraniques")}
+                </div>
+              </div>
             </a>
 
-            <nav className="hidden items-center gap-8 md:flex">
+            <nav className="hidden items-center gap-7 md:flex">
               {navLinks.map((link) => (
                 <a
                   key={link.href}
                   href={link.href}
-                  className="text-sm font-medium text-(--text-muted) transition-colors hover:text-(--brand)"
+                  className="text-sm text-(--text-muted) transition-colors duration-150 hover:text-(--text)"
                 >
                   {link.label}
                 </a>
               ))}
             </nav>
 
-            <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-2">
               <button
                 onClick={toggleLang}
-                className="flex items-center gap-1.5 rounded-full border border-(--border) bg-(--surface) px-3 py-2 text-xs font-medium text-(--text-muted) transition-colors hover:text-(--brand)"
+                className="flex h-9 items-center gap-1.5 rounded-md border border-(--border) px-3 text-xs text-(--text-muted) transition-colors duration-150 hover:text-(--text)"
               >
                 <FontAwesomeIcon icon={faGlobe} className="h-3.5 w-3.5" />
                 {isAr ? "FR" : "عربي"}
               </button>
 
               <ThemeToggle
-                className="rounded-full border border-(--border) bg-(--surface) p-2 text-(--text-muted) transition-colors hover:text-(--brand)"
+                className="flex h-9 w-9 items-center justify-center rounded-md border border-(--border) text-(--text-muted) transition-colors duration-150 hover:text-(--text)"
                 value={dark}
-                onToggle={() => setDark((d) => !d)}
+                onToggle={() => setDark((value) => !value)}
                 light={t("landing.darkModeOn", "Passer en clair")}
                 dark={t("landing.darkModeOff", "Passer en sombre")}
               />
 
               <a
-                href="#cta"
-                className="hidden items-center gap-1.5 rounded-full bg-(--brand) px-4 py-2 text-sm font-semibold text-[#f3efe3] transition-colors hover:bg-(--brand-strong) sm:flex"
+                href="/login"
+                className="hidden h-9 items-center rounded-md bg-(--brand) px-4 text-sm font-medium text-[#f3efe3] transition-colors duration-150 hover:bg-(--brand-strong) sm:flex"
               >
                 {t("landing.navLogin", "Se connecter")}
               </a>
 
               <button
                 onClick={() => setMobileOpen((open) => !open)}
-                className="rounded-md p-2 text-(--text-muted) transition-colors hover:bg-(--border) md:hidden"
+                className="flex h-9 w-9 items-center justify-center rounded-md text-(--text-muted) md:hidden"
                 aria-label="Menu"
               >
-                {mobileOpen ? (
-                  <FontAwesomeIcon icon={faXmark} className="h-5 w-5" />
-                ) : (
-                  <FontAwesomeIcon icon={faBars} className="h-5 w-5" />
-                )}
+                <FontAwesomeIcon icon={mobileOpen ? faXmark : faBars} className="h-4 w-4" />
               </button>
             </div>
           </div>
 
           {mobileOpen && (
-            <nav className="border-t border-(--border) bg-(--bg) px-5 pb-4 pt-2 md:hidden">
+            <div className="border-t border-(--border) bg-(--bg) px-5 py-3 md:hidden">
               {navLinks.map((link) => (
                 <a
                   key={link.href}
                   href={link.href}
                   onClick={() => setMobileOpen(false)}
-                  className="block rounded-md px-3 py-2.5 text-sm text-(--text-muted) transition-colors hover:bg-(--border) hover:text-(--brand)"
+                  className="block border-b border-(--border) py-3 text-sm text-(--text-muted) last:border-b-0"
                 >
                   {link.label}
                 </a>
               ))}
-              <a
-                href="#cta"
-                onClick={() => setMobileOpen(false)}
-                className="mt-1 flex items-center justify-center gap-1.5 rounded-full bg-(--brand) px-4 py-2.5 text-sm font-semibold text-[#f3efe3]"
-              >
-                {t("landing.navLogin", "Se connecter")}
-              </a>
-            </nav>
+            </div>
           )}
         </header>
 
-        <section id="top">
-          <div className="relative mx-auto max-w-6xl px-5 pb-20 pt-16 text-center sm:px-8 lg:pb-24 lg:pt-20">
-            <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-(--border) bg-(--surface) px-3.5 py-1.5 text-xs font-medium text-(--text-muted) shadow-sm">
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-(--brand)">
-                <FontAwesomeIcon icon={faBookQuran} className="h-3 w-3 text-(--accent)" />
-              </span>
-              {t("landing.heroBadge", "Pensé pour les madrasas")}
-            </div>
+        <main>
+          <section id="top" className="border-b border-(--border)">
+            <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8 lg:py-24">
+              <div className="grid gap-12 lg:grid-cols-[0.88fr_1.12fr] lg:items-start">
+                <div className="max-w-xl lg:pt-10">
+                  <p className="text-xs font-medium uppercase tracking-[0.16em] text-(--brand)/70">
+                    {t("landing.heroBadge", "Pensé pour les madrasas")}
+                  </p>
 
-            <p className="mt-9 font-serif text-2xl leading-relaxed text-(--brand)/80 sm:text-[1.7rem]">
-              {t("landing.heroAyah", "وَلَقَدْ يَسَّرْنَا الْقُرْآنَ لِلذِّكْرِ فَهَلْ مِن مُّدَّكِرٍ")}
-            </p>
-            <p className="mt-2.5 text-[11px] uppercase tracking-[0.3em] text-(--brand)/50">
-              {t("landing.heroAyahRef", "Al-Qamar · 54:17")}
-            </p>
+                  <p className="mt-6 font-serif text-xl leading-relaxed text-(--brand)/80 sm:text-2xl">
+                    {t(
+                      "landing.heroAyah",
+                      "وَلَقَدْ يَسَّرْنَا الْقُرْآنَ لِلذِّكْرِ فَهَلْ مِن مُّدَّكِرٍ",
+                    )}
+                  </p>
 
-            <h1 className="mx-auto mt-7 max-w-3xl text-4xl font-bold leading-[1.08] tracking-tight text-(--text) sm:text-6xl">
-              {t("landing.heroTitle1", "Le suivi du Coran,")}{" "}
-              <span className="relative inline-block">
-                {t("landing.heroTitle2", "enfin simple.")}
-                <span className="absolute inset-x-0 -bottom-1.5 h-3 -rotate-1 rounded-sm bg-(--accent)/25" />
-              </span>
-            </h1>
+                  <p className="mt-2 text-[11px] text-(--text-muted)">
+                    {t("landing.heroAyahRef", "Al-Qamar · 54:17")}
+                  </p>
 
-            <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-(--text-muted) sm:text-lg">
-              {t(
-                "landing.heroText",
-                "Kottabi réunit la présence, la leçon du jour, la mémorisation et les concours dans un seul endroit — lisible par la direction, les enseignants et les familles.",
-              )}
-            </p>
+                  <h1 className="mt-8 text-4xl font-semibold leading-[1.05] tracking-[-0.04em] text-(--text) sm:text-5xl lg:text-[3.75rem]">
+                    {t("landing.heroTitle1", "Le suivi du Coran,")}{" "}
+                    <span className="text-(--brand)">
+                      {t("landing.heroTitle2", "enfin simple.")}
+                    </span>
+                  </h1>
 
-            <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-              <a
-                href="#cta"
-                className="inline-flex items-center gap-2 rounded-full bg-(--brand) px-8 py-3.5 text-sm font-semibold text-[#f3efe3] transition-colors hover:bg-(--brand-strong)"
-              >
-                {t("landing.heroCtaPrimary", "Essayer gratuitement")}
-                <FontAwesomeIcon icon={faArrowRight} className="h-4 w-4 rtl:rotate-180" />
-              </a>
-              <a
-                href="#demo"
-                className="inline-flex items-center gap-2 rounded-full border border-(--border) bg-(--surface) px-8 py-3.5 text-sm font-semibold text-(--text-muted) transition-colors hover:border-(--brand)/40 hover:text-(--brand)"
-              >
-                {t("landing.heroCtaSecondary", "Voir la démo")}
-              </a>
-            </div>
+                  <p className="mt-6 max-w-lg text-base leading-7 text-(--text-muted)">
+                    {t(
+                      "landing.heroText",
+                      "Kottabi réunit la présence, la leçon du jour, la mémorisation et les concours dans un seul endroit — lisible par la direction, les enseignants et les familles.",
+                    )}
+                  </p>
 
-            <p className="mt-5 text-xs text-(--text-muted)">
-              {t("landing.heroFree", "Gratuit. Sans carte bancaire, sans engagement.")}
-            </p>
-          </div>
+                  <div className="mt-8 flex flex-wrap items-center gap-3">
+                    <a
+                      href="/login"
+                      className="inline-flex h-10 items-center gap-2 rounded-md bg-(--brand) px-5 text-sm font-medium text-[#f3efe3] transition-colors duration-150 hover:bg-(--brand-strong)"
+                    >
+                      {t("landing.heroCtaPrimary", "Essayer gratuitement")}
+                      <FontAwesomeIcon icon={faArrowRight} className="h-3.5 w-3.5 rtl:rotate-180" />
+                    </a>
 
-          <div id="demo" className="relative mx-auto max-w-5xl scroll-mt-24 px-5 pb-8 sm:px-8">
-            <div className="relative overflow-hidden rounded-2xl border border-(--border) bg-(--surface) shadow-[0_24px_48px_-28px_rgba(10,46,34,0.35)]">
-              <div className="flex items-center gap-2 border-b border-(--border) bg-(--surface-2) px-4 py-2.5">
-                <div className="flex flex-1 items-center gap-2 rounded-lg bg-(--bg) px-3 py-1 text-[11px] text-(--text-muted)">
-                  <FontAwesomeIcon icon={faMagnifyingGlass} className="h-3 w-3" />
-                  app.kottabi.org
+                    <a
+                      href="#product"
+                      className="inline-flex h-10 items-center rounded-md border border-(--border) px-5 text-sm text-(--text-muted) transition-colors duration-150 hover:text-(--text)"
+                    >
+                      {t("landing.heroCtaSecondary", "Voir la démo")}
+                    </a>
+                  </div>
+
+                  <p className="mt-4 text-xs text-(--text-muted)">
+                    {t("landing.heroFree", "Gratuit. Sans carte bancaire, sans engagement.")}
+                  </p>
+                </div>
+
+                <div id="product" className="scroll-mt-24">
+                  <div className="border border-(--border) bg-(--surface)">
+                    <div className="flex items-center justify-between border-b border-(--border) px-4 py-3">
+                      <div className="text-xs font-medium text-(--text)">
+                        {t("landing.demoTitle", "Classe A — cette semaine")}
+                      </div>
+                      <div className="text-[11px] text-(--text-muted)">
+                        {t("landing.demoToday", "Aujourd'hui · samedi")}
+                      </div>
+                    </div>
+
+                    <div className="grid min-h-[430px] sm:grid-cols-[56px_1fr]">
+                      <div className="hidden border-e border-(--border) py-5 sm:block">
+                        <div className="flex flex-col items-center gap-4">
+                          {[faChildren, faCalendarCheck, faBookQuran, faTrophy, faFileLines].map((icon, index) => (
+                            <div
+                              key={index}
+                              className={`flex h-8 w-8 items-center justify-center rounded-md ${
+                                index === 0
+                                  ? "bg-(--brand) text-(--accent)"
+                                  : "text-(--text-muted)"
+                              }`}
+                            >
+                              <FontAwesomeIcon icon={icon} className="h-3.5 w-3.5" />
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="p-5 sm:p-7">
+                        <div className="grid gap-6 md:grid-cols-[1fr_130px]">
+                          <div>
+                            <div className="text-xs text-(--text-muted)">
+                              {t("landing.demoPresence", "Présence aujourd'hui")}
+                            </div>
+                            <div className="mt-1 text-3xl font-semibold tracking-tight text-(--text)">
+                              24/25
+                            </div>
+                          </div>
+
+                          <div className="flex h-16 items-end gap-1.5">
+                            {week.map((bar, index) => (
+                              <span
+                                key={index}
+                                style={{ height: `${bar}%` }}
+                                className={`flex-1 ${
+                                  index === week.length - 1
+                                    ? "bg-(--brand)"
+                                    : "bg-(--brand)/15"
+                                }`}
+                              />
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="mt-7 border-t border-(--border)">
+                          {[
+                            {
+                              name: t("landing.demoRow1Name", "Youssef Ben Salah"),
+                              lesson: t("landing.demoRow1Lesson", "Nouvelle leçon · Sourate Al-Baqarah"),
+                              state: t("landing.demoStatePass", "Pass"),
+                              color: "text-(--ok)",
+                            },
+                            {
+                              name: t("landing.demoRow2Name", "Bilal Khaled"),
+                              lesson: t("landing.demoRow2Lesson", "Révision · Page 391 – 393"),
+                              state: t("landing.demoStateReview", "À refaire demain"),
+                              color: "text-(--warn)",
+                            },
+                            {
+                              name: t("landing.demoRow3Name", "Amina Ali"),
+                              lesson: t("landing.demoRow3Lesson", "Rappel · Juz 1 – 5"),
+                              state: t("landing.demoStatePending", "En attente"),
+                              color: "text-(--text-muted)",
+                            },
+                          ].map((row) => (
+                            <div
+                              key={row.name}
+                              className="grid gap-2 border-b border-(--border) py-4 sm:grid-cols-[1fr_auto] sm:items-center"
+                            >
+                              <div>
+                                <div className="text-sm font-medium text-(--text)">
+                                  {row.name}
+                                </div>
+                                <div className="mt-1 text-xs text-(--text-muted)">
+                                  {row.lesson}
+                                </div>
+                              </div>
+
+                              <div className={`text-xs font-medium ${row.color}`}>
+                                {row.state}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+
+                        <div className="mt-7 grid grid-cols-3 border border-(--border)">
+                          {[
+                            ["14", t("landing.f2Title", "Mémorisation")],
+                            ["3", t("landing.f4Title", "Concours")],
+                            ["6", t("landing.f5Title", "Rapports")],
+                          ].map(([value, label], index) => (
+                            <div
+                              key={label}
+                              className={`px-3 py-4 ${index !== 2 ? "border-e border-(--border)" : ""}`}
+                            >
+                              <div className="text-lg font-semibold text-(--text)">{value}</div>
+                              <div className="mt-1 text-[10px] leading-4 text-(--text-muted)">{label}</div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
+            </div>
+          </section>
 
-              <div className="flex">
-                <div className="hidden w-14 shrink-0 flex-col items-center gap-4 border-e border-(--border) bg-(--surface-2) py-6 sm:flex">
-                  {sidebarIcons.map((Icon, index) => (
-                    <span
-                      key={index}
-                      className={`flex h-8 w-8 items-center justify-center rounded-lg transition-colors ${
-                        index === 1 ? "bg-(--brand) text-(--accent)" : "text-(--text-muted)"
-                      }`}
+          <section className="border-b border-(--border)">
+            <div className="mx-auto grid max-w-7xl grid-cols-2 px-5 sm:px-8 lg:grid-cols-4">
+              {numbers.map((item, index) => (
+                <div
+                  key={item.label}
+                  className={`py-7 ${index < 3 ? "lg:border-e" : ""} border-(--border) lg:px-7`}
+                >
+                  <div className="text-2xl font-semibold text-(--brand)">{item.value}</div>
+                  <div className="mt-1 text-xs text-(--text-muted)">{item.label}</div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section id="features" className="scroll-mt-24 py-20 lg:py-24">
+            <div className="mx-auto max-w-7xl px-5 sm:px-8">
+              <div className="grid gap-12 lg:grid-cols-[0.65fr_1.35fr]">
+                <div className="max-w-sm">
+                  <p className="text-xs font-medium uppercase tracking-[0.16em] text-(--brand)/70">
+                    {t("landing.featuresEyebrow", "Ce que fait Kottabi")}
+                  </p>
+                  <h2 className="mt-4 text-3xl font-semibold leading-tight tracking-[-0.025em] text-(--text)">
+                    {t("landing.featuresTitle", "Le nécessaire, bien fait.")}
+                  </h2>
+                  <p className="mt-4 text-sm leading-6 text-(--text-muted)">
+                    {t("landing.featuresText", "Six outils, tous utiles chaque jour.")}
+                  </p>
+                </div>
+
+                <div className="border-t border-(--border)">
+                  {features.map((feature, index) => (
+                    <div
+                      key={feature.title}
+                      className="grid gap-3 border-b border-(--border) py-5 sm:grid-cols-[40px_180px_1fr] sm:items-center"
                     >
-                      <FontAwesomeIcon icon={Icon} className="h-4 w-4" />
-                    </span>
+                      <div className="flex h-8 w-8 items-center justify-center text-(--brand)">
+                        <FontAwesomeIcon icon={feature.icon} className="h-4 w-4" />
+                      </div>
+                      <div className="text-sm font-medium text-(--text)">
+                        {feature.title}
+                      </div>
+                      <div className="text-sm leading-6 text-(--text-muted)">
+                        {feature.desc}
+                      </div>
+                    </div>
                   ))}
                 </div>
+              </div>
+            </div>
+          </section>
 
-                <div className="flex-1 space-y-5 p-6">
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="text-sm font-semibold text-(--text)">
-                      {t("landing.demoTitle", "Classe A — cette semaine")}
+          <section id="roles" className="scroll-mt-24 border-y border-(--border) bg-(--surface) py-20 lg:py-24">
+            <div className="mx-auto max-w-7xl px-5 sm:px-8">
+              <div className="max-w-xl">
+                <p className="text-xs font-medium uppercase tracking-[0.16em] text-(--brand)/70">
+                  {t("landing.rolesEyebrow", "Pour chaque métier de l'école")}
+                </p>
+                <h2 className="mt-4 text-3xl font-semibold leading-tight tracking-[-0.025em] text-(--text)">
+                  {t("landing.rolesTitle", "Chacun fait son travail, Kottabi s'occupe du reste.")}
+                </h2>
+              </div>
+
+              <div className="mt-10 grid gap-px overflow-hidden border border-(--border) bg-(--border) lg:grid-cols-3">
+                {roles.map((role) => (
+                  <article key={role.title} className="bg-(--bg) p-6">
+                    <div className="flex items-center gap-3">
+                      <FontAwesomeIcon icon={role.icon} className="h-4 w-4 text-(--brand)" />
+                      <h3 className="text-sm font-semibold text-(--text)">{role.title}</h3>
                     </div>
-                    <span className="shrink-0 text-[11px] text-(--text-muted)">
-                      {t("landing.demoToday", "Aujourd'hui · samedi")}
-                    </span>
-                  </div>
 
-                  <div className="flex items-center justify-between gap-3 rounded-xl bg-(--brand) px-4 py-3 text-[#f3efe3]">
-                    <span className="flex items-center gap-2 text-xs font-medium">
-                      <FontAwesomeIcon icon={faCircleCheck} className="h-4 w-4 text-(--accent)" />
-                      {t("landing.demoPresence", "Présence aujourd'hui")}
-                    </span>
-                    <span className="text-sm font-bold">24/25</span>
-                  </div>
+                    <p className="mt-4 text-sm leading-6 text-(--text-muted)">
+                      {role.desc}
+                    </p>
 
-                  <div className="flex h-16 items-end gap-2 px-1">
-                    {week.map((bar, index) => (
-                      <span
-                        key={index}
-                        style={{ height: `${bar}%` }}
-                        className={`flex-1 rounded-t-md transition-colors ${
-                          index === week.length - 1
-                            ? "bg-(--brand)"
-                            : "bg-(--brand)/[0.16]"
-                        }`}
-                      />
-                    ))}
-                  </div>
-
-                  <div className="space-y-2">
-                    {[
-                      {
-                        name: t("landing.demoRow1Name", "Youssef Ben Salah"),
-                        lesson: t("landing.demoRow1Lesson", "Nouvelle leçon · Sourate Al-Baqarah"),
-                        state: t("landing.demoStatePass", "Pass"),
-                        chip:
-                          "bg-emerald-500/10 text-emerald-700 dark:bg-emerald-400/10 dark:text-emerald-300",
-                        dot: "bg-emerald-500",
-                      },
-                      {
-                        name: t("landing.demoRow2Name", "Bilal Khaled"),
-                        lesson: t("landing.demoRow2Lesson", "Révision · Page 391 – 393"),
-                        state: t("landing.demoStateReview", "À refaire demain"),
-                        chip: "bg-amber-500/10 text-amber-700 dark:bg-amber-400/10 dark:text-amber-200",
-                        dot: "bg-amber-500",
-                      },
-                      {
-                        name: t("landing.demoRow3Name", "Amina Ali"),
-                        lesson: t("landing.demoRow3Lesson", "Rappel · Juz 1 – 5"),
-                        state: t("landing.demoStatePending", "En attente"),
-                        chip: "bg-(--surface-2) text-(--text-muted)",
-                        dot: "bg-(--border)",
-                      },
-                    ].map((row) => (
-                      <div
-                        key={row.name}
-                        className="flex items-center gap-3 rounded-xl border border-(--border) bg-(--bg) px-4 py-3"
-                      >
-                        <span className={`h-2 w-2 shrink-0 rounded-full ${row.dot}`} />
-                        <div className="min-w-0 flex-1">
-                          <div className="truncate text-xs font-medium text-(--text)">{row.name}</div>
-                          <div className="truncate text-[11px] text-(--text-muted)">{row.lesson}</div>
-                        </div>
-                        <span className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-medium ${row.chip}`}>
-                          {row.state}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                    <ul className="mt-6 space-y-3">
+                      {role.points.map((point) => (
+                        <li key={point} className="flex items-start gap-3 text-sm leading-6 text-(--text-muted)">
+                          <FontAwesomeIcon icon={faCheck} className="mt-1.5 h-3 w-3 shrink-0 text-(--brand)/60" />
+                          <span>{point}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </article>
+                ))}
               </div>
             </div>
-          </div>
-        </section>
+          </section>
 
-        <section className="border-y border-(--border) bg-(--surface)">
-          <div className="mx-auto grid max-w-6xl grid-cols-2 gap-8 px-5 py-12 sm:px-8 lg:grid-cols-4">
-            {numbers.map((item) => (
-              <div key={item.label} className="text-center">
-                <div className="font-serif text-4xl font-semibold text-(--brand) lg:text-5xl">
-                  {item.value}
-                </div>
-                <div className="mt-2 text-xs font-medium uppercase tracking-wider text-(--text-muted)">
-                  {item.label}
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
+          <section id="story" className="scroll-mt-24 py-20 lg:py-24">
+            <div className="mx-auto grid max-w-7xl gap-12 px-5 sm:px-8 lg:grid-cols-[1fr_0.75fr]">
+              <div>
+                <p className="text-xs font-medium uppercase tracking-[0.16em] text-(--brand)/70">
+                  {t("landing.founderEyebrow", "Pourquoi j'ai construit Kottabi")}
+                </p>
 
-        <section id="roles" className="scroll-mt-24 bg-(--bg) py-20 lg:py-28">
-          <div className="mx-auto max-w-6xl px-5 sm:px-8">
-            <div className="max-w-2xl">
-              <p className="text-xs font-semibold uppercase tracking-[0.25em] text-(--brand)/60">
-                {t("landing.rolesEyebrow", "Pour chaque métier de l'école")}
-              </p>
-              <h2 className="mt-3 text-3xl font-bold tracking-tight text-(--text) sm:text-4xl">
-                {t("landing.rolesTitle", "Chacun fait son travail, Kottabi s'occupe du reste.")}
-              </h2>
-            </div>
+                <p className="mt-6 max-w-3xl font-serif text-xl leading-9 text-(--text)">
+                  {t(
+                    "landing.founderText",
+                    "L'école tenait dans les registres de mon père : un cahier d'écolier relié de fil, où se mêlaient les prénoms des enfants, la sourate du jour et les absences de la semaine. Les années ont passé, les cahiers non. Kottabi est né de ce cahier — je l'ai seulement rendu lisible pour toutes les mains qui en ont besoin : les enseignants, la direction et les familles.",
+                  )}
+                </p>
 
-            <div className="mt-10 grid gap-6 md:grid-cols-3">
-              {roles.map((role) => (
-                <div
-                  key={role.title}
-                  className="rounded-2xl border border-(--border) bg-(--surface) p-7 transition-colors hover:border-(--brand)/35"
-                >
-                  <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-(--brand) text-(--accent)">
-                    <FontAwesomeIcon icon={role.icon} className="h-5 w-5" />
-                  </span>
-                  <h3 className="mt-5 text-lg font-semibold text-(--text)">{role.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-(--text-muted)">{role.desc}</p>
-                  <ul className="mt-6 space-y-3">
-                    {role.points.map((point) => (
-                      <li key={point} className="flex items-start gap-3 text-sm text-(--text-muted)">
-                        <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-300">
-                          <FontAwesomeIcon icon={faCheck} className="h-3 w-3" />
-                        </span>
-                        {point}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section id="features" className="scroll-mt-24 border-y border-(--border) bg-(--surface) py-20 lg:py-28">
-          <div className="mx-auto max-w-6xl px-5 sm:px-8">
-            <div className="mx-auto max-w-2xl text-center">
-              <p className="text-xs font-semibold uppercase tracking-[0.25em] text-(--brand)/60">
-                {t("landing.featuresEyebrow", "Ce que fait Kottabi")}
-              </p>
-              <h2 className="mt-3 text-3xl font-bold tracking-tight text-(--text) sm:text-4xl">
-                {t("landing.featuresTitle", "Le nécessaire, bien fait.")}
-              </h2>
-              <p className="mt-3 text-sm text-(--text-muted)">
-                {t("landing.featuresText", "Six outils, tous utiles chaque jour.")}
-              </p>
-            </div>
-
-            <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {features.map((feature) => (
-                <div
-                  key={feature.title}
-                  className="rounded-2xl border border-(--border) bg-(--bg) p-6 transition-colors hover:border-(--brand)/35"
-                >
-                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-(--brand)/10 text-(--brand) transition-colors group-hover:bg-(--brand) group-hover:text-(--accent)">
-                    <FontAwesomeIcon icon={feature.icon} className="h-4 w-4" />
-                  </span>
-                  <h3 className="mt-4 font-semibold text-(--text)">{feature.title}</h3>
-                  <p className="mt-1.5 text-sm leading-relaxed text-(--text-muted)">{feature.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section id="story" className="scroll-mt-24 bg-(--bg) py-20 lg:py-28">
-          <div className="mx-auto grid max-w-6xl gap-12 px-5 sm:px-8 lg:grid-cols-12">
-            <div className="lg:col-span-7">
-              <p className="text-xs font-semibold uppercase tracking-[0.25em] text-(--brand)/60">
-                {t("landing.founderEyebrow", "Pourquoi j'ai construit Kottabi")}
-              </p>
-              <p className="mt-6 text-lg leading-relaxed text-(--text-muted) first-letter:float-start first-letter:me-2 first-letter:font-serif first-letter:text-6xl first-letter:font-bold first-letter:leading-[0.85] first-letter:text-(--brand)">
-                {t(
-                  "landing.founderText",
-                  "L'école tenait dans les registres de mon père : un cahier d'écolier relié de fil, où se mêlaient les prénoms des enfants, la sourate du jour et les absences de la semaine. Les années ont passé, les cahiers non. Kottabi est né de ce cahier — je l'ai seulement rendu lisible pour toutes les mains qui en ont besoin : les enseignants, la direction et les familles.",
-                )}
-              </p>
-
-              <div className="mt-8 flex items-center gap-3">
-                <span className="flex h-12 w-12 items-center justify-center rounded-full bg-(--brand) text-sm font-bold text-(--accent)">
-                  {t("landing.founderInitials", "A")}
-                </span>
-                <div>
-                  <div className="font-semibold text-(--text)">
+                <div className="mt-7">
+                  <div className="text-sm font-medium text-(--text)">
                     {t("landing.founderName", "Cheikh Ahmed El-Fassi")}
                   </div>
-                  <div className="text-sm text-(--text-muted)">
+                  <div className="mt-1 text-xs text-(--text-muted)">
                     {t("landing.founderRole", "Directeur — fondateur de Kottabi")}
                   </div>
                 </div>
               </div>
-            </div>
 
-            <div className="lg:col-span-4 lg:col-start-9">
-              <figure className="rounded-2xl border border-(--border) bg-(--surface) p-8 shadow-xl shadow-(--brand)/5">
-                <span aria-hidden className="font-serif text-5xl leading-none text-(--accent)">
-                  “
-                </span>
-                <blockquote className="mt-3 font-serif text-lg italic leading-relaxed text-(--text-muted)">
+              <div className="border-s border-(--border) ps-6 lg:ps-8">
+                <div className="text-5xl leading-none text-(--accent)">“</div>
+                <blockquote className="mt-2 font-serif text-lg italic leading-8 text-(--text-muted)">
                   {t(
                     "landing.testimonialQuote",
                     "Avant, je notais tout dans un cahier et je refaisais les comptes le dimanche. Aujourd'hui, je m'occupe des enfants au lieu de la paperasse.",
                   )}
                 </blockquote>
-                <figcaption className="mt-6 flex items-center gap-3 border-t border-(--border) pt-5">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-full bg-(--surface-2) text-xs font-bold text-(--brand)">
-                    {t("landing.testimonialInitials", "K")}
-                  </span>
-                  <div>
-                    <div className="text-sm font-semibold text-(--text)">
-                      {t("landing.testimonialName", "Khaled Ben Amor")}
-                    </div>
-                    <div className="text-xs text-(--text-muted)">
-                      {t("landing.testimonialRole", "Enseignant — classe des 8 à 12 ans")}
-                    </div>
-                  </div>
-                </figcaption>
-              </figure>
-            </div>
-          </div>
-        </section>
 
-        <section id="cta" className="scroll-mt-24 bg-(--bg) pb-20 pt-4 lg:pb-28">
-          <div className="mx-auto max-w-5xl px-5 sm:px-8">
-            <div className="rounded-2xl bg-(--brand) px-8 py-16 text-center sm:px-14">
-              <h2 className="text-3xl font-bold tracking-tight text-[#f3efe3] sm:text-4xl">
-                {t("landing.ctaTitle", "Essayez avec votre école, c'est gratuit.")}
-              </h2>
-              <p className="mx-auto mt-4 max-w-xl leading-relaxed text-[#c6d3cb]">
-                {t(
-                  "landing.ctaText",
-                  "Nous ouvrons tout, sans carte et sans engagement. Si ça vous sert la première semaine, ça vous servira toute l'année.",
-                )}
-              </p>
-              <a
-                href="/login"
-                className="mt-9 inline-flex items-center gap-2 rounded-full bg-[#c79a3b] px-9 py-3.5 text-sm font-semibold text-[#241c08] transition-colors hover:bg-[#d4ab54]"
-              >
-                {t("landing.ctaButton", "Se connecter")}
-                <FontAwesomeIcon icon={faArrowRight} className="h-4 w-4 rtl:rotate-180" />
-              </a>
+                <div className="mt-6 text-sm font-medium text-(--text)">
+                  {t("landing.testimonialName", "Khaled Ben Amor")}
+                </div>
+                <div className="mt-1 text-xs text-(--text-muted)">
+                  {t("landing.testimonialRole", "Enseignant — classe des 8 à 12 ans")}
+                </div>
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
 
-        <footer className="bg-[#0a2e22] py-12 text-emerald-100/70">
-          <div className="mx-auto max-w-6xl px-5 sm:px-8">
-            <div className="flex flex-col items-center justify-between gap-8 md:flex-row">
-              <div className="flex items-center gap-3 text-white">
-                <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/10">
-                  <FontAwesomeIcon icon={faBookQuran} className="h-5 w-5 text-[#c79a3b]" />
-                </span>
-                <span className="text-lg font-bold tracking-tight">Kottabi</span>
+          <section id="cta" className="border-t border-(--border)">
+            <div className="mx-auto max-w-7xl px-5 py-14 sm:px-8">
+              <div className="grid gap-8 md:grid-cols-[1fr_auto] md:items-center">
+                <div className="max-w-2xl">
+                  <h2 className="text-2xl font-semibold tracking-[-0.02em] text-(--text)">
+                    {t("landing.ctaTitle", "Essayez avec votre école, c'est gratuit.")}
+                  </h2>
+                  <p className="mt-3 text-sm leading-6 text-(--text-muted)">
+                    {t(
+                      "landing.ctaText",
+                      "Nous ouvrons tout, sans carte et sans engagement. Si ça vous sert la première semaine, ça vous servira toute l'année.",
+                    )}
+                  </p>
+                </div>
+
+                <a
+                  href="/login"
+                  className="inline-flex h-10 items-center justify-center gap-2 rounded-md bg-(--brand) px-5 text-sm font-medium text-[#f3efe3] transition-colors duration-150 hover:bg-(--brand-strong)"
+                >
+                  {t("landing.ctaButton", "Se connecter")}
+                  <FontAwesomeIcon icon={faArrowRight} className="h-3.5 w-3.5 rtl:rotate-180" />
+                </a>
+              </div>
+            </div>
+          </section>
+        </main>
+
+        <footer className="bg-[#0a2e22] py-9 text-[#eff2ec]/65">
+          <div className="mx-auto max-w-7xl px-5 sm:px-8">
+            <div className="grid gap-6 md:grid-cols-[1fr_auto] md:items-center">
+              <div>
+                <div className="flex items-center gap-2 text-white">
+                  <FontAwesomeIcon icon={faBookQuran} className="h-4 w-4 text-[#c79a3b]" />
+                  <span className="text-sm font-semibold">Kottabi</span>
+                </div>
+                <p className="mt-2 text-xs">
+                  {t("landing.footerTagline", "Le cahier des écoles coraniques, tenu avec soin.")}
+                </p>
               </div>
 
-              <p className="text-center text-sm italic md:text-start">
-                {t("landing.footerTagline", "Le cahier des écoles coraniques, tenu avec soin.")}
-              </p>
-
-              <a
-                href="mailto:contact@kottabi.org"
-                className="text-sm transition-colors hover:text-white"
-              >
+              <a href="mailto:contact@kottabi.org" className="text-xs hover:text-white">
                 contact@kottabi.org
               </a>
             </div>
 
-            <div className="mt-9 border-t border-white/10 pt-6 text-center text-xs text-emerald-100/50">
-              © {new Date().getFullYear()} Kottabi —{" "}
-              {t("landing.footerRights", "Tous droits réservés.")}
+            <div className="mt-7 border-t border-white/10 pt-5 text-[11px] text-[#eff2ec]/40">
+              © {new Date().getFullYear()} Kottabi — {t("landing.footerRights", "Tous droits réservés.")}
             </div>
           </div>
         </footer>
